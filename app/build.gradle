@@ -1,0 +1,80 @@
+/**
+ * The first line in the build configuration applies the Android Gradle plugin
+ * to this build and makes the android block available to specify Android-specific build options.
+ */
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+/**
+ * The android block is where you configure all your Android-specific build options.
+ */
+android {
+    def appId =  'com.example.humaranagar'
+    //The app's namespace. Used primarily to access app resources.
+    namespace appId
+    compileSdk rootProject.compileSdkVersion
+    /**
+     * The defaultConfig block encapsulates default settings and entries for all build variants and can override some attributes in main/AndroidManifest.xml
+     * dynamically from the build system. You can configure product flavors to override these values for different versions of your app.
+     */
+    defaultConfig {
+        // Uniquely identifies the package for publishing.
+        applicationId appId
+        minSdk rootProject.minSDKVersion
+        targetSdk rootProject.targetSDKVersion
+        versionCode 1
+        versionName "1.0"
+        archivesBaseName = "app-" + versionName + "-" + versionCode
+        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        vectorDrawables.useSupportLibrary = true
+        resConfigs "en", "hi"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            crunchPngs true
+            //TODO: Add signing configs before release
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            crunchPngs false
+        }
+    }
+    compileOptions {
+        sourceCompatibility sourceCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        dataBinding true
+    }
+}
+
+dependencies {
+    // Dependency on local binaries
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.annotation:annotation:1.5.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    // OTP pin view
+    implementation 'io.github.chaosleung:pinview:1.4.4'
+    //security-crypto for encrypted shared preference
+    implementation "androidx.security:security-crypto:1.0.0"
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+}

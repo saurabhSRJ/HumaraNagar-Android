@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">HumaraNagar</string>
+    <string name="title_home">Home</string>
+    <string name="certificates">Certificates</string>
+    <string name="report">Report</string>
+    <string name="residents">Residents</string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
+    <string name="and">and</string>
+    <string name="terms_amp_conditions"><u>Terms &amp; Conditions</u></string>
+    <string name="by_continuing_you_agree_to_our">By continuing, you agree to our</string>
+    <string name="continue_text">Continue</string>
+    <string name="country_code" translatable="false">+91</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="we_notify">We Notify</string>
+    <string name="we_connect">We Connect</string>
+    <string name="we_solve">We Solve</string>
+    <string name="we_listen">We Listen</string>
+    <string name="verify_mobile_number">Verify Mobile Number</string>
+    <string name="otp_sent_to">OTP sent to</string>
+    <string name="enter_otp">enter otp</string>
+    <string name="didn_t_receive_otp">Didn’t receive OTP?</string>
+    <string name="resend"><u>Resend</u></string>
+    <string name="timer_count">(0:%s)</string>
+</resources>
