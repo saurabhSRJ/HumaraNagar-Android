@@ -1,6 +1,5 @@
 package com.example.humaranagar.ui.signup.otp_verification
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -8,17 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
-import com.example.humaranagar.MainActivity
+import androidx.fragment.app.activityViewModels
 import com.example.humaranagar.R
 import com.example.humaranagar.base.BaseActivity
 import com.example.humaranagar.base.BaseFragment
+import com.example.humaranagar.base.ViewModelFactory
 import com.example.humaranagar.databinding.FragmentOtpVerificationBinding
-import com.example.humaranagar.utils.Utils
-import com.example.humaranagar.utils.setNonDuplicateClickListener
-import com.example.humaranagar.utils.showToast
+import com.example.humaranagar.network.BaseRepository
+import com.example.humaranagar.ui.signup.OnBoardingViewModel
+import com.example.humaranagar.utils.*
 
 class OtpVerificationFragment : BaseFragment() {
+    private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
+        ViewModelFactory(BaseRepository())
+    }
     private lateinit var binding: FragmentOtpVerificationBinding
 
     private var mobileNumber: String = ""
@@ -34,10 +38,33 @@ class OtpVerificationFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentOtpVerificationBinding.inflate(inflater, container, false)
-        mobileNumber = getUserPreference().getMobileNumber()
+        mobileNumber = getUserPreference().mobileNumber
         initView()
         initializeTimer()
+        initViewModelObservers()
         return binding.root
+    }
+
+    private fun initViewModelObservers() {
+        onBoardingViewModel.run {
+            observeProgress(this, false)
+            invalidOtpLiveData.observe(viewLifecycleOwner) { isInvalidOtp ->
+                if (isInvalidOtp) {
+                    binding.tvOtpErrorMessage.setStringWithColor(
+                        getString(R.string.incorrect_otp_message),
+                        ContextCompat.getColor(requireContext(), R.color.red_error)
+                    )
+                } else {
+                    binding.tvOtpErrorMessage.setStringWithColor(
+                        getString(R.string.didn_t_receive_otp),
+                        ContextCompat.getColor(requireContext(), R.color.grey_828282)
+                    )
+                }
+            }
+            successfulOtpResendLiveData.observe(viewLifecycleOwner) {
+                requireContext().showToast(getString(R.string.otp_sent_to_s, mobileNumber))
+            }
+        }
     }
 
     private fun initView() {
@@ -45,6 +72,7 @@ class OtpVerificationFragment : BaseFragment() {
             otpView.doAfterTextChanged { pin ->
                 btnContinue.isEnabled =
                     pin?.length == requireContext().resources.getInteger(R.integer.otp_length)
+                onBoardingViewModel.setInvalidOtpLiveData(false)
             }
             otpView.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_GO && btnContinue.isEnabled) {
@@ -56,9 +84,9 @@ class OtpVerificationFragment : BaseFragment() {
                 (activity as? BaseActivity)?.onBackPressed()
             }
             btnContinue.setOnClickListener { hideKeyboardAndVerifyOtp() }
-            tvOtpSentTo.text = Utils.getStringWithColors(
+            tvOtpSentTo.setStringWithColors(
                 getString(R.string.otp_sent_to),
-                " +91 ".plus(mobileNumber),
+                Utils.getMobileNumberWithCountryCode(mobileNumber),
                 ContextCompat.getColor(requireContext(), R.color.grey_828282),
                 ContextCompat.getColor(requireContext(), R.color.dark_grey_333333)
             )
@@ -80,14 +108,7 @@ class OtpVerificationFragment : BaseFragment() {
 
             override fun onFinish() {
                 binding.run {
-                    tvTimer.visibility = View.GONE
-                    tvResend.isEnabled = true
-                    tvResend.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.blue_4285F4
-                        )
-                    )
+                    setResendOtpTimerView(true)
                 }
             }
         }
@@ -95,13 +116,25 @@ class OtpVerificationFragment : BaseFragment() {
     }
 
     private fun resendOtpAndRestartTimer() {
+        onBoardingViewModel.resendOtp()
+        onBoardingViewModel.setInvalidOtpLiveData(false)
         binding.run {
             countDownTimer.start()
-            tvTimer.visibility = View.VISIBLE
-            tvResend.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_AEAEAE))
-            tvResend.isEnabled = false
+            setResendOtpTimerView(false)
         }
-        requireContext().showToast("Otp sent to $mobileNumber")
+    }
+
+    private fun setResendOtpTimerView(resendEnabled: Boolean) {
+        binding.run {
+            tvTimer.isVisible = resendEnabled.not()
+            tvResend.isEnabled = resendEnabled
+            tvResend.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (resendEnabled) R.color.blue_4285F4 else R.color.grey_AEAEAE
+                )
+            )
+        }
     }
 
     private fun gainFocusAndShowKeyboard() {
@@ -111,12 +144,12 @@ class OtpVerificationFragment : BaseFragment() {
 
     private fun hideKeyboardAndVerifyOtp() {
         hideKeyboard()
-        requireActivity().finish()
-        startActivity(Intent(activity, MainActivity::class.java))
+        onBoardingViewModel.verifyOtp(binding.otpView.text.toString())
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         countDownTimer.cancel()
+        onBoardingViewModel.progressLiveData.value = false
+        super.onDestroyView()
     }
 }

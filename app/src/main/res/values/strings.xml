@@ -16,9 +16,25 @@
     <string name="we_solve">We Solve</string>
     <string name="we_listen">We Listen</string>
     <string name="verify_mobile_number">Verify Mobile Number</string>
-    <string name="otp_sent_to">OTP sent to</string>
+    <string name="otp_sent_to">OTP sent to </string>
     <string name="enter_otp">enter otp</string>
-    <string name="didn_t_receive_otp">Didn’t receive OTP?</string>
+    <string name="didn_t_receive_otp">Didn\'t receive OTP?</string>
     <string name="resend"><u>Resend</u></string>
     <string name="timer_count">(0:%s)</string>
+    <string name="please_enter_a_valid_10_digit_mobile_number">Please enter a valid 10 digit mobile number</string>
+    <string name="incorrect_otp_message">Incorrect OTP, Please Try again</string>
+    <string name="almost_there">Almost There!</string>
+    <string name="provide_your_details_here">Provide your details here</string>
+    <string name="asterisk" translatable="false">*</string>
+    <string name="name">Name</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="ok">OK</string>
+    <string name="submit">Submit</string>
+    <string name="dob_invalid_message">Please enter a valid Date of Birth</string>
+    <string name="ward_number">Ward number</string>
+    <string name="otp_sent_to_s">OTP send to %s</string>
+    <string name="humara_nagar">Humara Nagar</string>
 </resources>

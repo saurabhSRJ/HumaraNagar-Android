@@ -6,18 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.activityViewModels
 import com.example.humaranagar.R
 import com.example.humaranagar.base.BaseFragment
+import com.example.humaranagar.base.ViewModelFactory
 import com.example.humaranagar.databinding.FragmentSignupOrLoginBinding
-import com.example.humaranagar.ui.signup.otp_verification.OtpVerificationFragment
+import com.example.humaranagar.network.BaseRepository
 import com.example.humaranagar.ui.signup.signup_or_login.model.WelcomeBannerModel
 import com.example.humaranagar.ui.common.ViewPagerSwitcher
+import com.example.humaranagar.ui.signup.OnBoardingViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class SignupOrLoginFragment : BaseFragment() {
     private lateinit var binding: FragmentSignupOrLoginBinding
     private var hasRootViewAlreadyScrolled = false
+    private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
+        ViewModelFactory(BaseRepository())
+    }
 
     companion object {
         const val TAG = "SignupOrLoginFragment"
@@ -30,7 +37,17 @@ class SignupOrLoginFragment : BaseFragment() {
     ): View {
         binding = FragmentSignupOrLoginBinding.inflate(inflater, container, false)
         initView()
+        initViewModelObservers()
         return binding.root
+    }
+
+    private fun initViewModelObservers() {
+        onBoardingViewModel.run {
+            observeProgress(this, false)
+            invalidMobileNumberLiveData.observe(viewLifecycleOwner) {
+                binding.tvMobileNumberError.isVisible = it
+            }
+        }
     }
 
     private fun initView() {
@@ -54,7 +71,10 @@ class SignupOrLoginFragment : BaseFragment() {
                 }
             }
             etMobileNumberInput.doAfterTextChanged {
-                binding.btnContinue.isEnabled = it?.length == 10
+                binding.run {
+                    onBoardingViewModel.setInvalidMobileNumberLiveData(false)
+                    btnContinue.isEnabled = it?.length == 10
+                }
             }
             etMobileNumberInput.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_GO && binding.btnContinue.isEnabled) {
@@ -68,17 +88,15 @@ class SignupOrLoginFragment : BaseFragment() {
         }
     }
 
-    private fun hideKeyboardAndHandlePhoneNumberInput() {
-        hideKeyboard()
-        getUserPreference().setMobileNumber(binding.etMobileNumberInput.text.toString())
-        showOtpFragment()
+    override fun onDestroyView() {
+        onBoardingViewModel.progressLiveData.value = false
+        super.onDestroyView()
     }
 
-    private fun showOtpFragment() {
-        parentFragmentManager.beginTransaction().setCustomAnimations(
-            R.anim.slide_in_from_right,
-            R.anim.slide_out_to_left
-        ).replace(R.id.container, OtpVerificationFragment(), OtpVerificationFragment.TAG).commit()
+    private fun hideKeyboardAndHandlePhoneNumberInput() {
+        hideKeyboard()
+        val mobileNumber = binding.etMobileNumberInput.text.toString()
+        onBoardingViewModel.handleMobileNumberInput(mobileNumber)
     }
 
     private fun movePhoneNumberInputUpwardsWithAnimation() {
@@ -94,6 +112,7 @@ class SignupOrLoginFragment : BaseFragment() {
             vpWelcomeBanner.visibility = View.GONE
             tabIndicator.visibility = View.GONE
             ivLogo.visibility = View.VISIBLE
+            tvAppName.visibility = View.VISIBLE
         }
         hasRootViewAlreadyScrolled = true
     }

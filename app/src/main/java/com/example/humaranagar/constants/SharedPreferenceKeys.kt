@@ -14,6 +14,7 @@ interface SharedPreferenceKeys {
     interface UserPreferenceKeys {
         companion object {
             const val MOBILE_NUMBER = "MOBILE_NUMBER"
+            const val USER_PROFILE = "USER_PROFILE"
         }
     }
 
@@ -22,7 +23,7 @@ interface SharedPreferenceKeys {
      */
     interface AppPreferenceKeys {
         companion object {
-
+            const val APP_LANGUAGE = "APP_LANGUAGE"
         }
     }
 }

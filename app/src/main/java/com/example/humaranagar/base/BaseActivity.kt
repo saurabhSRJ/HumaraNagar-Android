@@ -20,6 +20,7 @@ import com.example.humaranagar.utils.LocaleManager
 
 /**
  * Base Activity for all the Activities present in the Project. Provides some common functionality for all the Activities.
+ * By default, Kotlin classes are final – they can't be inherited. To make a class inheritable, mark it with the open keyword
  */
 open class BaseActivity : AppCompatActivity() {
     private lateinit var progressDialogue: Dialog
@@ -39,13 +40,23 @@ open class BaseActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
     }
 
-    override fun onPause() {
+    override fun onDestroy() {
+        super.onDestroy()
         hideKeyboard()
         hideProgress()
-        super.onPause()
     }
 
-    fun showProgress(isDismissible: Boolean) {
+    protected open fun observeProgress(viewModel: BaseViewModel, isDismissible: Boolean = true) {
+        viewModel.progressLiveData.observe(this) { progress ->
+            if (progress) {
+                showProgress(isDismissible)
+            } else {
+                hideProgress()
+            }
+        }
+    }
+
+    protected fun showProgress(isDismissible: Boolean) {
         if (this::progressDialogue.isInitialized.not()) {
             progressDialogue = RelativeLayoutProgressDialog.onCreateDialogModel(this).apply {
                 setCancelable(isDismissible)
@@ -56,14 +67,13 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-
     protected fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
             progressDialogue.hide()
         }
     }
 
-    open fun hideKeyboard() {
+    fun hideKeyboard() {
         val view: View? = this.currentFocus
         view?.let {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -75,7 +85,7 @@ open class BaseActivity : AppCompatActivity() {
      * Sets the Status Bar Color
      * @param color, is the id value of the color resource
      */
-    fun changeStatusBarColor(color: Int) {
+    protected fun changeStatusBarColor(color: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             WindowCompat.getInsetsController(window, window.decorView).apply {
                 isAppearanceLightStatusBars = true
@@ -96,7 +106,7 @@ open class BaseActivity : AppCompatActivity() {
      * Return User preference data(i.e user profile) being set and used throughout the app.
      * @return [UserPreference]
      */
-    open fun getUserPreference(): UserPreference? {
+    fun getUserPreference(): UserPreference {
         return (application as NagarApp).userSharedPreference
     }
 }
