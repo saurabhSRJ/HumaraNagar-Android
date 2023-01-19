@@ -11,7 +11,7 @@ import com.example.humaranagar.constants.Constants
 import com.example.humaranagar.utils.put
 import com.google.gson.Gson
 
-abstract class EncryptedSharedPreference(
+open class EncryptedSharedPreference(
     context: Context,
     preferencesName: String,
 ) : IPreferences {
@@ -110,6 +110,6 @@ abstract class EncryptedSharedPreference(
     }
 
     companion object {
-        private const val TAG = "EncryptedSharedPrefsV2"
+        private const val TAG = "EncryptedSharedPrefs"
     }
 }

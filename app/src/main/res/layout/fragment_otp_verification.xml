@@ -65,10 +65,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:cursorVisible="true"
-            android:fontFamily="@font/open_sans_regular"
+            android:textAppearance="@style/OpenSansRegular16sp"
             android:inputType="number"
-            android:textColor="@color/grey_4F4F4F"
-            android:textSize="18sp"
+            android:textColor="@color/black"
             app:cursorWidth="2dp"
             app:hideLineWhenFilled="false"
             app:itemCount="@integer/otp_length"
@@ -82,7 +81,7 @@
             app:viewType="line" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_unsent_otp"
+            android:id="@+id/tv_otp_error_message"
             style="@style/OpenSansRegular14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,8 +104,8 @@
             android:layout_marginHorizontal="6dp"
             android:enabled="false"
             app:layout_constraintEnd_toStartOf="@id/tv_timer"
-            app:layout_constraintStart_toEndOf="@id/tv_unsent_otp"
-            app:layout_constraintTop_toTopOf="@id/tv_unsent_otp" />
+            app:layout_constraintStart_toEndOf="@id/tv_otp_error_message"
+            app:layout_constraintTop_toTopOf="@id/tv_otp_error_message" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_timer"
@@ -116,10 +115,10 @@
             android:textColor="@color/blue_4285F4"
             android:text="@string/timer_count"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_unsent_otp"
+            app:layout_constraintTop_toTopOf="@id/tv_otp_error_message"
             app:layout_constraintStart_toEndOf="@id/tv_resend"/>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/btn_continue"
             style="@style/primary_blue_button"
             android:layout_width="match_parent"
@@ -128,6 +127,6 @@
             android:layout_marginTop="22dp"
             android:enabled="false"
             android:text="@string/continue_text"
-            app:layout_constraintTop_toBottomOf="@id/tv_unsent_otp" />
+            app:layout_constraintTop_toBottomOf="@id/tv_otp_error_message" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

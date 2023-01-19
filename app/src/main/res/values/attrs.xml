@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FormInputWithHeader">
+        <attr name="header" format="string" />
+        <attr name="inputEnabled" format="boolean" />
+        <attr name="invalidInput" format="boolean" />
+        <attr name="hint" format="string" />
+        <attr name="input" format="string" />
+        <attr name="endIcon" format="integer" />
+        <attr name="required_input" format="boolean" />
+    </declare-styleable>
+</resources>

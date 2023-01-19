@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text Styles -->
+    <style name="OpenSansRegular10sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+    </style>
+
+    <style name="OpenSansRegular12sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+    </style>
+
+    <style name="OpenSansRegular14sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+    </style>
+
+    <style name="OpenSansRegular16sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+    </style>
+
+    <style name="OpenSansSemiBold10sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+    </style>
+
+    <style name="OpenSansSemiBold12sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+    </style>
+
+    <style name="OpenSansSemiBold14sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+    </style>
+
+    <style name="OpenSansSemiBold16sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+    </style>
+
+    <style name="OpenSansSemiBold18sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+    </style>
+
+    <style name="OpenSansSemiBold20sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+    </style>
+
+    <style name="OpenSansBold10sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+    </style>
+
+    <style name="OpenSansBold12sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+    </style>
+
+    <style name="OpenSansBold14sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+    </style>
+
+    <style name="OpenSansBold16sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+    </style>
+
+    <style name="OpenSansBold20sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="primary_blue_button" parent="@style/Widget.Material3.Button.ElevatedButton">
+        <item name="android:backgroundTint">@color/primary_blue_button_background_selector</item>
+        <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">16dp</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="rippleColor">@color/white</item>
+    </style>
+
+    <style name="GenderSelectionToggleButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
+        <item name="cornerRadius">5dp</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="strokeColor">@color/toggle_button_stroke_color_selector</item>
+        <item name="android:textColor">@color/toggle_button_text_color_selector</item>
+        <item name="rippleColor">@color/grey_AEAEAE</item>
+    </style>
+
+    <style name="TextButtonStyle" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="rippleColor">@color/grey_AEAEAE</item>
+    </style>
+</resources>

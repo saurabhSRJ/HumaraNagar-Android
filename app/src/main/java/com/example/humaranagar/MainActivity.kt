@@ -1,5 +1,7 @@
 package com.example.humaranagar
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.fragment.NavHostFragment
@@ -8,8 +10,16 @@ import com.example.humaranagar.base.BaseActivity
 import com.example.humaranagar.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity() {
-
     private lateinit var binding: ActivityMainBinding
+
+    companion object {
+        fun startActivity(context: Context) {
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            context.startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.humaranagar.NagarApp
 import com.example.humaranagar.shared_pref.AppPreference
@@ -12,7 +13,7 @@ import com.example.humaranagar.shared_pref.UserPreference
 import com.example.humaranagar.ui.common.RelativeLayoutProgressDialog
 
 /**
- * Base Fragment for all the Fragments present in the Project. Provides some common functionality for all the Fragemnts.
+ * Base Fragment for all the Fragments present in the Project. Provides some common functionality for all the Fragments.
  */
 open class BaseFragment : Fragment() {
     private lateinit var progressDialogue: Dialog
@@ -22,6 +23,30 @@ open class BaseFragment : Fragment() {
         super.onPause()
     }
 
+    /**
+     * Generic function to get parent activity of the fragment. Since the function is inlined, no reflection is needed and normal operators like !is and as are now available for you to use
+     */
+    inline fun <reified T : AppCompatActivity> getParentActivity(): T? {
+        var parentActivity: T? = null
+        activity?.let {
+            parentActivity = it as T
+        }
+        return parentActivity
+    }
+
+    protected open fun observeProgress(viewModel: BaseViewModel, isDismissible: Boolean = true) {
+        viewModel.progressLiveData.observe(this) { progress ->
+            if (progress) {
+                showProgress(isDismissible)
+            } else {
+                hideProgress()
+            }
+        }
+    }
+
+    /* Kotlin requires explicit modifiers for overridable members and overrides. Add open if you need function/member to be overridable by default they are final.
+        public, protected, internal and private are visibility modifiers, by default public
+     */
     protected fun showProgress(isDismissible: Boolean) {
         if (this::progressDialogue.isInitialized.not()) {
             progressDialogue =
@@ -34,15 +59,15 @@ open class BaseFragment : Fragment() {
         }
     }
 
-    protected open fun showKeyboard(editText: EditText) {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED)
-    }
-
-    protected open fun hideProgress() {
+    protected fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
             progressDialogue.hide()
         }
+    }
+
+    fun showKeyboard(editText: EditText) {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED)
     }
 
     fun hideKeyboard() {
