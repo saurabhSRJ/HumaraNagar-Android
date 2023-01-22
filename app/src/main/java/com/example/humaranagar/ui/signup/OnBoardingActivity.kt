@@ -4,19 +4,18 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.example.humaranagar.MainActivity
+import com.example.humaranagar.ui.MainActivity
 import com.example.humaranagar.R
 import com.example.humaranagar.base.BaseActivity
 import com.example.humaranagar.base.ViewModelFactory
 import com.example.humaranagar.databinding.ActivitiyOnboardingBinding
-import com.example.humaranagar.network.BaseRepository
 import com.example.humaranagar.ui.signup.otp_verification.OtpVerificationFragment
 import com.example.humaranagar.ui.signup.profile_creation.ProfileCreationFragment
 import com.example.humaranagar.ui.signup.signup_or_login.SignupOrLoginFragment
 
 class OnBoardingActivity : BaseActivity() {
     private val onBoardingViewModel by viewModels<OnBoardingViewModel> {
-        ViewModelFactory(BaseRepository())
+        ViewModelFactory()
     }
     private lateinit var binding: ActivitiyOnboardingBinding
 

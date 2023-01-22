@@ -24,7 +24,6 @@ class HomeFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("Saurabh", "onCreateView")
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
@@ -36,11 +35,6 @@ class HomeFragment : BaseFragment() {
             textView.text = it
         }
         return root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("Saurabh", "onResume")
     }
 
     override fun onDestroyView() {

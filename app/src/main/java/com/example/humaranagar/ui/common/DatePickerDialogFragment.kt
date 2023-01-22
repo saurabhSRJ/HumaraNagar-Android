@@ -11,13 +11,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.humaranagar.base.ViewModelFactory
 import com.example.humaranagar.databinding.DialogDatePickerBinding
-import com.example.humaranagar.network.BaseRepository
 import com.example.humaranagar.ui.signup.profile_creation.ProfileCreationViewModel
 
 class DatePickerDialogFragment : DialogFragment() {
     private lateinit var binding: DialogDatePickerBinding
     private val profileCreationViewModel by activityViewModels<ProfileCreationViewModel> {
-        ViewModelFactory(BaseRepository())
+        ViewModelFactory()
     }
 
     companion object {

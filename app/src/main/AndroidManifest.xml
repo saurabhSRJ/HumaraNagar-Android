@@ -4,6 +4,8 @@
     tools:ignore="LockedOrientationActivity">
 
     <uses-sdk tools:overrideLibrary="androidx.security" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".NagarApp"
@@ -37,7 +39,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
     </application>

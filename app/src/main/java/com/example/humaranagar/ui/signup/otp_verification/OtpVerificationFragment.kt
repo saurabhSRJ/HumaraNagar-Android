@@ -14,14 +14,14 @@ import com.example.humaranagar.R
 import com.example.humaranagar.base.BaseActivity
 import com.example.humaranagar.base.BaseFragment
 import com.example.humaranagar.base.ViewModelFactory
+import com.example.humaranagar.constants.Constants
 import com.example.humaranagar.databinding.FragmentOtpVerificationBinding
-import com.example.humaranagar.network.BaseRepository
 import com.example.humaranagar.ui.signup.OnBoardingViewModel
 import com.example.humaranagar.utils.*
 
 class OtpVerificationFragment : BaseFragment() {
     private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
-        ViewModelFactory(BaseRepository())
+        ViewModelFactory()
     }
     private lateinit var binding: FragmentOtpVerificationBinding
 
@@ -48,21 +48,16 @@ class OtpVerificationFragment : BaseFragment() {
     private fun initViewModelObservers() {
         onBoardingViewModel.run {
             observeProgress(this, false)
-            invalidOtpLiveData.observe(viewLifecycleOwner) { isInvalidOtp ->
-                if (isInvalidOtp) {
-                    binding.tvOtpErrorMessage.setStringWithColor(
-                        getString(R.string.incorrect_otp_message),
-                        ContextCompat.getColor(requireContext(), R.color.red_error)
-                    )
-                } else {
-                    binding.tvOtpErrorMessage.setStringWithColor(
-                        getString(R.string.didn_t_receive_otp),
-                        ContextCompat.getColor(requireContext(), R.color.grey_828282)
-                    )
-                }
+            observeErrorAndException(this)
+            invalidOtpLiveData.observe(viewLifecycleOwner) { message ->
+                binding.tvOtpErrorMessage.setStringWithColor(
+                    message ?: getString(R.string.incorrect_otp_message),
+                    ContextCompat.getColor(requireContext(), R.color.red_error)
+                )
             }
             successfulOtpResendLiveData.observe(viewLifecycleOwner) {
                 requireContext().showToast(getString(R.string.otp_sent_to_s, mobileNumber))
+                setResendOtpTimerView(false)
             }
         }
     }
@@ -70,9 +65,8 @@ class OtpVerificationFragment : BaseFragment() {
     private fun initView() {
         binding.run {
             otpView.doAfterTextChanged { pin ->
-                btnContinue.isEnabled =
-                    pin?.length == requireContext().resources.getInteger(R.integer.otp_length)
-                onBoardingViewModel.setInvalidOtpLiveData(false)
+                btnContinue.isEnabled = pin?.length == requireContext().resources.getInteger(R.integer.otp_length)
+                resetOtpErrorMessageView()
             }
             otpView.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_GO && btnContinue.isEnabled) {
@@ -85,20 +79,21 @@ class OtpVerificationFragment : BaseFragment() {
             }
             btnContinue.setOnClickListener { hideKeyboardAndVerifyOtp() }
             tvOtpSentTo.setStringWithColors(
-                getString(R.string.otp_sent_to),
+                getString(R.string.otp_sent_to).plus(" "),
                 Utils.getMobileNumberWithCountryCode(mobileNumber),
                 ContextCompat.getColor(requireContext(), R.color.grey_828282),
                 ContextCompat.getColor(requireContext(), R.color.dark_grey_333333)
             )
             tvResend.setNonDuplicateClickListener {
-                resendOtpAndRestartTimer()
+                onBoardingViewModel.resendOtp()
+                resetOtpErrorMessageView()
             }
             gainFocusAndShowKeyboard()
         }
     }
 
     private fun initializeTimer() {
-        countDownTimer = object : CountDownTimer(30 * 1000, 1000) {
+        countDownTimer = object : CountDownTimer(Constants.OTP_RESEND_TIMER_IN_MS, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 binding.tvTimer.text = getString(
                     R.string.timer_count,
@@ -115,16 +110,15 @@ class OtpVerificationFragment : BaseFragment() {
         countDownTimer.start()
     }
 
-    private fun resendOtpAndRestartTimer() {
-        onBoardingViewModel.resendOtp()
-        onBoardingViewModel.setInvalidOtpLiveData(false)
-        binding.run {
-            countDownTimer.start()
-            setResendOtpTimerView(false)
-        }
+    private fun resetOtpErrorMessageView() {
+        binding.tvOtpErrorMessage.setStringWithColor(
+            getString(R.string.didn_t_receive_otp),
+            ContextCompat.getColor(requireContext(), R.color.grey_828282)
+        )
     }
 
     private fun setResendOtpTimerView(resendEnabled: Boolean) {
+        if (resendEnabled.not()) countDownTimer.start()
         binding.run {
             tvTimer.isVisible = resendEnabled.not()
             tvResend.isEnabled = resendEnabled
@@ -149,7 +143,6 @@ class OtpVerificationFragment : BaseFragment() {
 
     override fun onDestroyView() {
         countDownTimer.cancel()
-        onBoardingViewModel.progressLiveData.value = false
         super.onDestroyView()
     }
 }

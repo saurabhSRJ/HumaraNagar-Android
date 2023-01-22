@@ -4,65 +4,76 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.humaranagar.base.BaseViewModel
 import com.example.humaranagar.network.BaseRepository
+import com.example.humaranagar.network.onSuccess
 import com.example.humaranagar.ui.signup.model.User
+import com.example.humaranagar.utils.SingleLiveEvent
 import com.example.humaranagar.utils.UserDataValidator
+import kotlinx.coroutines.launch
 
-class OnBoardingViewModel(application: Application, repository: BaseRepository) : BaseViewModel(application, repository) {
+class OnBoardingViewModel(application: Application) : BaseViewModel(application) {
     private val _isUserUnderAnExistingRegistrationProcessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val isUserUnderAnExistingRegistrationProcessLiveData: LiveData<Boolean> = _isUserUnderAnExistingRegistrationProcessLiveData
     private val _invalidMobileNumberLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val invalidMobileNumberLiveData: LiveData<Boolean> = _invalidMobileNumberLiveData
     private val _successfulUserCheckLiveData: MutableLiveData<User> by lazy { MutableLiveData() }
     val successfulUserCheckLiveData: LiveData<User> = _successfulUserCheckLiveData
-    private val _successfulOtpResendLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    private val _successfulOtpResendLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
     val successfulOtpResendLiveData: LiveData<Boolean> = _successfulOtpResendLiveData
-    private val _invalidOtpLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
-    val invalidOtpLiveData: LiveData<Boolean> = _invalidOtpLiveData
-    private val _profileCreationRequiredLiveData: MutableLiveData<Boolean>by lazy { MutableLiveData() }
+    private val _invalidOtpLiveData: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+    val invalidOtpLiveData: LiveData<String> = _invalidOtpLiveData
+    private val _profileCreationRequiredLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val profileCreationRequiredLiveData: LiveData<Boolean> = _profileCreationRequiredLiveData
     private val _successfulUserLoginLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val successfulUserLoginLiveData: LiveData<Boolean> = _successfulUserLoginLiveData
+    private val _userLD: MutableLiveData<List<com.example.humaranagar.network.retrofit.User>> = MutableLiveData()
+    private val repository = BaseRepository(application)
 
     fun checkIfUserIsUnderOngoingRegistrationProcess() {
         val savedUserProfile = getUserPreference().userProfile
-        val isUserUnderAnExistingRegistrationProcess = savedUserProfile != null && savedUserProfile.name.isEmpty()
+        val isUserUnderAnExistingRegistrationProcess =
+            savedUserProfile != null && savedUserProfile.name.isEmpty()
         _isUserUnderAnExistingRegistrationProcessLiveData.value = false
 //        _isUserUnderAnExistingRegistrationProcessLiveData.value = isUserUnderAnExistingRegistrationProcess
     }
 
     fun handleMobileNumberInput(mobileNumber: String) {
         if (UserDataValidator.isValidMobileNumber(mobileNumber)) {
-            progressLiveData.postValue(true)
             validateUser(mobileNumber)
         } else {
             setInvalidMobileNumberLiveData(true)
         }
     }
 
-    fun verifyOtp(otp: String) {
+    fun verifyOtp(otp: String) = viewModelScope.launch {
         //TODO: Add verifyOTP API
-        progressLiveData.postValue(true)
         _profileCreationRequiredLiveData.postValue(true)
+//        _invalidOtpLiveData.postValue(null)
     }
 
-    fun resendOtp() {
+    fun resendOtp() = viewModelScope.launch {
         //TODO: Add resendOtp API
-        progressLiveData.postValue(true)
-        _successfulOtpResendLiveData.postValue(true)
+        val response = postCoroutineResponse({ repository.getUsers() }, _userLD)
+        if (_userLD.value != null) {
+            _successfulOtpResendLiveData.postValue(true)
+        }
+//        response.onSuccess {
+//            _successfulOtpResendLiveData.postValue(true)
+//        }.onError {
+//            errorLiveData.postValue(it)
+//        }
     }
 
-    fun updateUserDetails(user: User) {
-        progressLiveData.postValue(true)
+    fun updateUserDetails(user: User) = viewModelScope.launch {
         //TODO: Add profileCreation API
-        getUserPreference().userProfile = user
-        Log.d("Saved Profile", user.toString())
-        _successfulUserLoginLiveData.postValue(true)
-    }
-
-    fun setInvalidOtpLiveData(isInvalid: Boolean) {
-        _invalidOtpLiveData.postValue(isInvalid)
+        val response = processCoroutine({ repository.getUsers() })
+        response.onSuccess {
+            getUserPreference().userProfile = user
+            Log.d("Saved Profile", user.toString())
+            _successfulUserLoginLiveData.postValue(true)
+        }
     }
 
     fun setInvalidMobileNumberLiveData(isInvalid: Boolean) {

@@ -8,15 +8,19 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.example.humaranagar.NagarApp
 import com.example.humaranagar.R
+import com.example.humaranagar.network.ApiError
 import com.example.humaranagar.shared_pref.AppPreference
 import com.example.humaranagar.shared_pref.UserPreference
 import com.example.humaranagar.ui.common.RelativeLayoutProgressDialog
 import com.example.humaranagar.utils.LocaleManager
+import retrofit2.Response.error
+import java.io.IOException
 
 /**
  * Base Activity for all the Activities present in the Project. Provides some common functionality for all the Activities.
@@ -54,6 +58,50 @@ open class BaseActivity : AppCompatActivity() {
                 hideProgress()
             }
         }
+    }
+
+    protected open fun obServeErrorAndException(apiError: ApiError, viewModel: BaseViewModel) {
+        showErrorDialog(null, apiError.message)
+        observerException(viewModel)
+    }
+
+    protected open fun observeErrorAndException(viewModel: BaseViewModel) {
+        viewModel.errorLiveData.observe(this) {
+            showErrorDialog(null, it.message)
+        }
+        observerException(viewModel)
+    }
+
+    protected open fun observerException(viewModel: BaseViewModel) {
+        viewModel.exceptionLiveData.observe(this) { exception ->
+            if (exception is IOException) {
+                showNoInternetDialog()
+            } else {
+                showErrorDialog()
+            }
+        }
+    }
+
+    private fun showNoInternetDialog() {
+        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
+    }
+
+    protected open fun showErrorDialog(
+        header: String? = null,
+        message: String? = null,
+    ) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(if (header.isNullOrEmpty()) getString(R.string.error) else header)
+        builder.setMessage(if (message.isNullOrEmpty()) getString(R.string.some_error_occoured) else message)
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+        builder.setOnDismissListener {
+            finish()
+        }
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.show()
     }
 
     protected fun showProgress(isDismissible: Boolean) {

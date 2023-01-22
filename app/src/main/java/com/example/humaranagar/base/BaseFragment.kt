@@ -2,15 +2,21 @@ package com.example.humaranagar.base
 
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.humaranagar.NagarApp
+import com.example.humaranagar.R
+import com.example.humaranagar.network.ApiError
 import com.example.humaranagar.shared_pref.AppPreference
 import com.example.humaranagar.shared_pref.UserPreference
 import com.example.humaranagar.ui.common.RelativeLayoutProgressDialog
+import retrofit2.Response.error
+import java.io.IOException
 
 /**
  * Base Fragment for all the Fragments present in the Project. Provides some common functionality for all the Fragments.
@@ -38,10 +44,54 @@ open class BaseFragment : Fragment() {
         viewModel.progressLiveData.observe(this) { progress ->
             if (progress) {
                 showProgress(isDismissible)
+                Log.d("saurabh", "show progress $javaClass")
             } else {
                 hideProgress()
             }
         }
+    }
+
+    protected open fun obServeErrorAndException(apiError: ApiError, viewModel: BaseViewModel) {
+        showErrorDialog(null, apiError.message)
+        observerException(viewModel)
+    }
+
+    protected open fun observeErrorAndException(viewModel: BaseViewModel) {
+        viewModel.errorLiveData.observe(this) {
+            showErrorDialog(null, it.message)
+        }
+        observerException(viewModel)
+    }
+
+    protected open fun observerException(viewModel: BaseViewModel) {
+        viewModel.exceptionLiveData.observe(this) { exception ->
+            if (exception is IOException) {
+                showNoInternetDialog()
+            } else {
+                showErrorDialog()
+            }
+        }
+    }
+
+    private fun showNoInternetDialog() {
+        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
+    }
+
+    protected open fun showErrorDialog(
+        header: String? = null,
+        message: String? = null,
+    ) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(if (header.isNullOrEmpty()) getString(R.string.error) else header)
+        builder.setMessage(if (message.isNullOrEmpty()) getString(R.string.some_error_occoured) else message)
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+        builder.setOnDismissListener {
+        }
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        dialog.show()
     }
 
     /* Kotlin requires explicit modifiers for overridable members and overrides. Add open if you need function/member to be overridable by default they are final.
@@ -54,19 +104,19 @@ open class BaseFragment : Fragment() {
                     setCancelable(isDismissible)
                 }
         }
-        if (progressDialogue.isShowing.not()) {
-            progressDialogue.show()
-        }
+        progressDialogue.show()
     }
 
     protected fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
             progressDialogue.hide()
+            Log.d("saurabh", "hide progress $javaClass")
         }
     }
 
     fun showKeyboard(editText: EditText) {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED)
     }
 

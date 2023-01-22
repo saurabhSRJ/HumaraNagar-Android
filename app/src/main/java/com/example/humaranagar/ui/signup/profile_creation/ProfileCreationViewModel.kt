@@ -9,7 +9,7 @@ import com.example.humaranagar.ui.signup.model.Gender
 import com.example.humaranagar.ui.signup.model.User
 import com.example.humaranagar.utils.UserDataValidator
 
-class ProfileCreationViewModel(application: Application, repository: BaseRepository): BaseViewModel(application, repository) {
+class ProfileCreationViewModel(application: Application): BaseViewModel(application) {
     private val _dateOfBirthLiveData: MutableLiveData<String> by lazy { MutableLiveData() }
     val dateOfBirthLiveData: LiveData<String> = _dateOfBirthLiveData
     private val _invalidDateOfBirthLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }

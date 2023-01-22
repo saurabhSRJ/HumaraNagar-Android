@@ -10,7 +10,6 @@ import com.example.humaranagar.R
 import com.example.humaranagar.base.BaseFragment
 import com.example.humaranagar.base.ViewModelFactory
 import com.example.humaranagar.databinding.FragmentProfileCreationBinding
-import com.example.humaranagar.network.BaseRepository
 import com.example.humaranagar.ui.common.DatePickerDialogFragment
 import com.example.humaranagar.ui.signup.OnBoardingViewModel
 import com.example.humaranagar.ui.signup.model.Gender
@@ -21,10 +20,10 @@ import com.example.humaranagar.utils.showToast
 class ProfileCreationFragment : BaseFragment() {
     private lateinit var binding: FragmentProfileCreationBinding
     private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
-        ViewModelFactory(BaseRepository())
+        ViewModelFactory()
     }
     private val profileCreationViewModel by activityViewModels<ProfileCreationViewModel> {
-        ViewModelFactory(BaseRepository())
+        ViewModelFactory()
     }
 
     companion object {
@@ -54,7 +53,10 @@ class ProfileCreationFragment : BaseFragment() {
                 binding.btnSubmit.isEnabled = it
             }
         }
-        observeProgress(onBoardingViewModel, false)
+        onBoardingViewModel.run {
+            observeProgress(this, false)
+            observeErrorAndException(this)
+        }
     }
 
     private fun initView() {

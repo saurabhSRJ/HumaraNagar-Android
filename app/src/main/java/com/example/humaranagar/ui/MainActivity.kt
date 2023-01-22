@@ -1,4 +1,4 @@
-package com.example.humaranagar
+package com.example.humaranagar.ui
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.humaranagar.R
 import com.example.humaranagar.base.BaseActivity
 import com.example.humaranagar.databinding.ActivityMainBinding
 
@@ -28,7 +29,6 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         val navView: BottomNavigationView = binding.navView
-        setSupportActionBar(null)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController

@@ -13,7 +13,6 @@ import com.example.humaranagar.R
 import com.example.humaranagar.base.BaseFragment
 import com.example.humaranagar.base.ViewModelFactory
 import com.example.humaranagar.databinding.FragmentSignupOrLoginBinding
-import com.example.humaranagar.network.BaseRepository
 import com.example.humaranagar.ui.signup.signup_or_login.model.WelcomeBannerModel
 import com.example.humaranagar.ui.common.ViewPagerSwitcher
 import com.example.humaranagar.ui.signup.OnBoardingViewModel
@@ -23,7 +22,7 @@ class SignupOrLoginFragment : BaseFragment() {
     private lateinit var binding: FragmentSignupOrLoginBinding
     private var hasRootViewAlreadyScrolled = false
     private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
-        ViewModelFactory(BaseRepository())
+        ViewModelFactory()
     }
 
     companion object {
@@ -44,6 +43,7 @@ class SignupOrLoginFragment : BaseFragment() {
     private fun initViewModelObservers() {
         onBoardingViewModel.run {
             observeProgress(this, false)
+            observeErrorAndException(this)
             invalidMobileNumberLiveData.observe(viewLifecycleOwner) {
                 binding.tvMobileNumberError.isVisible = it
             }
@@ -86,11 +86,6 @@ class SignupOrLoginFragment : BaseFragment() {
                 hideKeyboardAndHandlePhoneNumberInput()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        onBoardingViewModel.progressLiveData.value = false
-        super.onDestroyView()
     }
 
     private fun hideKeyboardAndHandlePhoneNumberInput() {
