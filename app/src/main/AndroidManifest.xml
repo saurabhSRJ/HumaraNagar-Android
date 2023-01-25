@@ -4,11 +4,12 @@
     tools:ignore="LockedOrientationActivity">
 
     <uses-sdk tools:overrideLibrary="androidx.security" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".NagarApp"
+        android:name="com.humara.nagar.NagarApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -21,7 +22,7 @@
         android:theme="@style/ActivityTheme"
         tools:targetApi="32">
         <activity
-            android:name=".SplashActivity"
+            android:name="com.humara.nagar.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Starting">
@@ -35,13 +36,15 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".ui.signup.OnBoardingActivity"
+            android:name="com.humara.nagar.ui.signup.OnBoardingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
+        <!-- TODO: make this activity singleTop -->
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.humara.nagar.ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
+        <activity android:name=".ui.ForceLogoutActivity" />
     </application>
 
 </manifest>

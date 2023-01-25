@@ -41,4 +41,6 @@
     <string name="error">Error</string>
     <string name="no_internet">No Internet Connection</string>
     <string name="no_internet_message">You are offline, Please check your internet connection.</string>
+    <string name="session_expired_message">Session has expired. Kindly Login again</string>
+    <string name="logout">Logout</string>
 </resources>
