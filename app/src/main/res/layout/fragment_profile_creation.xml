@@ -55,14 +55,14 @@
                 android:paddingHorizontal="12dp"
                 android:paddingTop="30dp">
 
-                <com.example.humaranagar.ui.custom_views.FormInputWithHeader
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/input_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:header="@string/name"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.example.humaranagar.ui.custom_views.FormInputWithHeader
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/input_guardian_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                     app:header="Father/Spouse’s Name"
                     app:layout_constraintTop_toBottomOf="@id/input_name" />
 
-                <com.example.humaranagar.ui.custom_views.FormInputWithHeader
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/input_phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                     app:layout_constraintTop_toBottomOf="@id/input_guardian_name"
                     app:required_input="false" />
 
-                <com.example.humaranagar.ui.custom_views.FormInputWithHeader
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/input_dob"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
-                <com.example.humaranagar.ui.custom_views.FormInputWithHeader
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/input_ward_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -16,7 +16,7 @@
     <string name="we_solve">We Solve</string>
     <string name="we_listen">We Listen</string>
     <string name="verify_mobile_number">Verify Mobile Number</string>
-    <string name="otp_sent_to">OTP sent to </string>
+    <string name="otp_sent_to">OTP sent to</string>
     <string name="enter_otp">enter otp</string>
     <string name="didn_t_receive_otp">Didn\'t receive OTP?</string>
     <string name="resend"><u>Resend</u></string>
@@ -35,6 +35,12 @@
     <string name="submit">Submit</string>
     <string name="dob_invalid_message">Please enter a valid Date of Birth</string>
     <string name="ward_number">Ward number</string>
-    <string name="otp_sent_to_s">OTP send to %s</string>
+    <string name="otp_sent_to_s">OTP sent to %s</string>
     <string name="humara_nagar">Humara Nagar</string>
+    <string name="some_error_occoured">Some Error Occurred ! Please Try Again.</string>
+    <string name="error">Error</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="no_internet_message">You are offline, Please check your internet connection.</string>
+    <string name="session_expired_message">Session has expired. Kindly Login again</string>
+    <string name="logout">Logout</string>
 </resources>

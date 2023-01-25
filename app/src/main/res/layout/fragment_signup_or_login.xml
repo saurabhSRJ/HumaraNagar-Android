@@ -16,7 +16,7 @@
             android:layout_marginTop="30dp"
             app:layout_constraintBottom_toTopOf="@id/iv_logo"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginBottom="30dp" />
+            app:layout_goneMarginBottom="36dp" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_indicator"

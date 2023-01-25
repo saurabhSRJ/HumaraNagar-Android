@@ -7,24 +7,24 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.humaranagar.ui.home.HomeFragment"
+        android:name="com.humara.nagar.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_report"
-        android:name="com.example.humaranagar.ui.residents.ResidentsFragment"
+        android:name="com.humara.nagar.ui.residents.ResidentsFragment"
         android:label="@string/report"
         tools:layout="@layout/fragment_report" />
 
     <fragment
         android:id="@+id/navigation_residents"
-        android:name="com.example.humaranagar.ui.report.ReportFragment"
+        android:name="com.humara.nagar.ui.report.ReportFragment"
         android:label="@string/residents"
         tools:layout="@layout/fragment_residents" />
     <fragment
         android:id="@+id/navigation_certificates"
-        android:name="com.example.humaranagar.ui.certificates.CertificatesFragment"
+        android:name="com.humara.nagar.ui.certificates.CertificatesFragment"
         android:label="@string/certificates"
         tools:layout="@layout/fragment_certificates"/>
 </navigation>
