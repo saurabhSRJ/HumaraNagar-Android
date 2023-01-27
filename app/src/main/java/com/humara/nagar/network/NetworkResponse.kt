@@ -3,13 +3,13 @@ package com.humara.nagar.network
 /**
  * Model for the API response. We get three callbacks {onSuccess, onError, onException} depending upon the response
  */
-sealed class NetworkResponse<T : Any> {
-    class Success<T : Any>(val data: T) : NetworkResponse<T>()
-    class Error<T : Any>(val error: ApiError) : NetworkResponse<T>()
-    class Exception<T : Any>(val throwable: Throwable) : NetworkResponse<T>()
+sealed class NetworkResponse<T> {
+    class Success<T>(val data: T) : NetworkResponse<T>()
+    class Error<T>(val error: ApiError) : NetworkResponse<T>()
+    class Exception<T>(val throwable: Throwable) : NetworkResponse<T>()
 }
 
-suspend fun <T : Any> NetworkResponse<T>.onSuccess(
+suspend fun <T> NetworkResponse<T>.onSuccess(
     executable: suspend (T) -> Unit
 ): NetworkResponse<T> = apply {
     if (this is NetworkResponse.Success<T>) {
@@ -17,7 +17,7 @@ suspend fun <T : Any> NetworkResponse<T>.onSuccess(
     }
 }
 
-suspend fun <T: Any> NetworkResponse<T>.onError(
+suspend fun <T> NetworkResponse<T>.onError(
     executable: suspend (error: ApiError) -> Unit
 ): NetworkResponse<T> = apply {
     if (this is NetworkResponse.Error<T>) {
@@ -25,7 +25,7 @@ suspend fun <T: Any> NetworkResponse<T>.onError(
     }
 }
 
-suspend fun <T: Any> NetworkResponse<T>.onException(
+suspend fun <T> NetworkResponse<T>.onException(
     executable: suspend (e: Throwable) -> Unit
 ): NetworkResponse<T> = apply {
     if (this is NetworkResponse.Exception<T>) {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "816867865643",
+    "project_id": "humara-nagar",
+    "storage_bucket": "humara-nagar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816867865643:android:52f45401508c3ec415a66e",
+        "android_client_info": {
+          "package_name": "com.humara.nagar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "816867865643-i7csnbh061rc59jguam4gfutn93kqf0s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKt_aILGej8Uqflp7XRfT3ckL3JIPtTNE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "816867865643-i7csnbh061rc59jguam4gfutn93kqf0s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

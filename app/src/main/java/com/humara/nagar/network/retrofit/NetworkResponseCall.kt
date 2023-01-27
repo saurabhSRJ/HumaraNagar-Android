@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NetworkResponseCall<T : Any>(
+class NetworkResponseCall<T>(
     private val proxy: Call<T>
 ) : Call<NetworkResponse<T>> {
     override fun enqueue(callback: Callback<NetworkResponse<T>>) {
