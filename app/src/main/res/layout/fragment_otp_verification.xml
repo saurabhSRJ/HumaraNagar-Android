@@ -6,12 +6,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:background="?actionBarItemBackground"
+            android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_arrow_back" />
@@ -65,15 +67,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:cursorVisible="true"
-            android:textAppearance="@style/OpenSansRegular16sp"
+            android:imeOptions="actionGo"
             android:inputType="number"
+            android:textAppearance="@style/OpenSansRegular16sp"
             android:textColor="@color/black"
             app:cursorWidth="2dp"
             app:hideLineWhenFilled="false"
             app:itemCount="@integer/otp_length"
             app:itemSpacing="12dp"
             app:itemWidth="30dp"
-            android:imeOptions="actionGo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_enter_otp"
@@ -99,10 +101,10 @@
             style="@style/OpenSansRegular14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/resend"
-            android:textColor="@color/grey_AEAEAE"
             android:layout_marginHorizontal="6dp"
             android:enabled="false"
+            android:text="@string/resend"
+            android:textColor="@color/grey_AEAEAE"
             app:layout_constraintEnd_toStartOf="@id/tv_timer"
             app:layout_constraintStart_toEndOf="@id/tv_otp_error_message"
             app:layout_constraintTop_toTopOf="@id/tv_otp_error_message" />
@@ -112,11 +114,11 @@
             style="@style/OpenSansRegular14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/blue_4285F4"
             android:text="@string/timer_count"
+            android:textColor="@color/blue_4285F4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_otp_error_message"
-            app:layout_constraintStart_toEndOf="@id/tv_resend"/>
+            app:layout_constraintStart_toEndOf="@id/tv_resend"
+            app:layout_constraintTop_toTopOf="@id/tv_otp_error_message" />
 
         <Button
             android:id="@+id/btn_continue"

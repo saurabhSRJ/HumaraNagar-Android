@@ -41,7 +41,7 @@ open class BaseViewModel(application: Application) :
      *  @param updateProgress: Boolean value indicating if you want to track the progress using progressLiveData
      *  @return
      */
-    suspend fun <T : Any> processCoroutine(
+    suspend fun <T> processCoroutine(
         call: suspend () -> NetworkResponse<T>,
         updateProgress: Boolean = true
     ): NetworkResponse<T> {
