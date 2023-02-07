@@ -1,25 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.humara.nagar.ui.residents.ResidentsFragment">
 
-        <TextView
-            android:id="@+id/text_dashboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <!--Toolbar-->
+        <include
+            android:id="@+id/toolBar"
+            layout="@layout/toolbar_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ScrollView
+            android:id="@+id/sv_form"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_submit"
+            app:layout_constraintTop_toBottomOf="@+id/toolBar">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingTop="30dp"
+                android:paddingBottom="20dp">
+
+                <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
+                    android:id="@+id/input_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:header="Category"
+                    app:hint="Select Category"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
+                    android:id="@+id/input_locality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:header="Locality"
+                    app:hint="Select Locality"
+                    app:layout_constraintTop_toBottomOf="@id/input_category" />
+
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
+                    android:id="@+id/input_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:endIcon="@drawable/ic_location"
+                    app:header="Location"
+                    app:inputEnabled="false"
+                    app:layout_constraintTop_toBottomOf="@id/input_locality"
+                    app:required_input="true" />
+
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
+                    android:id="@+id/input_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="10dp"
+                    app:header="Comments"
+                    app:layout_constraintTop_toBottomOf="@id/input_location"
+                    app:minimumHeight="250" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btn_submit"
+            style="@style/primary_blue_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="65dp"
+            android:enabled="false"
+            android:text="@string/submit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="12dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

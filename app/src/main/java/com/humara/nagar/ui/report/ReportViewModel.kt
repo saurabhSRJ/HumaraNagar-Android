@@ -1,13 +1,61 @@
 package com.humara.nagar.ui.report
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.humara.nagar.base.BaseViewModel
 
-class ReportViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+class ReportViewModel(
+    application: Application
+) : BaseViewModel(application) {
+
+    private val _inputCategory: MutableLiveData<String> by lazy { MutableLiveData() }
+    val inputCategory: LiveData<String> = _inputCategory
+    private val _inputLocality: MutableLiveData<String> by lazy { MutableLiveData() }
+    val inputLocality: LiveData<String> = _inputLocality
+    private val _inputLocation: MutableLiveData<String> by lazy { MutableLiveData() }
+    val inputLocation: LiveData<String> = _inputLocation
+    private val _inputComment: MutableLiveData<String> by lazy { MutableLiveData() }
+    val inputComment: LiveData<String> = _inputComment
+    private val _enableSubmitButtonLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val enableSubmitButtonLiveData: LiveData<Boolean> = _enableSubmitButtonLiveData
+
+
+    fun setCategory(category: String) {
+        _inputCategory.value = category
+        updateSubmitButtonState()
     }
-    val text: LiveData<String> = _text
+
+    fun setLocality(locality: String) {
+        _inputLocality.value = locality
+        updateSubmitButtonState()
+    }
+
+    fun setLocation(location: String) {
+        _inputLocation.value = location
+        updateSubmitButtonState()
+    }
+
+    fun setComment(comment: String) {
+        _inputComment.value = comment
+        updateSubmitButtonState()
+    }
+
+
+//    fun getUserObjectWithCollectedData(): User {
+//        val user: User = getUserPreference().userProfile!!.apply {
+//            name = _userNameLiveData.value.toString()
+//            parentName = _parentNameLiveData.value.toString()
+//            dateOfBirth = _dateOfBirthLiveData.value.toString()
+//            wardNumber = _wardNumberLiveData.value.toString()
+//            gender = _genderLiveData.value ?: Gender.MALE.name
+//        }
+//        return user
+//    }
+
+    private fun updateSubmitButtonState() {
+        val anyRequiredFieldEmpty = _inputCategory.value.isNullOrEmpty() || _inputLocality.value.isNullOrEmpty() || _inputComment.value.isNullOrEmpty() || _inputLocation.value.isNullOrEmpty()
+        _enableSubmitButtonLiveData.value = anyRequiredFieldEmpty.not()
+    }
 }

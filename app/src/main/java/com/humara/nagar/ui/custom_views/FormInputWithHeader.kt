@@ -2,8 +2,10 @@ package com.humara.nagar.ui.custom_views
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.text.InputFilter
 import android.text.InputType
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -20,6 +22,8 @@ class FormInputWithHeader @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private lateinit var binding: ItemFormInputWithHeaderBinding
     private var isRequired: Boolean = true
+    private var isMultiline: Boolean = false
+    private var isMinHeightPresent = 0
 
     init {
         initView(context, attrs)
@@ -35,11 +39,19 @@ class FormInputWithHeader @JvmOverloads constructor(
                 val hint = getString(R.styleable.FormInputWithHeader_hint)
                 val input = getString(R.styleable.FormInputWithHeader_input)
                 val isRequired = getBoolean(R.styleable.FormInputWithHeader_required_input, true)
+                val minHeight = getInt(R.styleable.FormInputWithHeader_minimumHeight, 0)
+                val isMultipleLine = getBoolean(R.styleable.FormInputWithHeader_multiLine, false)
                 setHeader(header)
                 setEndDrawableIcon(endDrawableIcon)
                 setInputEnabled(inputEnabled)
                 setHint(hint)
                 setInput(input)
+                if (isMultipleLine) {
+                    switchToMultiLined()
+                }
+                if (minHeight != 0) {
+                    setMinHeight(minHeight)
+                }
                 setRequiredInput(isRequired)
                 if (isRequired) {
                     binding.etInput.doAfterTextChanged {
@@ -60,6 +72,27 @@ class FormInputWithHeader @JvmOverloads constructor(
     fun setEndDrawableIcon(drawable: Drawable?) {
         drawable?.let {
             binding.ivEndIcon.setImageDrawable(it)
+        }
+    }
+
+    fun switchToMultiLined() {
+        binding.run {
+            etInput.isSingleLine = false
+            etInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            etInput.maxLines = 3
+            etInput.gravity = Gravity.START or Gravity.TOP
+        }
+        isMultiline = true
+    }
+
+    override fun setMinHeight(height: Int) {
+        binding.etInput.minimumHeight = height
+        isMinHeightPresent = height
+    }
+
+    fun switchToSingleLined(isMultiLines: Boolean) {
+        binding.run {
+            etInput.isSingleLine = true
         }
     }
 
@@ -97,6 +130,14 @@ class FormInputWithHeader @JvmOverloads constructor(
         binding.etInput.inputType = inputType
     }
 
+    fun setMaxLines(maxLine: Int) {
+        binding.etInput.maxLines = maxLine
+    }
+
+    fun setMaxLength(maxLength: Int) {
+        binding.etInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
+    }
+
     fun setCalendarListener(listener: () -> Unit) {
         binding.run {
             etInput.isFocusable = false
@@ -116,6 +157,9 @@ class FormInputWithHeader @JvmOverloads constructor(
     fun setUserInputListener(listener: ((input: String) -> Unit)? = null) {
         binding.etInput.doAfterTextChanged {
             val input = it.toString().trim()
+//            if (isMultiline && it?.length == 40) {
+//                it.append("\n")
+//            }
             listener?.invoke(input)
         }
     }

@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/navigation_report"
-        android:name="com.humara.nagar.ui.residents.ResidentsFragment"
+        android:name="com.humara.nagar.ui.report.ReportFragment"
         android:label="@string/report"
         tools:layout="@layout/fragment_report" />
 
     <fragment
         android:id="@+id/navigation_residents"
-        android:name="com.humara.nagar.ui.report.ReportFragment"
+        android:name="com.humara.nagar.ui.residents.ResidentsFragment"
         android:label="@string/residents"
         tools:layout="@layout/fragment_residents" />
     <fragment

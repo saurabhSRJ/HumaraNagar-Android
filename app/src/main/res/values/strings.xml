@@ -43,4 +43,22 @@
     <string name="no_internet_message">You are offline, Please check your internet connection.</string>
     <string name="session_expired_message">Session has expired. Kindly Login again</string>
     <string name="logout">Logout</string>
+    <string name="reportIssueTitle">Report Issue</string>
+
+    <!--List for category spinner: ReportFragment-->
+    <string-array name="category_list">
+        <item>Garbage Collection</item>
+        <item>Drainage System</item>
+        <item>Road maintenance</item>
+        <item>Water supply</item>
+    </string-array>
+
+    <!--List for locality spinner: ReportFragment-->
+    <string-array name="locality_list">
+        <item>Riverside</item>
+        <item>Main Road</item>
+        <item>Town centre</item>
+        <item>Outskirts</item>
+    </string-array>
+
 </resources>
