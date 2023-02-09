@@ -10,7 +10,7 @@
 
         <!--Toolbar-->
         <include
-            android:id="@+id/toolBar"
+            android:id="@+id/toolBarLayout"
             layout="@layout/toolbar_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_submit"
-            app:layout_constraintTop_toBottomOf="@+id/toolBar">
+            app:layout_constraintTop_toBottomOf="@+id/toolBarLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_form"
@@ -36,8 +36,8 @@
                     android:id="@+id/input_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:header="Category"
-                    app:hint="Select Category"
+                    app:header="@string/category"
+                    app:hint="@string/selectCategory"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
@@ -45,8 +45,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:header="Locality"
-                    app:hint="Select Locality"
+                    app:header="@string/locality"
+                    app:hint="@string/selectLocality"
                     app:layout_constraintTop_toBottomOf="@id/input_category" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
@@ -55,8 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     app:endIcon="@drawable/ic_location"
-                    app:header="Location"
-                    app:inputEnabled="false"
+                    app:header="@string/location"
                     app:layout_constraintTop_toBottomOf="@id/input_locality"
                     app:required_input="true" />
 
@@ -66,9 +65,57 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="10dp"
-                    app:header="Comments"
+                    app:header="@string/comment"
                     app:layout_constraintTop_toBottomOf="@id/input_location"
                     app:minimumHeight="250" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/addImageLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="@+id/input_comment"
+                    app:layout_constraintTop_toBottomOf="@+id/input_comment">
+
+                    <ImageView
+                        android:id="@+id/add_btn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        app:srcCompat="@drawable/ic_add_button"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/addImage"
+                        android:textColor="#4F4F4F"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/add_btn"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="@string/uploadImageDescription"
+                        android:textColor="#828282"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/textView"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/textView"
+                        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

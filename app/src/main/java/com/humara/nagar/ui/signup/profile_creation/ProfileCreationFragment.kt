@@ -37,8 +37,10 @@ class ProfileCreationFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileCreationBinding.inflate(inflater, container, false)
-        initView()
+
         initViewModelObservers()
+        initView()
+
         return binding.root
     }
 
@@ -69,7 +71,7 @@ class ProfileCreationFragment : BaseFragment() {
                 profileCreationViewModel.setParentName(it)
             }
             inputPhoneNumber.setInput(Utils.getMobileNumberWithCountryCode(getUserPreference().mobileNumber))
-            inputDob.setCalendarListener {
+            inputDob.setLayoutListener {
                 DatePickerDialogFragment().show(childFragmentManager, DatePickerDialogFragment.TAG)
             }
             toggleGender.addOnButtonCheckedListener { _, checkedId, _ ->

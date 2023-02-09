@@ -32,6 +32,8 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
+    <string name="gotoSettings">Goto settings</string>
     <string name="submit">Submit</string>
     <string name="dob_invalid_message">Please enter a valid Date of Birth</string>
     <string name="ward_number">Ward number</string>
@@ -44,6 +46,19 @@
     <string name="session_expired_message">Session has expired. Kindly Login again</string>
     <string name="logout">Logout</string>
     <string name="reportIssueTitle">Report Issue</string>
+    <string name="selectCategory">Select Category</string>
+    <string name="category">Category</string>
+    <string name="selectLocality">Select Locality</string>
+    <string name="locality">Locality</string>
+    <string name="location">Location</string>
+    <string name="comment">Comments</string>
+    <string name="addImage">Add Image</string>
+    <string name="uploadImageDescription">upload_image_description</string>
+    <string name="permission_required_title">Permission Required</string>
+    <string name="premission_required_description">We need this permission in order to proceed with the operation you opted with</string>
+    <string name="selectAction">"Select Action"</string>
+    <string name="selectFromGallery">Select photo from gallery</string>
+    <string name="captureFromCamera">Capture photo from camera</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">

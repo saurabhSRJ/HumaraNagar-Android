@@ -30,13 +30,11 @@ class FormSpinnerWithHeader @JvmOverloads constructor(
         context.obtainStyledAttributes(attrs, R.styleable.FormSpinnerWithHeader).apply {
             try {
                 val header = getString(R.styleable.FormSpinnerWithHeader_header)
-                val endDrawableIcon = getDrawable(R.styleable.FormSpinnerWithHeader_endIcon)
                 val inputEnabled = getBoolean(R.styleable.FormSpinnerWithHeader_inputEnabled, true)
                 val hint = getString(R.styleable.FormSpinnerWithHeader_hint)
                 val input = getString(R.styleable.FormSpinnerWithHeader_input)
                 val isRequired = getBoolean(R.styleable.FormSpinnerWithHeader_required_input, true)
                 setHeader(header)
-//                setEndDrawableIcon(endDrawableIcon)
                 setInputEnabled(inputEnabled)
                 setHint(hint)
                 setInput(input)
@@ -56,12 +54,6 @@ class FormSpinnerWithHeader @JvmOverloads constructor(
     fun setHeader(header: String?) {
         binding.tvHeader.text = header
     }
-
-//    fun setEndDrawableIcon(drawable: Drawable?) {
-//        drawable?.let {
-//            binding.ivEndIcon.setImageDrawable(it)
-//        }
-//    }
 
     fun setInputEnabled(isEnabled: Boolean) {
         binding.run {
@@ -90,37 +82,9 @@ class FormSpinnerWithHeader @JvmOverloads constructor(
         binding.spinnerTV.setAdapter(adapter)
     }
 
-    fun getSelectedOption(): String? {
-        return binding.spinnerTV.text.toString().trim()
-    }
-
     fun setRequiredInput(isRequired: Boolean) {
         this.isRequired = isRequired
         binding.tvRequiredAsterisk.isVisible = isRequired
-    }
-
-    fun setImeOptionType(imeOption: Int) {
-        binding.spinnerTV.imeOptions = imeOption
-    }
-
-    fun setInputType(inputType: Int) {
-        binding.spinnerTV.inputType = inputType
-    }
-
-    fun setCalendarListener(listener: () -> Unit) {
-        binding.run {
-            spinnerTV.isFocusable = false
-            spinnerTV.setNonDuplicateClickListener {
-                listener.invoke()
-            }
-            root.setNonDuplicateClickListener {
-                listener.invoke()
-            }
-            spinnerTV.doAfterTextChanged {
-                val input = it.toString()
-                setRequiredInput(input.isEmpty())
-            }
-        }
     }
 
     fun setUserInputListener(listener: ((input: String) -> Unit)? = null) {

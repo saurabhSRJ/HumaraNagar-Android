@@ -22,8 +22,6 @@ class FormInputWithHeader @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private lateinit var binding: ItemFormInputWithHeaderBinding
     private var isRequired: Boolean = true
-    private var isMultiline: Boolean = false
-    private var isMinHeightPresent = 0
 
     init {
         initView(context, attrs)
@@ -50,7 +48,7 @@ class FormInputWithHeader @JvmOverloads constructor(
                     switchToMultiLined()
                 }
                 if (minHeight != 0) {
-                    setMinHeight(minHeight)
+                    setMinimHeight(minHeight)
                 }
                 setRequiredInput(isRequired)
                 if (isRequired) {
@@ -82,18 +80,10 @@ class FormInputWithHeader @JvmOverloads constructor(
             etInput.maxLines = 3
             etInput.gravity = Gravity.START or Gravity.TOP
         }
-        isMultiline = true
     }
 
-    override fun setMinHeight(height: Int) {
+    fun setMinimHeight(height: Int) {
         binding.etInput.minimumHeight = height
-        isMinHeightPresent = height
-    }
-
-    fun switchToSingleLined(isMultiLines: Boolean) {
-        binding.run {
-            etInput.isSingleLine = true
-        }
     }
 
     fun setInputEnabled(isEnabled: Boolean) {
@@ -138,7 +128,7 @@ class FormInputWithHeader @JvmOverloads constructor(
         binding.etInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
     }
 
-    fun setCalendarListener(listener: () -> Unit) {
+    fun setLayoutListener(listener: () -> Unit) {
         binding.run {
             etInput.isFocusable = false
             etInput.setNonDuplicateClickListener {
@@ -157,9 +147,6 @@ class FormInputWithHeader @JvmOverloads constructor(
     fun setUserInputListener(listener: ((input: String) -> Unit)? = null) {
         binding.etInput.doAfterTextChanged {
             val input = it.toString().trim()
-//            if (isMultiline && it?.length == 40) {
-//                it.append("\n")
-//            }
             listener?.invoke(input)
         }
     }
