@@ -17,4 +17,11 @@
     <color name="light_blue_EEF4FF">#EEF4FF</color>
     <color name="red_asterisk_D31717">#D31717</color>
     <color name="splash_screen_background">#F4F6FC</color>
+    <color name="card_color">#F1F1F1</color>
+
+    <!--Stroke Button Colors-->
+    <color name="stroke_red">#CF0A0A</color>
+    <color name="stroke_yellow">#FF9E0D</color>
+    <color name="stroke_green">#439916</color>
+
 </resources>

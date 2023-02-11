@@ -108,7 +108,7 @@ abstract class BaseFragment : Fragment() {
 
     protected fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
-            progressDialogue.hide()
+            progressDialogue.dismiss()
             Log.d("saurabh", "hide progress $javaClass")
         }
     }

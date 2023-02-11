@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingBottom="15dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="28dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_welcome_banner_1" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/status_btn"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/stroke_button"
+                android:clickable="false"
+                android:text="@string/sent"
+                android:textAllCaps="false"
+                android:textColor="@color/stroke_red"
+                app:layout_constraintEnd_toEndOf="@+id/imageView"
+                app:layout_constraintStart_toStartOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_ward"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@color/card_color"
+                android:clickable="false"
+                android:enabled="false"
+                android:text="@string/ward_no_exampe"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/categoryTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:textColor="@color/grey_4F4F4F"
+                android:textSize="22sp"
+                app:layout_constraintEnd_toEndOf="@+id/btn_ward"
+                app:layout_constraintHorizontal_bias="0.189"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/btn_ward"
+                tools:text="Garbage Disposal" />
+
+            <TextView
+                android:id="@+id/localityTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/grey_828282"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/btn_ward"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/categoryTV"
+                app:layout_constraintTop_toBottomOf="@+id/categoryTV"
+                tools:text="Deep Chand Mandi" />
+
+            <TextView
+                android:id="@+id/expectedDateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/grey_4F4F4F"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@+id/btn_ward"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/localityTV"
+                app:layout_constraintTop_toBottomOf="@+id/localityTV"
+                tools:text="Resolution expected by 24th june" />
+
+            <Button
+                android:id="@+id/btn_cta"
+                style="@style/primary_blue_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:enabled="true"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/expectedDateTV"
+                app:layout_constraintTop_toBottomOf="@+id/expectedDateTV"
+                tools:text="Track" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

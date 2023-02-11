@@ -17,9 +17,11 @@ class Utils {
             return Constants.COUNTRY_CODE.plus(" $mobileNumber")
         }
 
-        fun getLongitudeAndLatitude(context: Context) : List<Double> {
-            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        fun getLongitudeAndLatitude(context: Context): List<Double> {
+            val locationManager =
+                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val lastKnownLocation =
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             if (lastKnownLocation != null) {
                 val longitude = lastKnownLocation.longitude
                 val latitude = lastKnownLocation.latitude
@@ -30,7 +32,7 @@ class Utils {
 
         fun getAddressFromLongAndLat(
             context: Context,
-        ) : List<Address> {
+        ): List<Address> {
 
             val longitudeAndLatitude = getLongitudeAndLatitude(context)
             if (longitudeAndLatitude.isNotEmpty()) {
@@ -47,6 +49,12 @@ class Utils {
                 }
             }
             return emptyList()
+        }
+
+        fun formatImageString(imageTitle: String): String {
+            return imageTitle
+                .substring(0, 10) + ".." + imageTitle
+                .substring(imageTitle.length - 3)
         }
     }
 }

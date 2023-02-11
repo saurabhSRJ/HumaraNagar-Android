@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -10,19 +10,18 @@
 
         <!--Toolbar-->
         <include
-            android:id="@+id/toolBarLayout"
+            android:id="@+id/includedToolbar"
             layout="@layout/toolbar_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/sv_form"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_submit"
-            app:layout_constraintTop_toBottomOf="@+id/toolBarLayout">
+            app:layout_constraintTop_toBottomOf="@+id/includedToolbar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_form"
@@ -81,10 +80,10 @@
                         android:id="@+id/add_btn"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        app:srcCompat="@drawable/ic_add_button"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_add_button" />
 
                     <TextView
                         android:id="@+id/textView"
@@ -93,7 +92,7 @@
                         android:layout_marginStart="15dp"
                         android:fontFamily="@font/open_sans_bold"
                         android:text="@string/addImage"
-                        android:textColor="#4F4F4F"
+                        android:textColor="@color/grey_4F4F4F"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -107,7 +106,7 @@
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/open_sans_semibold"
                         android:text="@string/uploadImageDescription"
-                        android:textColor="#828282"
+                        android:textColor="@color/grey_828282"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/textView"
@@ -117,10 +116,20 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imagePreviewItemRCV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:focusableInTouchMode="true"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintTop_toBottomOf="@+id/addImageLayout"
+                    tools:layout_editor_absoluteX="12dp"
+                    tools:listitem="@layout/image_preview_recyclerview_item" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <Button
             android:id="@+id/btn_submit"

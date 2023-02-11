@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ItemFormSpinnerWithHeaderBinding
-import com.humara.nagar.utils.setNonDuplicateClickListener
 
 
 class FormSpinnerWithHeader @JvmOverloads constructor(
@@ -64,7 +63,6 @@ class FormSpinnerWithHeader @JvmOverloads constructor(
                     if (isEnabled) R.color.dark_grey_333333 else R.color.grey_828282
                 )
             )
-            clSpinner.setBackgroundResource(if (isEnabled) R.drawable.rect_white_fill_grey_outline_5dp else R.drawable.rect_grey_fill_grey_outline_5dp)
         }
     }
 
