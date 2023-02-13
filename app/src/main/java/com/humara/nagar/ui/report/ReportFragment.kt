@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -368,7 +369,7 @@ class ReportFragment : BaseFragment() {
                 .setTextSize(14f)
                 .setAutoDismissDuration(5000L)
                 .setTextColor(Color.WHITE)
-                .setBackgroundColor(resources.getColor(R.color.grey_4F4F4F))
+                .setBackgroundColor(ResourcesCompat.getColor(resources, R.color.grey_4F4F4F, null))
                 .setText(resources.getString(R.string.trackYourPastComplaints))
                 .setBalloonAnimation(BalloonAnimation.FADE)
                 .build()
