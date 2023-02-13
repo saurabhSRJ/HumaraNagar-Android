@@ -99,6 +99,10 @@ class ReportFragment : BaseFragment() {
             //Setting up the top app bar title
             toolbar = includedToolbar
             toolbar.toolbarTitle.text = resources.getString(R.string.reportIssueTitle)
+            toolbar.rightIconTV.apply {
+                text = resources.getString(R.string.history)
+                visibility = View.VISIBLE
+            }
 
             //Settings up list for spinners
             inputCategory.setOptions(R.array.category_list)
