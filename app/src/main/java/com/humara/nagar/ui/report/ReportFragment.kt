@@ -106,6 +106,7 @@ class ReportFragment : BaseFragment() {
             inputComment.apply {
                 switchToMultiLined()
                 setMaxLength(300)
+                setMultiLined()
             }
 
             inputCategory.setUserInputListener {

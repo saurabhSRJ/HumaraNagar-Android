@@ -2,8 +2,10 @@ package com.humara.nagar.ui.custom_views
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -22,6 +24,8 @@ class FormInputWithHeader @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private lateinit var binding: ItemFormInputWithHeaderBinding
     private var isRequired: Boolean = true
+    private var isMaxLengthPresent = false
+    private var maxLength: Int? = null
 
     init {
         initView(context, attrs)
@@ -120,12 +124,34 @@ class FormInputWithHeader @JvmOverloads constructor(
         binding.etInput.inputType = inputType
     }
 
+    fun setMultiLined() {
+        binding.etInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isMaxLengthPresent) {
+                    if (s != null && maxLength!! > 0 && s.length >= maxLength!!) {
+                        val cursorPos = binding.etInput.selectionEnd
+                        val nextLineIndex = s.toString().indexOf('\n', cursorPos)
+                        if (nextLineIndex < 0 || nextLineIndex > cursorPos + 1) {
+                            s.append('\n')
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     fun setMaxLines(maxLine: Int) {
         binding.etInput.maxLines = maxLine
     }
 
     fun setMaxLength(maxLength: Int) {
         binding.etInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
+        isMaxLengthPresent = true
+        this.maxLength = maxLength
     }
 
     fun setLayoutListener(isFocusable: Boolean, listener: () -> Unit) {
