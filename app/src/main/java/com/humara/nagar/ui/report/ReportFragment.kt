@@ -266,7 +266,7 @@ class ReportFragment : BaseFragment() {
         if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK) {
             if (data?.clipData != null) {
                 val count = data.clipData!!.itemCount
-                if (count > maxSelection) {
+                if (count > maxSelection - imageList.size) {
                     Toast.makeText(
                         requireContext(),
                         resources.getString(R.string.imagePickingLimit),
