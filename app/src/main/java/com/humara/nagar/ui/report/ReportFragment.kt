@@ -36,6 +36,7 @@ import java.util.*
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
 
+const val maxLength: Int = 300
 
 class ReportFragment : BaseFragment() {
 
@@ -105,8 +106,8 @@ class ReportFragment : BaseFragment() {
             inputLocality.setRequiredInput(true)
             inputComment.apply {
                 switchToMultiLined()
-                setMaxLength(300)
-                setMultiLined()
+                setMaxLength(maxLength)
+                setMultiLined(maxLength)
             }
 
             inputCategory.setUserInputListener {

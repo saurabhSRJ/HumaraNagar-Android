@@ -24,8 +24,6 @@ class FormInputWithHeader @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private lateinit var binding: ItemFormInputWithHeaderBinding
     private var isRequired: Boolean = true
-    private var isMaxLengthPresent = false
-    private var maxLength: Int? = null
 
     init {
         initView(context, attrs)
@@ -124,20 +122,18 @@ class FormInputWithHeader @JvmOverloads constructor(
         binding.etInput.inputType = inputType
     }
 
-    fun setMultiLined() {
+    fun setMultiLined(maxLength: Int) {
         binding.etInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                if (isMaxLengthPresent) {
-                    if (s != null && maxLength!! > 0 && s.length >= maxLength!!) {
-                        val cursorPos = binding.etInput.selectionEnd
-                        val nextLineIndex = s.toString().indexOf('\n', cursorPos)
-                        if (nextLineIndex < 0 || nextLineIndex > cursorPos + 1) {
-                            s.append('\n')
-                        }
+                if (s != null && maxLength > 0 && s.length >= maxLength) {
+                    val cursorPos = binding.etInput.selectionEnd
+                    val nextLineIndex = s.toString().indexOf('\n', cursorPos)
+                    if (nextLineIndex < 0 || nextLineIndex > cursorPos + 1) {
+                        s.append('\n')
                     }
                 }
             }
@@ -150,8 +146,6 @@ class FormInputWithHeader @JvmOverloads constructor(
 
     fun setMaxLength(maxLength: Int) {
         binding.etInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
-        isMaxLengthPresent = true
-        this.maxLength = maxLength
     }
 
     fun setLayoutListener(isFocusable: Boolean, listener: () -> Unit) {

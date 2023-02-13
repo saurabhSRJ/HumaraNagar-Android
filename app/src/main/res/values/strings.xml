@@ -63,6 +63,8 @@
     <string name="select_images">Select Images</string>
     <string name="provider_name">com.example.provider</string>
     <string name="trackYourPastComplaints">Track Your Past Complaints</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="history">History</string>
 
     <!-- Report Status Values -->
     <string name="sent">Sent</string>
@@ -87,6 +89,5 @@
         <item>Outskirts</item>
     </string-array>
 <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
