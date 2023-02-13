@@ -20,6 +20,7 @@
             android:id="@+id/sv_form"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_submit"
             app:layout_constraintTop_toBottomOf="@+id/includedToolbar">
 
@@ -97,6 +98,17 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/add_btn"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/uploadImage_required"
+                        style="@style/OpenSansSemiBold16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/asterisk"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/red_asterisk_D31717"
+                        app:layout_constraintStart_toEndOf="@+id/textView"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView

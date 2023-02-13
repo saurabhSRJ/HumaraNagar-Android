@@ -128,9 +128,9 @@ class FormInputWithHeader @JvmOverloads constructor(
         binding.etInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
     }
 
-    fun setLayoutListener(listener: () -> Unit) {
+    fun setLayoutListener(isFocusable: Boolean, listener: () -> Unit) {
         binding.run {
-            etInput.isFocusable = false
+            etInput.isFocusable = isFocusable
             etInput.setNonDuplicateClickListener {
                 listener.invoke()
             }

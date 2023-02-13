@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -15,7 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.Logger
@@ -32,12 +33,15 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import com.skydoves.balloon.Balloon
+import com.skydoves.balloon.BalloonAnimation
+
 
 class ReportFragment : BaseFragment() {
 
     private var _binding: FragmentReportBinding? = null
     private var currentPhotoPath: String? = null
-    private val reportViewModel by activityViewModels<ReportViewModel> {
+    private val reportViewModel by viewModels<ReportViewModel> {
         ViewModelFactory()
     }
     private var requestedPermissions = mutableListOf<String>()
@@ -49,6 +53,7 @@ class ReportFragment : BaseFragment() {
     private val REQUEST_IMAGE_CAPTURE = 2
     private val imageList = mutableListOf<Uri>()
     private lateinit var toolbar: ToolbarLayoutBinding
+    private var isLocationPicked = false
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -65,11 +70,13 @@ class ReportFragment : BaseFragment() {
         initViewModelObservers()
         initView()
 
-        binding.inputLocation.setLayoutListener {
-            checkForLocationPermission()
+        binding.inputLocation.setLayoutListener(true) {
+            if (!isLocationPicked) {
+                checkForLocationPermission()
+            }
         }
 
-        binding.addBtn.setOnClickListener {
+        binding.addImageLayout.setOnClickListener {
             showPictureDialog()
         }
 
@@ -98,6 +105,7 @@ class ReportFragment : BaseFragment() {
             inputLocality.setRequiredInput(true)
             inputComment.apply {
                 switchToMultiLined()
+                setMaxLength(300)
             }
 
             inputCategory.setUserInputListener {
@@ -117,8 +125,19 @@ class ReportFragment : BaseFragment() {
                 Logger.debugLog(it)
             }
 
+            reportViewModel.inputImages.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty())
+                    binding.uploadImageRequired.visibility = View.GONE
+                else
+                    binding.uploadImageRequired.visibility = View.VISIBLE
+            }
+
             recyclerView = imagePreviewItemRCV
-            imagePreviewAdapter = ImagePreviewAdapter(imageList)
+            imagePreviewAdapter = ImagePreviewAdapter {
+                imageList.removeAt(it)
+                imagePreviewAdapter.setData(imageList)
+                reportViewModel.setImageList(imageList)
+            }
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(false)
@@ -128,6 +147,14 @@ class ReportFragment : BaseFragment() {
     }
 
     private fun showPictureDialog() {
+        if (imageList.size >= maxSelection) {
+            Toast.makeText(
+                requireContext(),
+                resources.getString(R.string.imagePickingLimit),
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
         val pictureDialog = AlertDialog.Builder(requireContext())
         pictureDialog.setTitle(resources.getString(R.string.selectAction))
         val pictureDialogItems = arrayOf(
@@ -147,14 +174,6 @@ class ReportFragment : BaseFragment() {
     }
 
     private fun choosePhotoFromGallery() {
-        if (imageList.size >= maxSelection) {
-            Toast.makeText(
-                requireContext(),
-                resources.getString(R.string.imagePickingLimit),
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
         val storagePermissions = PermissionsUtils.storagePermissions
         if (!PermissionsUtils.checkPermissions(requireContext(), storagePermissions)) {
             PermissionsUtils.requestPermissions(this@ReportFragment, storagePermissions)
@@ -173,14 +192,6 @@ class ReportFragment : BaseFragment() {
     }
 
     private fun takePhotoFromCamera() {
-        if (imageList.size >= maxSelection) {
-            Toast.makeText(
-                requireContext(),
-                resources.getString(R.string.imagePickingLimit),
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
         val permissions = PermissionsUtils.cameraPermissions
         if (!PermissionsUtils.checkPermissions(requireContext(), permissions)) {
             PermissionsUtils.requestPermissions(this@ReportFragment, permissions)
@@ -232,6 +243,7 @@ class ReportFragment : BaseFragment() {
             val postalCode = address.postalCode
             Logger.debugLog("Address:\nAddressLine-> $addressLine\nCity-> $city\nState-> $state\nCountry-> $country\nPostalCode-> $postalCode")
             binding.inputLocation.setInput(addressLine)
+            isLocationPicked = true
             reportViewModel.setLocation(addressLine)
         } catch (e: java.lang.Exception) {
             Logger.debugLog("Exception caught at getAddress: $e")
@@ -270,12 +282,14 @@ class ReportFragment : BaseFragment() {
                             Logger.debugLog("File name: ${File(it).name}")
                         }
                     }
-                    imagePreviewAdapter.notifyDataSetChanged()
+                    imagePreviewAdapter.setData(imageList)
+                    reportViewModel.setImageList(imageList)
                 }
             } else if (data?.data != null) {
                 data.data?.let {
                     imageList.add(it)
-                    imagePreviewAdapter.notifyDataSetChanged()
+                    imagePreviewAdapter.addData(listOf(it))
+                    reportViewModel.setImageList(imageList)
                 }
             } else {
                 //Image clicked is null
@@ -284,7 +298,8 @@ class ReportFragment : BaseFragment() {
             currentPhotoPath?.let { path ->
                 val imageUri = Uri.fromFile(File(path))
                 imageList.add(imageUri)
-                imagePreviewAdapter.notifyDataSetChanged()
+                imagePreviewAdapter.addData(listOf(imageUri))
+                reportViewModel.setImageList(imageList)
             }
         }
     }
@@ -328,6 +343,33 @@ class ReportFragment : BaseFragment() {
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val historyToolTipCounter = getUserPreference().historyToolTipCounter
+
+        if (historyToolTipCounter < 3) {
+            val balloon = Balloon.Builder(requireContext())
+                .setArrowSize(10)
+                .setIsVisibleArrow(true)
+                .setArrowPosition(0.85f)
+                .setWidthRatio(0.65f)
+                .setHeight(56)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setTextSize(14f)
+                .setAutoDismissDuration(5000L)
+                .setTextColor(Color.WHITE)
+                .setBackgroundColor(resources.getColor(R.color.grey_4F4F4F))
+                .setText(resources.getString(R.string.trackYourPastComplaints))
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build()
+
+            getUserPreference().historyToolTipCounter = historyToolTipCounter + 1
+            balloon.showAlignBottom(binding.includedToolbar.rightIcon)
+        }
     }
 
     override fun onDestroyView() {

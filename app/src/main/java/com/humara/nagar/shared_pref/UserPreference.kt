@@ -18,6 +18,10 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, User::class.java)
         set(value) = putObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, value)
 
+    inline var historyToolTipCounter: Int
+        get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, 0)
+        set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, value)
+
     inline val isUserLoggedIn: Boolean
         get() = false
 //        get() = (userProfile != null)
