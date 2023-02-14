@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.humara.nagar.ui.AppConfigViewModel
+import com.humara.nagar.ui.report.ReportViewModel
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationViewModel
 
@@ -23,6 +24,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(AppConfigViewModel::class.java) -> {
                     AppConfigViewModel(application)
+                }
+                isAssignableFrom(ReportViewModel::class.java) -> {
+                    ReportViewModel(application)
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }
