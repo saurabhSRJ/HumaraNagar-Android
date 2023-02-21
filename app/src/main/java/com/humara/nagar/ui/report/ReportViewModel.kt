@@ -4,7 +4,15 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.humara.nagar.base.BaseViewModel
+import com.humara.nagar.network.onError
+import com.humara.nagar.network.onSuccess
+import com.humara.nagar.ui.report.model.ComplaintsRequest
+import com.humara.nagar.ui.report.model.ComplaintIDResponse
+import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import java.util.ArrayList
 
 
 class ReportViewModel(
@@ -23,6 +31,8 @@ class ReportViewModel(
     val inputImages: LiveData<List<Uri>> = _inputImages
     private val _enableSubmitButtonLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val enableSubmitButtonLiveData: LiveData<Boolean> = _enableSubmitButtonLiveData
+    private val repository = ReportRepository(application)
+    val postReportComplaintLiveData: MutableLiveData<ComplaintIDResponse> = MutableLiveData()
 
 
     fun setCategory(category: String) {
@@ -50,17 +60,28 @@ class ReportViewModel(
         updateSubmitButtonState()
     }
 
+    private fun createComplaintObjectWithCollectedData(imageMultiParts: ArrayList<MultipartBody.Part>): ComplaintsRequest {
+        val complaints = ComplaintsRequest(
+            category = inputCategory.value.toString(),
+            locality = inputLocality.value.toString(),
+            phone_number = getUserPreference().mobileNumber,
+            location = inputLocation.value.toString(),
+            comments = inputComment.value.toString(),
+            images = imageMultiParts
+        )
+        return complaints
+    }
 
-//    fun getUserObjectWithCollectedData(): User {
-//        val user: User = getUserPreference().userProfile!!.apply {
-//            name = _userNameLiveData.value.toString()
-//            parentName = _parentNameLiveData.value.toString()
-//            dateOfBirth = _dateOfBirthLiveData.value.toString()
-//            wardNumber = _wardNumberLiveData.value.toString()
-//            gender = _genderLiveData.value ?: Gender.MALE.name
-//        }
-//        return user
-//    }
+    fun reportComplaint(imageMultiParts: ArrayList<MultipartBody.Part>) = viewModelScope.launch {
+        val complaintsRequest = createComplaintObjectWithCollectedData(imageMultiParts)
+
+        val response = processCoroutine({ repository.postReportComplaint(complaintsRequest) })
+        response.onSuccess {
+            postReportComplaintLiveData.value = it
+        }.onError {
+            errorLiveData.postValue(it)
+        }
+    }
 
     private fun updateSubmitButtonState() {
         val anyRequiredFieldEmpty = _inputCategory.value.isNullOrEmpty() || _inputLocality.value.isNullOrEmpty() || _inputComment.value.isNullOrEmpty() || _inputLocation.value.isNullOrEmpty() || _inputImages.value.isNullOrEmpty()

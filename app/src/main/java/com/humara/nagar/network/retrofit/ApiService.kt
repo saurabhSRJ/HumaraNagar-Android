@@ -1,9 +1,35 @@
 package com.humara.nagar.network.retrofit
 
 import com.humara.nagar.network.NetworkResponse
+import com.humara.nagar.ui.report.model.*
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
+
     @GET("users")
     suspend fun getUsers(): NetworkResponse<List<User>>
+
+    @GET("be75fdc8-68b7-4db4-96aa-278970b0a8dd")
+    suspend fun getComplaintStatus(): NetworkResponse<ComplaintStatus>
+
+    @GET("b9954a2e-085b-42d0-9385-ab65d4e88967")
+    suspend fun getAllComplaints(): NetworkResponse<AllComplaintsResponse>
+
+    @POST("03904b13-f08c-4fcd-8d06-ad8dba223e99")
+    suspend fun postReportComplaint(@Body complaintsRequest: ComplaintsRequest): NetworkResponse<ComplaintIDResponse>
+
+    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
+    suspend fun requestAcknowledge(@Query("id") id: String, @Body comment: String): NetworkResponse<StatusResponse>
+
+    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
+    suspend fun requestFinish(@Query("id") id: String, @Body comment: String): NetworkResponse<StatusResponse>
+
+    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
+    suspend fun requestWithdraw(@Query("id") id: String, @Body comment: String): NetworkResponse<StatusResponse>
+
+    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
+    suspend fun requestRating(@Query("id") id: String, @Body rating: Int): NetworkResponse<StatusResponse>
 }

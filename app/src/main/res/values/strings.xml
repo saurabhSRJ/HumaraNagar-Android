@@ -32,7 +32,7 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="ok">OK</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">Cancel</string>
     <string name="gotoSettings">Go to settings</string>
     <string name="submit">Submit</string>
     <string name="dob_invalid_message">Please enter a valid Date of Birth</string>
@@ -65,13 +65,33 @@
     <string name="trackYourPastComplaints">Track Your Past Complaints</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="history">History</string>
+    <string name="past_complaints">Past Complaints</string>
+    <string name="all_complaints">All Complaints</string>
+    <string name="complaint_status">Complaint Status</string>
+    <string name="dateFormatPatternForImageName">yyyyMMdd_HHmmss</string>
+    <string name="anErrorOccurred">An error occurred, please try again</string>
+    <string name="successfullySent">Successfully sent</string>
 
     <!-- Report Status Values -->
     <string name="sent">Sent</string>
     <string name="inprogress">In Progress</string>
     <string name="resolved">Resolved</string>
+    <string name="resolvedOn">Resolved on</string>
+    <string name="resolutionExpectedBy">Resolution expected by</string>
+    <string name="update">Update</string>
+    <string name="track">Track</string>
 
-    <string name="ward_no_exampe">E12</string>
+    <string name="ticketID_example">E12</string>
+    <string name="complaint_sent_to_admin">Complaint sent to admin</string>
+
+    <string name="withdraw">Withdraw</string>
+    <string name="acknowledge">Acknowledge</string>
+    <string name="finish">Finish</string>
+    <string name="few_second_ago">Few seconds ago</string>
+    <string name="rate_this_service">Rate this service</string>
+    <string name="provide_more_details">Provide more details</string>
+    <string name="confirm">Confirm</string>
+    <string name="call">Call</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">
@@ -88,6 +108,6 @@
         <item>Town centre</item>
         <item>Outskirts</item>
     </string-array>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
 
 </resources>

@@ -16,6 +16,7 @@ interface SharedPreferenceKeys {
             const val MOBILE_NUMBER = "MOBILE_NUMBER"
             const val USER_PROFILE = "USER_PROFILE"
             const val HISTORY_TOOLTIP_COUNTER = "HISTORY_TOOLTIP_COUNTER"
+            const val ADMIN_USER = "ADMIN_USER"
         }
     }
 

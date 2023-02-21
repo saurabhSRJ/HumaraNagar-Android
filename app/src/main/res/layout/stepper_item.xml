@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/checkIV"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                app:srcCompat="@drawable/stepper_inccomplete" />
+
+            <View
+                android:id="@+id/barView"
+                android:layout_width="2dp"
+                android:layout_height="45dp"
+                android:background="@drawable/stepper_dotted_bar"
+                android:scaleY="1.1" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/open_sans_semibold"
+            tools:text="@string/complaint_sent_to_admin"
+            android:textColor="@color/grey_828282"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+
+
+        <TextView
+            android:id="@+id/subTextTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_regular"
+            android:textColor="@color/grey_4F4F4F"
+            android:textSize="12sp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textTV"
+            app:layout_constraintStart_toEndOf="@+id/textTV"
+            app:layout_constraintTop_toTopOf="@+id/textTV" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

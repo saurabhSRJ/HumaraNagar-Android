@@ -1,6 +1,7 @@
 package com.humara.nagar.ui.report
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
@@ -18,6 +19,7 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.Logger
@@ -36,6 +38,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 
 const val maxLength: Int = 300
 
@@ -50,12 +55,14 @@ class ReportFragment : BaseFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var imagePreviewAdapter: ImagePreviewAdapter
 
-    private val PICK_IMAGE_MULTIPLE = 1
+    private val pickMultipleImageRequest = 1
     private val maxSelection = 2
-    private val REQUEST_IMAGE_CAPTURE = 2
+    private val requestImageCapture = 2
     private val imageList = mutableListOf<Uri>()
     private lateinit var toolbar: ToolbarLayoutBinding
     private var isLocationPicked = false
+    private var isCurrentUserAdmin = false
+    private val imageParts = ArrayList<MultipartBody.Part>()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -69,26 +76,93 @@ class ReportFragment : BaseFragment() {
 
         _binding = FragmentReportBinding.inflate(inflater, container, false)
 
+        isCurrentUserAdmin = getUserPreference().isUserAdmin
+        Logger.debugLog("Current user is: $isCurrentUserAdmin")
+
+        if (isCurrentUserAdmin) {
+            findNavController().navigate(R.id.action_navigation_report_to_complaintsFragment)
+        }
+
         initViewModelObservers()
         initView()
 
-        binding.inputLocation.setLayoutListener(true) {
-            if (!isLocationPicked) {
-                checkForLocationPermission()
-            }
-        }
+        binding.apply {
 
-        binding.addImageLayout.setOnClickListener {
-            showPictureDialog()
+            inputLocation.setLayoutListener(true) {
+                if (!isLocationPicked) {
+                    checkForLocationPermission()
+                }
+            }
+
+            addImageLayout.setOnClickListener {
+                showPictureDialog()
+            }
+
+            includedToolbar.apply {
+
+                leftIcon.setOnClickListener {
+                    findNavController().navigateUp()
+                }
+
+                rightIcon.setOnClickListener {
+                    findNavController().navigate(R.id.action_navigation_report_to_complaintsFragment)
+                }
+            }
+
+            btnSubmit.setOnClickListener {
+                getImageMultipart()
+                reportViewModel.reportComplaint(imageParts)
+            }
         }
 
         return binding.root
     }
 
+    private fun getImageMultipart() {
+        for (filePath in imageList) {
+            val file = filePath.path?.let { File(it) }
+            val requestBody = file?.asRequestBody("image/*".toMediaTypeOrNull())
+            val imagePart =
+                requestBody?.let { MultipartBody.Part.createFormData("image", file.name, it) }
+            if (imagePart != null) {
+                imageParts.add(imagePart)
+            }
+        }
+        Logger.debugLog("ImagePart: $imageParts")
+    }
+
+    private fun clearInputFields() {
+        binding.apply {
+            inputCategory.setInput("")
+            inputComment.setInput("")
+            inputLocation.setInput("")
+            inputLocality.setInput("")
+            imageList.clear()
+            imageParts.clear()
+            imagePreviewAdapter.setData(imageList)
+            uploadImageRequired.visibility = View.VISIBLE
+            isLocationPicked = false
+        }
+    }
+
     private fun initViewModelObservers() {
         reportViewModel.run {
+            observeProgress(this, false)
+            observerException(this)
             enableSubmitButtonLiveData.observe(viewLifecycleOwner) {
                 binding.btnSubmit.isEnabled = it
+            }
+            postReportComplaintLiveData.observe(viewLifecycleOwner) {
+                val complaintId = it.toString()
+                Toast.makeText(requireContext(), resources.getString(R.string.successfullySent), Toast.LENGTH_SHORT).show()
+                Logger.debugLog("Complaint_id: $complaintId")
+                clearInputFields()
+            }
+            errorLiveData.observe(viewLifecycleOwner) {
+                val errorString = StringBuilder()
+                errorString.append(resources.getString(R.string.anErrorOccurred))
+                    .append(" ${it.message}")
+                Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -99,10 +173,13 @@ class ReportFragment : BaseFragment() {
 
             //Setting up the top app bar title
             toolbar = includedToolbar
-            toolbar.toolbarTitle.text = resources.getString(R.string.reportIssueTitle)
-            toolbar.rightIconTV.apply {
-                text = resources.getString(R.string.history)
-                visibility = View.VISIBLE
+            toolbar.apply {
+                toolbarTitle.text = resources.getString(R.string.reportIssueTitle)
+                rightIconTV.apply {
+                    text = resources.getString(R.string.history)
+                    visibility = View.VISIBLE
+                }
+                rightIcon.visibility = View.VISIBLE
             }
 
             //Settings up list for spinners
@@ -193,7 +270,7 @@ class ReportFragment : BaseFragment() {
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(
                 Intent.createChooser(intent, resources.getString(R.string.select_images)),
-                PICK_IMAGE_MULTIPLE
+                pickMultipleImageRequest
             )
         }
     }
@@ -220,17 +297,19 @@ class ReportFragment : BaseFragment() {
             )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
         try {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            startActivityForResult(takePictureIntent, requestImageCapture)
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
-            Logger.debugLog("Exception caught: $e")
+            Logger.debugLog(e.toString())
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val timeStamp: String = SimpleDateFormat(resources.getString(R.string.dateFormatPatternForImageName)).format(Date())
+        Logger.debugLog("timestamp $timeStamp")
         val storageDir: File? =
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
@@ -242,18 +321,20 @@ class ReportFragment : BaseFragment() {
     private fun getAddress() {
         try {
             val addresses = Utils.getAddressFromLongAndLat(requireContext())
-            val address = addresses[0]
-            val addressLine = address.getAddressLine(0)
-            val city = address.locality
-            val state = address.adminArea
-            val country = address.countryName
-            val postalCode = address.postalCode
-            Logger.debugLog("Address:\nAddressLine-> $addressLine\nCity-> $city\nState-> $state\nCountry-> $country\nPostalCode-> $postalCode")
-            binding.inputLocation.setInput(addressLine)
-            isLocationPicked = true
-            reportViewModel.setLocation(addressLine)
+            if (addresses != null) {
+                val address = addresses[0]
+                val addressLine = address.getAddressLine(0)
+                val city = address.locality
+                val state = address.adminArea
+                val country = address.countryName
+                val postalCode = address.postalCode
+                Logger.debugLog("Address:\nAddressLine-> $addressLine\nCity-> $city\nState-> $state\nCountry-> $country\nPostalCode-> $postalCode")
+                binding.inputLocation.setInput(addressLine)
+                isLocationPicked = true
+                reportViewModel.setLocation(addressLine)
+            }
         } catch (e: java.lang.Exception) {
-            Logger.debugLog("Exception caught at getAddress: $e")
+            Logger.debugLog(e.toString())
         }
     }
 
@@ -269,7 +350,7 @@ class ReportFragment : BaseFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK) {
+        if (requestCode == pickMultipleImageRequest && resultCode == RESULT_OK) {
             if (data?.clipData != null) {
                 val count = data.clipData!!.itemCount
                 if (count > maxSelection - imageList.size) {
@@ -301,7 +382,7 @@ class ReportFragment : BaseFragment() {
             } else {
                 //Image clicked is null
             }
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == requestImageCapture && resultCode == RESULT_OK) {
             currentPhotoPath?.let { path ->
                 val imageUri = Uri.fromFile(File(path))
                 imageList.add(imageUri)

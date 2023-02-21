@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.report.ReportViewModel
+import com.humara.nagar.ui.report.complaint_status.ComplaintStatusViewModel
+import com.humara.nagar.ui.report.complaints.ComplaintsViewModel
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationViewModel
 
@@ -27,6 +29,12 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(ReportViewModel::class.java) -> {
                     ReportViewModel(application)
+                }
+                isAssignableFrom(ComplaintStatusViewModel::class.java) -> {
+                    ComplaintStatusViewModel(application)
+                }
+                isAssignableFrom(ComplaintsViewModel::class.java) -> {
+                    ComplaintsViewModel(application)
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }
