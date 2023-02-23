@@ -71,6 +71,8 @@
     <string name="dateFormatPatternForImageName">yyyyMMdd_HHmmss</string>
     <string name="anErrorOccurred">An error occurred, please try again</string>
     <string name="successfullySent">Successfully sent</string>
+    <string name="saved">Saved successfully</string>
+    <string name="failed">Failed to save</string>
 
     <!-- Report Status Values -->
     <string name="sent">Sent</string>

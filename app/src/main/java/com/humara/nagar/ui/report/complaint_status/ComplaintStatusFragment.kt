@@ -37,6 +37,7 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
     private lateinit var toolbar: ToolbarLayoutBinding
     private val binding get() = _binding!!
     private var currentState = ""
+    private val imageList = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +55,13 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
                 showCustomDialog()
             }
 
+            imageView.setOnClickListener {
+                val action = ComplaintStatusFragmentDirections.actionComplaintStatusFragmentToImagePreviewFragment(
+                    imageList.toList().toTypedArray()
+                )
+                findNavController().navigate(action)
+            }
+
             includedToolbar.leftIcon.setOnClickListener {
                 findNavController().navigateUp()
             }
@@ -61,6 +69,7 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
             callComplaintInitiatorCard.setOnClickListener {
                 Utils.makeCallViaIntent(requireContext(), getUserPreference().mobileNumber)
             }
+
             ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
                 Logger.debugLog("Rating bar result $rating")
 
@@ -110,8 +119,11 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
         complaintStatusViewModel.run {
             observeProgress(this, false)
             observerException(this)
-            getComplaintStatus()
 
+            if (this.complaintStatusLiveData.value == null) {
+                //Api call was never made
+                getComplaintStatus()
+            }
             complaintStatusLiveData.observe(viewLifecycleOwner) {
 
                 binding.apply {
@@ -122,6 +134,10 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
                     complaintInitiatorNameTV.text = it.resident_name
                     descriptionTV.text = it.comments
                     complaintIdTV.text = args.complaintId
+                    imageList.apply {
+                        clear()
+                        addAll(it.images)
+                    }
 
                     it.trackingInfo?.let {
                         complaintStatusAdapter.addData(it.states)
