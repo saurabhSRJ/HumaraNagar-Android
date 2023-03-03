@@ -48,28 +48,25 @@
 
                     <TextView
                         android:id="@+id/categoryTV"
+                        style="@style/OpenSansSemiBold20sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginHorizontal="5dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginEnd="5dp"
-                        android:fontFamily="@font/open_sans_semibold"
                         tools:text="@string/category"
                         android:textColor="@color/black"
-                        android:textSize="20sp"
                         app:layout_constraintEnd_toStartOf="@+id/cardTickedID"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/localityTV"
+                        style="@style/OpenSansRegular16sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:fontFamily="@font/open_sans_regular"
                         tools:text="@string/locality"
                         android:textColor="@color/grey_4F4F4F"
-                        android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="@+id/categoryTV"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@+id/categoryTV"
@@ -89,15 +86,14 @@
 
                         <TextView
                             android:id="@+id/complaintIdTV"
+                            style="@style/OpenSansSemiBold12sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:clickable="false"
                             android:enabled="false"
-                            android:fontFamily="@font/open_sans_semibold"
                             tools:text="@string/ticketID_example"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textColor="@color/black" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -114,13 +110,12 @@
 
                     <TextView
                         android:id="@+id/descriptionTV"
+                        style="@style/OpenSansRegular14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
-                        android:fontFamily="@font/open_sans_regular"
                         tools:text="@string/premission_required_description"
                         android:textColor="@color/grey_4F4F4F"
-                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView"
                         app:layout_constraintEnd_toEndOf="@+id/cardTickedID"
                         app:layout_constraintHorizontal_bias="1.0"
@@ -138,13 +133,12 @@
 
                     <TextView
                         android:id="@+id/locationTV"
+                        style="@style/OpenSansSemiBold16sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:fontFamily="@font/open_sans_semibold"
                         tools:text="@string/location"
                         android:textColor="@color/black"
-                        android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                         app:layout_constraintEnd_toEndOf="@+id/descriptionTV"
                         app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -173,13 +167,12 @@
 
                         <TextView
                             android:id="@+id/complaintInitiatorNameTV"
+                            style="@style/OpenSansSemiBold16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:fontFamily="@font/open_sans_semibold"
                             tools:text="@string/name"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textColor="@color/black" />
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/callComplaintInitiatorCard"
@@ -188,7 +181,7 @@
                             android:layout_marginHorizontal="5dp"
                             android:layout_marginVertical="5dp"
                             android:layout_marginStart="10dp"
-                            app:cardBackgroundColor="@color/card_color"
+                            app:cardBackgroundColor="@color/white"
                             app:cardCornerRadius="10dp"
                             app:cardElevation="5dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -203,21 +196,19 @@
 
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
                                     android:layout_marginVertical="10dp"
                                     app:srcCompat="@drawable/ic_call_24"
                                     app:tint="@color/blue_4285F4" />
 
                                 <TextView
+                                    style="@style/OpenSansSemiBold14sp"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginVertical="10dp"
-                                    android:layout_marginStart="10dp"
-                                    android:fontFamily="@font/open_sans_semibold"
+                                    android:layout_marginStart="5dp"
                                     android:text="@string/call"
-                                    android:textColor="@color/blue_4285F4"
-                                    android:textSize="14sp" />
+                                    android:textColor="@color/blue_4285F4" />
 
                             </LinearLayout>
 

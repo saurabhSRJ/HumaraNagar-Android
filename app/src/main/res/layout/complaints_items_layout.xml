@@ -22,13 +22,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:paddingHorizontal="5dp"
                 android:paddingBottom="12dp">
 
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="20dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/garbage_disposal" />
@@ -62,51 +63,50 @@
 
                     <TextView
                         android:id="@+id/complaintIdTV"
+                        style="@style/OpenSansSemiBold12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:clickable="false"
                         android:enabled="false"
-                        android:fontFamily="@font/open_sans_semibold"
-                        android:text="@string/ticketID_example"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
+                        tools:text="@string/ticketID_example"
+                        android:textColor="@color/black" />
 
                 </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:id="@+id/categoryTV"
+                    style="@style/OpenSansBold16sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:fontFamily="@font/open_sans_bold"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="12dp"
                     android:textColor="@color/grey_4F4F4F"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="@+id/cardTickedID"
+                    app:layout_constraintEnd_toStartOf="@+id/cardTickedID"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/cardTickedID"
+                    app:layout_constraintTop_toTopOf="@+id/imageView"
                     tools:text="Garbage Disposal" />
 
                 <TextView
                     android:id="@+id/localityTV"
+                    style="@style/OpenSansSemiBold14sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:fontFamily="@font/open_sans_semibold"
                     android:textColor="@color/grey_828282"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="@+id/categoryTV"
+                    app:layout_constraintEnd_toEndOf="@+id/cardTickedID"
                     app:layout_constraintStart_toStartOf="@+id/categoryTV"
                     app:layout_constraintTop_toBottomOf="@+id/categoryTV"
                     tools:text="Deep Chand Mandi" />
 
                 <TextView
                     android:id="@+id/resolvedTV"
+                    style="@style/OpenSansRegular14sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
                     android:textColor="@color/grey_4F4F4F"
                     android:textSize="13sp"
+                    android:layout_marginTop="4dp"
                     app:layout_constraintEnd_toEndOf="@+id/localityTV"
                     app:layout_constraintStart_toStartOf="@+id/localityTV"
                     app:layout_constraintTop_toBottomOf="@+id/localityTV"
@@ -119,13 +119,13 @@
                     android:layout_height="wrap_content"
                     android:enabled="true"
                     android:padding="10dp"
-                    android:visibility="gone"
+                    android:layout_marginEnd="10dp"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/state_btn"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/resolvedTV"
                     app:layout_constraintTop_toTopOf="@+id/state_btn"
-                    tools:text="Track"
-                    tools:visibility="gone" />
+                    tools:text="Track" />
 
                 <com.humara.nagar.ui.custom_views.SvgRatingBar
                     android:id="@+id/ratingBar"

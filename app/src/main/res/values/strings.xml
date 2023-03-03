@@ -94,6 +94,13 @@
     <string name="provide_more_details">Provide more details</string>
     <string name="confirm">Confirm</string>
     <string name="call">Call</string>
+    <string name="spouse_name">Spouse Name</string>
+    <string name="fathers_name">Father\'s Name</string>
+    <string name="age">Age</string>
+    <string name="house_no">House No</string>
+    <string name="voterid">VoterID</string>
+    <string name="search">Search</string>
+    <string name="fellow_residents">Fellow Residents</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">

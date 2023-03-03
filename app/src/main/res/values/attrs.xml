@@ -11,6 +11,8 @@
     <attr name="minimumHeight" format="integer"/>
     <attr name="multiLine" format="boolean" />
 
+    <attr name="FilterChips" format="reference" />
+
     <declare-styleable name="FormInputWithHeader">
         <attr name="header" />
         <attr name="inputEnabled" />
@@ -33,4 +35,5 @@
         <attr name="endIcon" />
         <attr name="required_input" />
     </declare-styleable>
+
 </resources>

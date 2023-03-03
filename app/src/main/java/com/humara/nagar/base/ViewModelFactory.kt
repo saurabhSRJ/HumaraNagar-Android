@@ -8,6 +8,7 @@ import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.report.ReportViewModel
 import com.humara.nagar.ui.report.complaint_status.ComplaintStatusViewModel
 import com.humara.nagar.ui.report.complaints.ComplaintsViewModel
+import com.humara.nagar.ui.residents.ResidentsViewModel
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationViewModel
 
@@ -35,6 +36,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(ComplaintsViewModel::class.java) -> {
                     ComplaintsViewModel(application)
+                }
+                isAssignableFrom(ResidentsViewModel::class.java) -> {
+                    ResidentsViewModel(application)
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }

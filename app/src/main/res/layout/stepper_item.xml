@@ -33,28 +33,27 @@
 
         <TextView
             android:id="@+id/textTV"
+            style="@style/OpenSansSemiBold16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:fontFamily="@font/open_sans_semibold"
             tools:text="@string/complaint_sent_to_admin"
             android:textColor="@color/grey_828282"
-            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/linearLayout"
             app:layout_constraintTop_toTopOf="@+id/linearLayout" />
 
-
         <TextView
             android:id="@+id/subTextTV"
-            android:layout_width="wrap_content"
+            style="@style/OpenSansRegular12sp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_regular"
-            android:textColor="@color/grey_4F4F4F"
-            android:textSize="12sp"
             android:layout_marginStart="10dp"
+            android:textColor="@color/grey_4F4F4F"
             app:layout_constraintBottom_toBottomOf="@+id/textTV"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textTV"
-            app:layout_constraintTop_toTopOf="@+id/textTV" />
+            app:layout_constraintTop_toTopOf="@+id/textTV"
+            tools:text="Subtext goes here" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

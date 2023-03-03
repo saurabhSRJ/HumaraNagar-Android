@@ -49,6 +49,9 @@ class ComplaintsAdapter(
         val complaintID = currentComplaint.complaintId
 
         holder.binding.apply {
+            ratingBar.visibility = View.GONE
+            ctaButton.visibility = View.VISIBLE
+
             stateBtn.apply {
 
                 when (state) {
@@ -71,6 +74,11 @@ class ComplaintsAdapter(
                             ResourcesCompat.getColor(resources, StateColor.RESOLVED.color, null)
                         setTextColor(color)
                         backgroundTintList = ColorStateList.valueOf(color)
+                        ratingBar.apply {
+                            visibility = View.VISIBLE
+                            this.rating = rating!!.toInt().toFloat()
+                        }
+                        ctaButton.visibility = View.GONE
                     }
                     StateName.WITHDRAW.currentState -> {
                         text = StateName.getName(StateName.WITHDRAW, context)
@@ -107,33 +115,23 @@ class ComplaintsAdapter(
                 val resolvedText = StringBuilder()
                 text = if (!resolvedOn.isNullOrEmpty()) {
                     resolvedText.append(resources.getString(R.string.resolvedOn))
-                        .append(" ")
-                        .append(resolvedOn)
+                        .append(" $resolvedOn")
                     resolvedText.toString()
                 } else {
                     resolvedText.append(resources.getString(R.string.resolutionExpectedBy))
-                        .append(" ")
-                        .append(resolutionExpectedOn)
+                        .append(" $resolutionExpectedOn")
                     resolvedText.toString()
                 }
             }
 
-            if (rating == 0) {
-                ctaButton.apply {
-                    visibility = View.VISIBLE
-                    text = if (isUserAdmin) {
-                        resources.getString(R.string.update)
-                    } else {
-                        resources.getString(R.string.track)
-                    }
-                    ctaButton.setOnClickListener {
-                        listener(complaintID.toString())
-                    }
+            ctaButton.apply {
+                text = if (isUserAdmin) {
+                    resources.getString(R.string.update)
+                } else {
+                    resources.getString(R.string.track)
                 }
-            } else {
-                ratingBar.apply {
-                    visibility = View.VISIBLE
-                    this.rating = rating!!.toInt().toFloat()
+                setOnClickListener {
+                    listener(complaintID.toString())
                 }
             }
         }

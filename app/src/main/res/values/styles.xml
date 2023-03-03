@@ -123,4 +123,27 @@
         <item name="rippleColor">@color/grey_AEAEAE</item>
     </style>
 
+    <style name="FilterChipStyle" parent="Base.Widget.MaterialComponents.Chip">
+        <item name="android:checkable">true</item>
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="chipStrokeColor">@color/chip_stroke_color</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">4dp</item>
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="textEndPadding">30dp</item>
+        <item name="textStartPadding">32dp</item>
+
+        <!--Icon End on check/click (Stay)-->
+        <item name="closeIcon">@drawable/ic_close</item>
+        <item name="closeIconTint">@color/blue_4285F4</item>
+        <item name="closeIconVisible">false</item>
+        <item name="closeIconEnabled">false</item>
+        <item name="closeIconStartPadding">0dp</item>
+
+        <!--Icon Start on check/click (Toggle)-->
+        <item name="checkedIconVisible">false</item>
+    </style>
+
 </resources>

@@ -108,5 +108,23 @@ class Utils {
             }
             return success
         }
+
+        fun toStringWithoutSpaces(inputString: String) : String {
+            val stringBuilder = StringBuilder()
+            for (char in inputString.toCharArray())
+                if (char.isDigit() or char.isLetter())
+                    stringBuilder.append(char)
+            return stringBuilder.toString()
+        }
+
+        fun showDotStringAfterLimitReached(length: Int, string: String) : String {
+            val stringBuilder = StringBuilder()
+            Logger.debugLog("string: $string")
+           for (i in 0 until length) {
+                stringBuilder.append(string[i])
+           }
+
+            return stringBuilder.append("...").toString()
+        }
     }
 }

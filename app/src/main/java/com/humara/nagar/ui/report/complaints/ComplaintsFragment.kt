@@ -16,7 +16,6 @@ import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentComplaintsBinding
 import com.humara.nagar.databinding.ToolbarLayoutBinding
-import com.humara.nagar.ui.report.model.ComplaintsResponse
 
 class ComplaintsFragment : BaseFragment() {
 
@@ -27,7 +26,6 @@ class ComplaintsFragment : BaseFragment() {
     }
     private lateinit var recyclerView: RecyclerView
     private lateinit var complaintsAdapter: ComplaintsAdapter
-    private var complaintsResponseList: MutableList<ComplaintsResponse> = mutableListOf()
     private var isCurrentUserAdmin = false
 
     // This property is only valid between onCreateView and
@@ -44,6 +42,7 @@ class ComplaintsFragment : BaseFragment() {
         initViewModelObservers()
         initView()
 
+        //Back button
         binding.includedToolbar.leftIcon.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -69,7 +68,6 @@ class ComplaintsFragment : BaseFragment() {
                 visibility = View.VISIBLE
             }
 
-
             //Set-up recyclerview and adapter
             recyclerView = complaintsRCV
             complaintsAdapter = ComplaintsAdapter(getUserPreference().isUserAdmin) {
@@ -84,7 +82,6 @@ class ComplaintsFragment : BaseFragment() {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = complaintsAdapter
             }
-
         }
     }
 
@@ -96,12 +93,8 @@ class ComplaintsFragment : BaseFragment() {
             getAllComplaints()
 
             allComplaintLiveData.observe(viewLifecycleOwner) {
-                complaintsResponseList.clear()
                 complaintsAdapter.clearAllData()
-                for (complaint in it.complaints) {
-                    complaintsResponseList.add(complaint)
-                }
-                complaintsAdapter.addData(complaintsResponseList)
+                complaintsAdapter.addData(it.complaints)
             }
             errorLiveData.observe(viewLifecycleOwner) {
                 val errorString = StringBuilder()
