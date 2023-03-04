@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:id="@+id/thumbnailRL"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/thumbnail_drawable">
+
+        <ImageView
+            android:id="@+id/thumbnailIV"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:padding="3dp" />
+
+    </RelativeLayout>
+
+</layout>

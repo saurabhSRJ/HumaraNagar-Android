@@ -10,6 +10,7 @@
         <item name="colorSecondaryVariant">@color/blue_4285F4</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
+        <item name="FilterChips">@style/FilterChipStyle</item>
         <!-- Customize your theme here. -->
     </style>
 

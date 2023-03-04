@@ -23,5 +23,6 @@
     <color name="stroke_red">#CF0A0A</color>
     <color name="stroke_yellow">#FF9E0D</color>
     <color name="stroke_green">#439916</color>
+    <color name="chip_selected_color">#DEE9FE</color>
 
 </resources>

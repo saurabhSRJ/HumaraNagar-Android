@@ -105,8 +105,8 @@
                         style="@style/OpenSansSemiBold16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/asterisk"
                         android:layout_marginStart="5dp"
+                        android:text="@string/asterisk"
                         android:textColor="@color/red_asterisk_D31717"
                         app:layout_constraintStart_toEndOf="@+id/textView"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -136,6 +136,7 @@
                     android:focusableInTouchMode="true"
                     android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@+id/addImageLayout"
+                    tools:itemCount="2"
                     tools:layout_editor_absoluteX="12dp"
                     tools:listitem="@layout/image_preview_recyclerview_item" />
 

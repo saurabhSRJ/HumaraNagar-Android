@@ -14,6 +14,9 @@ interface AnalyticsData {
             const val REPORT_FRAGMENT = "REPORT_FRAGMENT"
             const val CERTIFICATES_FRAGMENT = "CERTIFICATES_FRAGMENT"
             const val RESIDENTS_FRAGMENT = "RESIDENTS_FRAGMENT"
+            const val COMPLAINTS_FRAGMENT = "COMPLAINTS_FRAGMENT"
+            const val COMPLAINTS_STATUS_FRAGMENT = "COMPLAINTS_STATUS_FRAGMENT"
+            const val IMAGE_PREVIEW_FRAGMENT = "IMAGE_PREVIEW_FRAGMENT"
         }
     }
 
