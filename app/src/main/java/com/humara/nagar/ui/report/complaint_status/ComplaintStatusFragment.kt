@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ComplaintStatusAdapter
@@ -28,7 +27,6 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
     private val complaintStatusViewModel by viewModels<ComplaintStatusViewModel> {
         ViewModelFactory()
     }
-    private lateinit var stepRecyclerView: RecyclerView
     private lateinit var complaintStatusAdapter: ComplaintStatusAdapter
     private val args: ComplaintStatusFragmentArgs by navArgs()
     private var complaintId: String? = null
@@ -67,7 +65,7 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
             }
 
             callComplaintInitiatorCard.setOnClickListener {
-                Utils.makeCallViaIntent(requireContext(), getUserPreference().mobileNumber)
+                Utils.makeCallViaIntent(requireContext(), complaintStatusViewModel.complaintStatusLiveData.value?.phone_number.toString())
             }
 
             ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
@@ -97,15 +95,15 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
             toolbar.toolbarTitle.text = resources.getString(R.string.complaint_status)
 
             if (isUserAdmin) {
-                complaintInitiatorLayout.visibility = View.VISIBLE
+                complaintInitiatorDetailsLayout.visibility = View.VISIBLE
                 buttonCTA.text = resources.getString(R.string.acknowledge)
                 currentState = resources.getString(R.string.acknowledge)
             } else {
+                complaintInitiatorDetailsLayout.visibility = View.GONE
                 currentState = resources.getString(R.string.withdraw)
             }
 
             //Set-up recyclerview and adapter
-            stepRecyclerView = recyclerView
             complaintStatusAdapter = ComplaintStatusAdapter(requireContext())
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -242,6 +240,7 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
             }
             requestFinish -> {
                 if (isCalledAfterAPISuccess) {
+                    binding.rateServiceLayout.visibility = View.GONE
                     binding.buttonCTA.visibility = View.GONE
                 } else {
                     complaintId?.let {
@@ -253,7 +252,7 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
                 if (isCalledAfterAPISuccess) {
                     binding.apply {
                         buttonCTA.visibility = View.GONE
-                        rateThisServiceLayout.visibility = View.VISIBLE
+                        rateServiceLayout.visibility = View.VISIBLE
                     }
                 } else {
                     complaintId?.let {

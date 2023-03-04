@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.AllResidentsAdapter
 import com.humara.nagar.analytics.AnalyticsData
@@ -28,7 +27,6 @@ class ResidentsFragment : BaseFragment() {
     private val residentsViewModel by viewModels<ResidentsViewModel> {
         ViewModelFactory()
     }
-    private lateinit var recyclerView: RecyclerView
     private lateinit var residentAdapter: AllResidentsAdapter
 
     // This property is only valid between onCreateView and
@@ -123,11 +121,10 @@ class ResidentsFragment : BaseFragment() {
 
     private fun initView() {
         binding.apply {
-            recyclerView = residentRCV
             residentAdapter = AllResidentsAdapter(requireContext()) {
                 //Do something here onClick Card (it -> Residents)
             }
-            recyclerView.apply {
+            residentRCV.apply {
                 layoutManager = GridLayoutManager(requireContext(), 2)
                 setHasFixedSize(false)
                 adapter = residentAdapter
@@ -150,10 +147,10 @@ class ResidentsFragment : BaseFragment() {
                 handleChipFilter(it)
             }
             residentErrorLiveData.observe(viewLifecycleOwner) {
-                Logger.debugLog("Resident Response API Error: ${it.message}")
+                showErrorDialog(resources.getString(R.string.anErrorOccurred), it.message.toString())
             }
             chipFilterErrorLiveData.observe(viewLifecycleOwner) {
-                Logger.debugLog("Chip Filter API Error: ${it.message}")
+                showErrorDialog(resources.getString(R.string.anErrorOccurred), it.message.toString())
             }
         }
     }

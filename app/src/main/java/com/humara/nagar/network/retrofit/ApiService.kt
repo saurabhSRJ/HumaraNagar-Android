@@ -15,7 +15,7 @@ interface ApiService {
     @GET("users")
     suspend fun getUsers(): NetworkResponse<List<User>>
 
-    @GET("be75fdc8-68b7-4db4-96aa-278970b0a8dd")
+    @GET("16521ae4-340f-4119-936d-ad4d21996dce")
     suspend fun getComplaintStatus(): NetworkResponse<ComplaintStatus>
 
     @GET("b9954a2e-085b-42d0-9385-ab65d4e88967")

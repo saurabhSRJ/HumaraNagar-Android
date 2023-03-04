@@ -98,9 +98,10 @@
     <string name="fathers_name">Father\'s Name</string>
     <string name="age">Age</string>
     <string name="house_no">House No</string>
-    <string name="voterid">VoterID</string>
+    <string name="voterid">Voter ID</string>
     <string name="search">Search</string>
     <string name="fellow_residents">Fellow Residents</string>
+    <string name="an_error_occurred">An error Occurred</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">

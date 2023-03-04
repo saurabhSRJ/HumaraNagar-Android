@@ -42,7 +42,7 @@
                     android:layout_marginTop="12dp"
                     android:background="@drawable/stroke_button"
                     android:clickable="false"
-                    android:text="@string/sent"
+                    tools:text="@string/sent"
                     android:textAllCaps="false"
                     android:textColor="@color/stroke_red"
                     app:layout_constraintEnd_toEndOf="@+id/imageView"
