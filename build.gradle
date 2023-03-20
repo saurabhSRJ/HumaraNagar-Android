@@ -11,8 +11,8 @@ plugins {
      * plugin as a build dependency but not apply it to the current (root)
      * project. Don't use `apply false` in sub-projects.
      */
-    id 'com.android.application' version '7.3.1' apply false
-    id 'com.android.library' version '7.3.1' apply false
+    id 'com.android.application' version '7.4.2' apply false
+    id 'com.android.library' version '7.4.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
 }
 
@@ -24,9 +24,9 @@ plugins {
  * a module as a standalone project and prevents Gradle from using parallel project execution to speed up multi-module builds.
  */
 ext {
-    compileSdkVersion = 32
+    compileSdkVersion = 33
     minSDKVersion = 21
-    targetSDKVersion = 32
+    targetSDKVersion = 33
     sourceCompatibilityVersion = JavaVersion.VERSION_11
     targetCompatibilityVersion = JavaVersion.VERSION_11
 }

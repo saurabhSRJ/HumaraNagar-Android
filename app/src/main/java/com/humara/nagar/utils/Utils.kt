@@ -44,8 +44,10 @@ class Utils {
                     1
                 )
 
-                if (addresses.isNotEmpty()) {
-                    return addresses
+                if (addresses != null) {
+                    if (addresses.isNotEmpty()) {
+                        return addresses
+                    }
                 }
             }
             return emptyList()

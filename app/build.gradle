@@ -30,7 +30,7 @@ android {
         archivesBaseName = "app-" + versionName + "-" + versionCode
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         vectorDrawables.useSupportLibrary = true
-        resConfigs "en", "hi"
+        resConfigs 'en', 'hi'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "BASE_URL", "\"https://base_url/\""
     }
@@ -64,7 +64,7 @@ dependencies {
     // Dependency on local binaries
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //Do not update this till compiledSdkVersion is updated to 33
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     //splash screen
     implementation 'androidx.core:core-splashscreen:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
