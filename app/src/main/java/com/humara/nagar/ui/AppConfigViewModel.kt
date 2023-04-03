@@ -8,18 +8,19 @@ import androidx.lifecycle.viewModelScope
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
+import com.humara.nagar.ui.signup.model.UserConfigRequest
+import com.humara.nagar.ui.signup.model.UserConfigResponse
 import kotlinx.coroutines.launch
 
 class AppConfigViewModel(application: Application) : BaseViewModel(application) {
     private val repository = AppConfigRepository(application)
-    private val _appConfigLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
-    val appConfigLiveData: LiveData<Boolean> = _appConfigLiveData
+    private val _appConfigLiveData: MutableLiveData<UserConfigResponse> by lazy { MutableLiveData() }
+    val appConfigLiveData: LiveData<UserConfigResponse> = _appConfigLiveData
 
     fun getAppConfig() = viewModelScope.launch {
-        //TODO: Add app config API
-        val response = processCoroutine({ repository.getUsers() })
+        val response = processCoroutine({ repository.getAppConfig(UserConfigRequest(getUserPreference().mobileNumber)) })
         response.onSuccess {
-            _appConfigLiveData.postValue(true)
+            _appConfigLiveData.postValue(it)
         }.onError {
             errorLiveData.postValue(it)
         }

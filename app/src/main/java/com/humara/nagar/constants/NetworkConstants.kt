@@ -12,4 +12,19 @@ interface NetworkConstants {
             const val X_DEVICE_ID = "x-device-id"
         }
     }
+
+    interface NetworkAPIConstants {
+        companion object {
+            const val OTP = "/otp"
+            const val LOGIN = "/login"
+            const val SIGNUP = "/signup"
+            const val CONFIG = "/config"
+        }
+    }
+
+    interface NetworkQueryConstants {
+        companion object {
+
+        }
+    }
 }

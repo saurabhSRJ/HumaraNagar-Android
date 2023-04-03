@@ -26,8 +26,6 @@ class OtpVerificationFragment : BaseFragment() {
         ViewModelFactory()
     }
     private lateinit var binding: FragmentOtpVerificationBinding
-
-    private var mobileNumber: String = ""
     private lateinit var countDownTimer: CountDownTimer
 
     companion object {
@@ -40,7 +38,6 @@ class OtpVerificationFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentOtpVerificationBinding.inflate(inflater, container, false)
-        mobileNumber = getUserPreference().mobileNumber
         initViewModelObservers()
         initView()
         initializeTimer()
@@ -58,7 +55,7 @@ class OtpVerificationFragment : BaseFragment() {
                 )
             }
             successfulOtpResendLiveData.observe(viewLifecycleOwner) {
-                requireContext().showToast(getString(R.string.otp_sent_to_s, mobileNumber))
+                requireContext().showToast(getString(R.string.otp_sent_to_s, getUserPreference().mobileNumber))
                 setResendOtpTimerView(false)
             }
         }
@@ -82,7 +79,7 @@ class OtpVerificationFragment : BaseFragment() {
             btnContinue.setOnClickListener { hideKeyboardAndVerifyOtp() }
             tvOtpSentTo.setStringWithColors(
                 getString(R.string.otp_sent_to).plus(" "),
-                Utils.getMobileNumberWithCountryCode(mobileNumber),
+                Utils.getMobileNumberWithCountryCode(getUserPreference().mobileNumber),
                 ContextCompat.getColor(requireContext(), R.color.grey_828282),
                 ContextCompat.getColor(requireContext(), R.color.dark_grey_333333)
             )

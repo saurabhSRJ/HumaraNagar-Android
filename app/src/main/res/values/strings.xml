@@ -36,7 +36,6 @@
     <string name="gotoSettings">Go to settings</string>
     <string name="submit">Submit</string>
     <string name="dob_invalid_message">Please enter a valid Date of Birth</string>
-    <string name="ward_number">Ward number</string>
     <string name="otp_sent_to_s">OTP sent to %s</string>
     <string name="humara_nagar">Humara Nagar</string>
     <string name="some_error_occoured">Some Error Occurred ! Please Try Again.</string>
@@ -72,6 +71,7 @@
     <string name="resolved">Resolved</string>
 
     <string name="ward_no_exampe">E12</string>
+    <string name="pending_approval_message">You are not yet onboarded on Humara Nagar App. Please reach out to the municipal corporation of your ward to get you started.</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">

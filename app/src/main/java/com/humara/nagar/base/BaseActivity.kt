@@ -59,7 +59,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    protected open fun obServeErrorAndException(apiError: ApiError, viewModel: BaseViewModel) {
+    protected open fun observeErrorAndException(apiError: ApiError, viewModel: BaseViewModel) {
         showErrorDialog(null, apiError.message)
         observerException(viewModel)
     }

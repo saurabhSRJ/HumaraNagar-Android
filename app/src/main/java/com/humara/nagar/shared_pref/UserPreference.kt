@@ -22,7 +22,19 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, 0)
         set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, value)
 
-    inline val isUserLoggedIn: Boolean
-        get() = false
-//        get() = (userProfile != null)
+    inline var isUserLoggedIn: Boolean
+        get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, false)
+        set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, value)
+
+    inline var passCode: String
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.PASSCODE, "") ?: ""
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.PASSCODE, value)
+
+    inline var token: String
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.TOKEN, "") ?: ""
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.TOKEN, value)
+
+    inline var refreshToken: String
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.REFRESH_TOKEN, "") ?: ""
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.REFRESH_TOKEN, value)
 }

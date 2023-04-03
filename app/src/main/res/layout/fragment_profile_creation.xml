@@ -128,11 +128,11 @@
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
-                    android:id="@+id/input_ward_number"
+                    android:id="@+id/input_locality"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:header="@string/ward_number"
+                    app:header="@string/locality"
                     app:layout_constraintTop_toBottomOf="@id/toggle_gender" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

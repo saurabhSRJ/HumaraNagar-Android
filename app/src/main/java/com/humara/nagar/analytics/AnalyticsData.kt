@@ -14,6 +14,7 @@ interface AnalyticsData {
             const val REPORT_FRAGMENT = "REPORT_FRAGMENT"
             const val CERTIFICATES_FRAGMENT = "CERTIFICATES_FRAGMENT"
             const val RESIDENTS_FRAGMENT = "RESIDENTS_FRAGMENT"
+            const val PENDING_APPROVAL_FRAGMENT = "PENDING_APPROVAL_FRAGMENT"
         }
     }
 

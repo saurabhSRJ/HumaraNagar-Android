@@ -17,7 +17,7 @@ class ProfileCreationViewModel(application: Application): BaseViewModel(applicat
     private val _enableSubmitButtonLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val enableSubmitButtonLiveData: LiveData<Boolean> = _enableSubmitButtonLiveData
     private val _parentNameLiveData: MutableLiveData<String> by lazy { MutableLiveData() }
-    private val _wardNumberLiveData: MutableLiveData<String> by lazy { MutableLiveData() }
+    private val _localityLiveData: MutableLiveData<String> by lazy { MutableLiveData() }
     private val _genderLiveData: MutableLiveData<String> by lazy { MutableLiveData() }
 
     fun setDateOfBirth(dob: String) {
@@ -39,8 +39,8 @@ class ProfileCreationViewModel(application: Application): BaseViewModel(applicat
         updateSubmitButtonState()
     }
 
-    fun setWardNumber(wardNumber: String) {
-        _wardNumberLiveData.value = wardNumber
+    fun setLocality(locality: String) {
+        _localityLiveData.value = locality
         updateSubmitButtonState()
     }
 
@@ -51,16 +51,16 @@ class ProfileCreationViewModel(application: Application): BaseViewModel(applicat
     fun getUserObjectWithCollectedData(): User {
         val user: User = getUserPreference().userProfile!!.apply {
             name = _userNameLiveData.value.toString()
-            parentName = _parentNameLiveData.value.toString()
+            fatherOrSpouseName = _parentNameLiveData.value.toString()
             dateOfBirth = _dateOfBirthLiveData.value.toString()
-            wardNumber = _wardNumberLiveData.value.toString()
+            locality = _localityLiveData.value.toString()
             gender = _genderLiveData.value ?: Gender.MALE.name
         }
         return user
     }
 
     private fun updateSubmitButtonState() {
-        val anyRequiredFieldEmpty = _userNameLiveData.value.isNullOrEmpty() || _dateOfBirthLiveData.value.isNullOrEmpty() || _parentNameLiveData.value.isNullOrEmpty() || _wardNumberLiveData.value.isNullOrEmpty()
+        val anyRequiredFieldEmpty = _userNameLiveData.value.isNullOrEmpty() || _dateOfBirthLiveData.value.isNullOrEmpty() || _parentNameLiveData.value.isNullOrEmpty() || _localityLiveData.value.isNullOrEmpty()
         _enableSubmitButtonLiveData.value = anyRequiredFieldEmpty.not()
     }
 }

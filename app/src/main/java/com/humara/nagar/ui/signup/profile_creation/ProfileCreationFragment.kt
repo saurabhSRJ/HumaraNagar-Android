@@ -78,10 +78,10 @@ class ProfileCreationFragment : BaseFragment() {
             toggleGender.addOnButtonCheckedListener { _, checkedId, _ ->
                 profileCreationViewModel.setGender(getSelectedGender(checkedId))
             }
-            inputWardNumber.setUserInputListener {
-                profileCreationViewModel.setWardNumber(it)
+            inputLocality.setUserInputListener {
+                profileCreationViewModel.setLocality(it)
             }
-            inputWardNumber.setImeOptionType(EditorInfo.IME_ACTION_DONE)
+            inputLocality.setImeOptionType(EditorInfo.IME_ACTION_DONE)
             btnSubmit.setNonDuplicateClickListener {
                 hideKeyboard()
                 onBoardingViewModel.updateUserDetails(profileCreationViewModel.getUserObjectWithCollectedData())

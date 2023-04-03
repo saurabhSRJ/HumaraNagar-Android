@@ -12,13 +12,18 @@ import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.databinding.ActivitiyOnboardingBinding
+import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.otp_verification.OtpVerificationFragment
+import com.humara.nagar.ui.signup.pending_approval.PendingApprovalFragment
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationFragment
 import com.humara.nagar.ui.signup.signup_or_login.SignupOrLoginFragment
 
 class OnBoardingActivity : BaseActivity() {
     private val onBoardingViewModel by viewModels<OnBoardingViewModel> {
+        ViewModelFactory()
+    }
+    private val appConfigViewModel by viewModels<AppConfigViewModel> {
         ViewModelFactory()
     }
     private lateinit var binding: ActivitiyOnboardingBinding
@@ -48,16 +53,32 @@ class OnBoardingActivity : BaseActivity() {
                     showSignupOrLoginFragment(false)
                 }
             }
-            successfulUserCheckLiveData.observe(this@OnBoardingActivity) {
-                showOtpFragment()
+            successfulUserCheckLiveData.observe(this@OnBoardingActivity) { isEligibleToLogin ->
+                if (isEligibleToLogin) {
+                    showOtpFragment()
+                } else {
+                    showPendingApprovalFragment()
+                }
             }
-            profileCreationRequiredLiveData.observe(this@OnBoardingActivity) {
-                showProfileCreationFragment()
+            profileCreationRequiredLiveData.observe(this@OnBoardingActivity) { isNewUser ->
+                if (isNewUser) {
+                    showProfileCreationFragment()
+                } else {
+                    appConfigViewModel.getAppConfig()
+                }
             }
-            successfulUserLoginLiveData.observe(this@OnBoardingActivity) {
-                showHomeScreen()
+            successfulUserSignupLiveData.observe(this@OnBoardingActivity) {
+                appConfigViewModel.getAppConfig()
             }
             checkIfUserIsUnderOngoingRegistrationProcess()
+        }
+        appConfigViewModel.run {
+            observeProgress(this, false)
+            observeErrorAndException(this)
+            appConfigLiveData.observe(this@OnBoardingActivity) {
+                getUserPreference().isUserLoggedIn = true
+                showHomeScreen()
+            }
         }
     }
 
@@ -81,6 +102,15 @@ class OnBoardingActivity : BaseActivity() {
             shouldShowEntryAndExitAnimations = true,
             shouldShowReverseEntryAnimation = false,
             OtpVerificationFragment.TAG
+        )
+    }
+
+    private fun showPendingApprovalFragment() {
+        showFragment(
+            PendingApprovalFragment(),
+            shouldShowEntryAndExitAnimations = true,
+            shouldShowReverseEntryAnimation = false,
+            PendingApprovalFragment.TAG
         )
     }
 
