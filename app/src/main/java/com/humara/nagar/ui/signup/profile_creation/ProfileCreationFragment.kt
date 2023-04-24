@@ -84,7 +84,7 @@ class ProfileCreationFragment : BaseFragment() {
             inputLocality.setImeOptionType(EditorInfo.IME_ACTION_DONE)
             btnSubmit.setNonDuplicateClickListener {
                 hideKeyboard()
-                onBoardingViewModel.updateUserDetails(profileCreationViewModel.getUserObjectWithCollectedData())
+                onBoardingViewModel.updateSavedUserDetailsAndSignup(profileCreationViewModel.getUserObjectWithCollectedData())
             }
         }
     }

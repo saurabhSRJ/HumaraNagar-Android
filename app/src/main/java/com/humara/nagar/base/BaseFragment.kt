@@ -2,6 +2,7 @@ package com.humara.nagar.base
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -9,12 +10,18 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.humara.nagar.Logger
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
+import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.analytics.AnalyticsTracker
+import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
 
 /**
@@ -22,6 +29,33 @@ import java.io.IOException
  */
 abstract class BaseFragment : Fragment() {
     private lateinit var progressDialogue: Dialog
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (shouldLogScreenView()) {
+            AnalyticsTracker.sendEvent(
+                getScreenName(),
+                appendCommonParams(null).put(
+                    AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW
+                )
+            )
+        }
+    }
+
+    open fun appendCommonParams(properties: JSONObject? = null): JSONObject {
+        val eventJSONObject = properties?.apply {
+            try {
+                arguments?.getString(IntentKeyConstants.SOURCE)?.let {
+                    put(AnalyticsData.Parameters.SOURCE, it)
+                }
+                put(AnalyticsData.Parameters.PAGE_TYPE, getScreenName())
+                put(AnalyticsData.Parameters.LANGUAGE_CODE, getAppPreference().appLanguage)
+            } catch (e: JSONException) {
+                Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
+            }
+        } ?: JSONObject()
+        return eventJSONObject
+    }
 
     override fun onPause() {
         hideProgress()
@@ -129,6 +163,8 @@ abstract class BaseFragment : Fragment() {
     }
 
     abstract fun getScreenName(): String
+
+    fun shouldLogScreenView(): Boolean = true
 
     /**
      * Return App preference being set and used throughout the app. An replacement of {com.zinka.fleet.dataBase.StoredObjectValue}

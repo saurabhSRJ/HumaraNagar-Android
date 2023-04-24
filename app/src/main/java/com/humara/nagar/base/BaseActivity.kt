@@ -2,23 +2,27 @@ package com.humara.nagar.base
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import com.humara.nagar.Logger
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
+import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.analytics.AnalyticsTracker
+import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
 import com.humara.nagar.utils.LocaleManager
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
 
 /**
@@ -28,10 +32,31 @@ import java.io.IOException
 abstract class BaseActivity : AppCompatActivity() {
     private lateinit var progressDialogue: Dialog
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        changeStatusBarColor(Color.TRANSPARENT)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        changeStatusBarColor(R.color.white)
         overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
+        if (shouldLogScreenView()) {
+            AnalyticsTracker.sendEvent(
+                getScreenName(),
+                appendCommonParams(null).put(AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW),
+            )
+        }
+    }
+
+    open fun appendCommonParams(properties: JSONObject? = null): JSONObject {
+        val eventJSONObject = properties?.apply {
+            try {
+                intent?.getStringExtra(IntentKeyConstants.SOURCE)?.let {
+                    put(AnalyticsData.Parameters.SOURCE, it)
+                }
+                put(AnalyticsData.Parameters.PAGE_TYPE, getScreenName())
+                put(AnalyticsData.Parameters.LANGUAGE_CODE, getAppPreference().appLanguage)
+            } catch (e: JSONException) {
+                Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
+            }
+        } ?: JSONObject()
+        return eventJSONObject
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -143,6 +168,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun getScreenName(): String
 
+    fun shouldLogScreenView(): Boolean = true
+
     /**
      * Return App preference being set and used throughout the app
      * @return [AppPreference]
@@ -157,5 +184,9 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     fun getUserPreference(): UserPreference {
         return (application as NagarApp).userSharedPreference
+    }
+
+    fun getSource(): String {
+        return intent?.getStringExtra(IntentKeyConstants.SOURCE) ?: getScreenName()
     }
 }

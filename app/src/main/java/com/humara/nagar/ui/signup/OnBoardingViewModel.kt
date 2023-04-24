@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.humara.nagar.Logger
+import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
@@ -17,6 +18,7 @@ import com.humara.nagar.utils.UserDataValidator
 import kotlinx.coroutines.launch
 
 class OnBoardingViewModel(application: Application) : BaseViewModel(application) {
+    private val repository = OnBoardingRepository(application)
     private val _isUserUnderAnExistingRegistrationProcessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val isUserUnderAnExistingRegistrationProcessLiveData: LiveData<Boolean> = _isUserUnderAnExistingRegistrationProcessLiveData
     private val _invalidMobileNumberLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
@@ -31,7 +33,8 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     val profileCreationRequiredLiveData: LiveData<Boolean> = _profileCreationRequiredLiveData
     private val _successfulUserSignupLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val successfulUserSignupLiveData: LiveData<Boolean> = _successfulUserSignupLiveData
-    private val repository = OnBoardingRepository(application)
+    private val _showHomeScreenLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val showHomeScreenLiveData: LiveData<Boolean> = _showHomeScreenLiveData
 
     fun checkIfUserIsUnderOngoingRegistrationProcess() {
         val savedUserProfile = getUserPreference().userProfile
@@ -70,7 +73,7 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         }
     }
 
-    fun updateUserDetails(user: User) = viewModelScope.launch {
+    fun updateSavedUserDetailsAndSignup(user: User) = viewModelScope.launch {
         val request = ProfileCreationRequest(user.userId, user.name, user.fatherOrSpouseName, user.dateOfBirth, user.gender, user.locality)
         val response = processCoroutine({ repository.signup(request) })
         response.onSuccess {
@@ -99,5 +102,11 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         }.onError {
             errorLiveData.postValue(it)
         }
+    }
+
+    fun onSuccessfulAppConfigFetched() {
+        getUserPreference().isUserLoggedIn = true
+        AnalyticsTracker.onUserOnBoard(getApplication())
+        _showHomeScreenLiveData.value = true
     }
 }

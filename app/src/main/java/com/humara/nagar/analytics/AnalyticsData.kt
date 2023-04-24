@@ -1,5 +1,7 @@
 package com.humara.nagar.analytics
 
+import com.humara.nagar.constants.IntentKeyConstants
+
 interface AnalyticsData {
     interface ScreenName {
         companion object {
@@ -21,6 +23,27 @@ interface AnalyticsData {
     interface EventName {
         companion object {
             const val UNAUTHORIZED_ACCESS = "UNAUTHORIZED_ACCESS"
+            const val LOGOUT = "LOGOUT"
+        }
+    }
+
+    interface Parameters {
+        companion object {
+            const val EVENT_TYPE = "EVENT_TYPE"
+            const val SOURCE = IntentKeyConstants.SOURCE
+            const val LANGUAGE_CODE = "LANGUAGE_CODE"
+            const val PAGE_TYPE = "PAGE_TYPE"
+            const val USER_ID = "USER_ID"
+            const val USER_NAME = "USER_NAME"
+            const val MOBILE_NUMBER = "MOBILE_NUMBER"
+        }
+    }
+
+    interface EventType {
+        companion object {
+            const val BUTTON_CLICK = "BUTTON_CLICK"
+            const val SCREEN_VIEW = "SCREEN_VIEW"
+            const val PAGE_LOAD = "PAGE_LOAD"
         }
     }
 }

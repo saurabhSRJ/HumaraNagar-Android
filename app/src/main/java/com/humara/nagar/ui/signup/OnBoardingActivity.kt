@@ -64,11 +64,14 @@ class OnBoardingActivity : BaseActivity() {
                 if (isNewUser) {
                     showProfileCreationFragment()
                 } else {
-                    appConfigViewModel.getAppConfig()
+                    fetchAppConfig()
                 }
             }
             successfulUserSignupLiveData.observe(this@OnBoardingActivity) {
-                appConfigViewModel.getAppConfig()
+                fetchAppConfig()
+            }
+            showHomeScreenLiveData.observe(this@OnBoardingActivity) {
+                showHomeScreen()
             }
             checkIfUserIsUnderOngoingRegistrationProcess()
         }
@@ -76,10 +79,13 @@ class OnBoardingActivity : BaseActivity() {
             observeProgress(this, false)
             observeErrorAndException(this)
             appConfigLiveData.observe(this@OnBoardingActivity) {
-                getUserPreference().isUserLoggedIn = true
-                showHomeScreen()
+                onBoardingViewModel.onSuccessfulAppConfigFetched()
             }
         }
+    }
+
+    private fun fetchAppConfig() {
+        appConfigViewModel.getAppConfig()
     }
 
     private fun showHomeScreen() {
