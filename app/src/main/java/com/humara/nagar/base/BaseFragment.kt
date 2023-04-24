@@ -35,16 +35,15 @@ abstract class BaseFragment : Fragment() {
         if (shouldLogScreenView()) {
             AnalyticsTracker.sendEvent(
                 getScreenName(),
-                appendCommonParams(null).apply {
-                    put(AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW)
-                }
+                appendCommonParams(null).put(
+                    AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW
+                )
             )
         }
     }
 
     open fun appendCommonParams(properties: JSONObject? = null): JSONObject {
-        val params = properties ?: JSONObject()
-        return params.apply {
+        val eventJSONObject = properties?.apply {
             try {
                 arguments?.getString(IntentKeyConstants.SOURCE)?.let {
                     put(AnalyticsData.Parameters.SOURCE, it)
@@ -54,7 +53,8 @@ abstract class BaseFragment : Fragment() {
             } catch (e: JSONException) {
                 Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
             }
-        }
+        } ?: JSONObject()
+        return eventJSONObject
     }
 
     override fun onPause() {
@@ -110,7 +110,7 @@ abstract class BaseFragment : Fragment() {
         showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
     }
 
-    open fun showErrorDialog(
+    protected open fun showErrorDialog(
         header: String? = null,
         message: String? = null,
     ) {
@@ -130,16 +130,17 @@ abstract class BaseFragment : Fragment() {
     /* Kotlin requires explicit modifiers for overridable members and overrides. Add open if you need function/member to be overridable by default they are final.
         public, protected, internal and private are visibility modifiers, by default public
      */
-    open fun showProgress(isDismissible: Boolean) {
+    protected fun showProgress(isDismissible: Boolean) {
         if (this::progressDialogue.isInitialized.not()) {
-            progressDialogue = RelativeLayoutProgressDialog.onCreateDialogModel(requireActivity()).apply {
-                setCancelable(isDismissible)
-            }
+            progressDialogue =
+                RelativeLayoutProgressDialog.onCreateDialogModel(requireActivity()).apply {
+                    setCancelable(isDismissible)
+                }
         }
         progressDialogue.show()
     }
 
-    open fun hideProgress() {
+    protected fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
             progressDialogue.dismiss()
             Log.d("saurabh", "hide progress $javaClass")
@@ -149,7 +150,7 @@ abstract class BaseFragment : Fragment() {
     fun showKeyboard(editText: EditText) {
         val imm =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+        imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED)
     }
 
     fun hideKeyboard() {
@@ -161,21 +162,12 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    /**
-     * Determines whether the current fragment is alive on the window.
-     * @return `true` if the current fragment is alive, `false` otherwise
-     */
-    fun isFragmentAlive(): Boolean {
-        val isDeactivated = isRemoving || isDetached || context == null
-        return !isDeactivated
-    }
-
     abstract fun getScreenName(): String
 
-    open fun shouldLogScreenView(): Boolean = true
+    fun shouldLogScreenView(): Boolean = true
 
     /**
-     * Return App preference being set and used throughout the app.
+     * Return App preference being set and used throughout the app. An replacement of {com.zinka.fleet.dataBase.StoredObjectValue}
      *
      * @return [AppPreference]
      */
@@ -184,7 +176,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-     * Return User preference data(i.e user profile) being set and used throughout the app.
+     * Return User preference data(i.e user profile) being set and used throughout the app. An replacement of {com.zinka.fleet.dataBase.StoredObjectValue}
      *
      * @return [UserPreference]
      */
