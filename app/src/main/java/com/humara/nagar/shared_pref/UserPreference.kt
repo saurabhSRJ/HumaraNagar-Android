@@ -44,4 +44,8 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
 
     val isAdminUser: Boolean = role == Role.ADMIN.role
+
+    inline var fcmToken: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, null)
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, value)
 }
