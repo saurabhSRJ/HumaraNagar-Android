@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -150,24 +151,28 @@ class FormInputWithHeader @JvmOverloads constructor(
 
     fun setLayoutListener(isFocusable: Boolean, listener: () -> Unit) {
         binding.run {
-            etInput.isFocusable = isFocusable
+            etInput.setOnFocusChangeListener { view: View, hasFocus: Boolean ->
+                if (view.isInTouchMode && hasFocus) {
+                    //Once the view gains focus, clear the focus if required and perform click so that click listener can be invoked. This way we avoid janky behaviour of keyboard
+                    if (isFocusable.not()) {
+                        view.clearFocus()
+                    }
+                    view.performClick()
+                }
+            }
             etInput.setNonDuplicateClickListener {
                 listener.invoke()
             }
             root.setNonDuplicateClickListener {
                 listener.invoke()
             }
-            etInput.doAfterTextChanged {
-                val input = it.toString()
-                setRequiredInput(input.isEmpty())
-            }
         }
     }
 
-    fun setUserInputListener(listener: ((input: String) -> Unit)? = null) {
+    fun setUserInputListener(listener: ((input: String) -> Unit)) {
         binding.etInput.doAfterTextChanged {
             val input = it.toString().trim()
-            listener?.invoke(input)
+            listener.invoke(input)
         }
     }
 }

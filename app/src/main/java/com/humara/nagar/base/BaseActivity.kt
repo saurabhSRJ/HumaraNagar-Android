@@ -39,13 +39,16 @@ abstract class BaseActivity : AppCompatActivity() {
         if (shouldLogScreenView()) {
             AnalyticsTracker.sendEvent(
                 getScreenName(),
-                appendCommonParams(null).put(AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW),
-            )
+                appendCommonParams(null).apply {
+                    put(AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW)
+                })
         }
     }
 
     open fun appendCommonParams(properties: JSONObject? = null): JSONObject {
-        val eventJSONObject = properties?.apply {
+        val params = properties ?: JSONObject()
+
+        return params.apply {
             try {
                 intent?.getStringExtra(IntentKeyConstants.SOURCE)?.let {
                     put(AnalyticsData.Parameters.SOURCE, it)
@@ -55,8 +58,7 @@ abstract class BaseActivity : AppCompatActivity() {
             } catch (e: JSONException) {
                 Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
             }
-        } ?: JSONObject()
-        return eventJSONObject
+        }
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -141,7 +143,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
-            progressDialogue.hide()
+            progressDialogue.dismiss()
         }
     }
 

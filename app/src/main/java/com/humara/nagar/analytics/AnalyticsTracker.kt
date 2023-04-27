@@ -11,7 +11,7 @@ import com.humara.nagar.NagarApp
 import com.humara.nagar.shared_pref.UserPreference
 import org.json.JSONObject
 
-class AnalyticsTracker private constructor() : IAnalyticsTracker {
+class AnalyticsTracker private constructor() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     init {
@@ -51,10 +51,6 @@ class AnalyticsTracker private constructor() : IAnalyticsTracker {
                 }
             }
         }
-    }
-
-    override fun logEvent(event: String, properties: JSONObject?) {
-        sendEvent(event, properties)
     }
 
     private fun logEventToFirebase(event: String, properties: JSONObject?) {

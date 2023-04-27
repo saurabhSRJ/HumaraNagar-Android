@@ -24,6 +24,8 @@ interface AnalyticsData {
         companion object {
             const val UNAUTHORIZED_ACCESS = "UNAUTHORIZED_ACCESS"
             const val LOGOUT = "LOGOUT"
+            const val NOTIFICATION_RECEIVED = "NOTIFICATION_RECEIVED"
+            const val NOTIFICATION_DISMISSED = "NOTIFICATION_DISMISSED"
         }
     }
 
@@ -36,6 +38,7 @@ interface AnalyticsData {
             const val USER_ID = "USER_ID"
             const val USER_NAME = "USER_NAME"
             const val MOBILE_NUMBER = "MOBILE_NUMBER"
+            const val NOTIFICATION_DATA = "NOTIFICATION_DATA"
         }
     }
 

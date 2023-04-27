@@ -71,7 +71,6 @@ class ProfileCreationFragment : BaseFragment() {
                 profileCreationViewModel.setParentName(it)
             }
             inputPhoneNumber.setInput(Utils.getMobileNumberWithCountryCode(getUserPreference().mobileNumber))
-
             inputDob.setLayoutListener(false) {
                 DatePickerDialogFragment().show(childFragmentManager, DatePickerDialogFragment.TAG)
             }

@@ -46,8 +46,7 @@ class ImagePreviewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val imageUri = images[position]
         holder.binding.imagePreview.setImageURI(imageUri)
-        holder.binding.imageTitle.text =
-            Utils.formatImageString(imageUri.lastPathSegment.toString())
+        holder.binding.imageTitle.text = Utils.formatImageString(imageUri.lastPathSegment.toString())
         holder.binding.delete.setOnClickListener {
             Logger.debugLog("Position: $position")
             if (images.size > position) {

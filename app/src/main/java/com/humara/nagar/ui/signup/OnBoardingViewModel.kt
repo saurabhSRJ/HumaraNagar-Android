@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.humara.nagar.Logger
 import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.base.BaseViewModel
+import com.humara.nagar.fcm.FcmTokenUploadRepository
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.User
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 
 class OnBoardingViewModel(application: Application) : BaseViewModel(application) {
     private val repository = OnBoardingRepository(application)
+    private val fcmTokenUploadRepository = FcmTokenUploadRepository(application)
     private val _isUserUnderAnExistingRegistrationProcessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val isUserUnderAnExistingRegistrationProcessLiveData: LiveData<Boolean> = _isUserUnderAnExistingRegistrationProcessLiveData
     private val _invalidMobileNumberLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
@@ -106,6 +108,7 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
 
     fun onSuccessfulAppConfigFetched() {
         getUserPreference().isUserLoggedIn = true
+        fcmTokenUploadRepository.fetchFcmTokenAndResetIfRequired()
         AnalyticsTracker.onUserOnBoard(getApplication())
         _showHomeScreenLiveData.value = true
     }
