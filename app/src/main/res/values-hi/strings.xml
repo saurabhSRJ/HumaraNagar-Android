@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="submit">सबमिट</string>
+    <string name="camera_permission">कैमरा</string>
+    <string name="storage_permission">मेमोरी</string>
+    <string name="location_permission">जगह</string>
 </resources>

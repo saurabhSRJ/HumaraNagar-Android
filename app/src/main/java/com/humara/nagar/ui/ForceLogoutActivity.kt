@@ -34,7 +34,7 @@ class ForceLogoutActivity : BaseActivity() {
             setPositiveButton(
                 resources.getString(R.string.logout)
             ) { dialog: DialogInterface, _: Int ->
-                (application as NagarApp).logout()
+                (application as NagarApp).logout(this@ForceLogoutActivity, getSource())
                 dialog.cancel()
                 finishAndRemoveTask()
             }

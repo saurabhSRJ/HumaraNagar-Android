@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name="com.humara.nagar.NagarApp"
@@ -39,6 +40,22 @@
                 android:resource="@xml/provider_paths"
                 tools:replace="android:resource" />
         </provider>
+
+        <service
+            android:name=".fcm.PushNotificationMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".fcm.NotificationDismissReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.nagar.notifications.DISMISS_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name="com.humara.nagar.SplashActivity"

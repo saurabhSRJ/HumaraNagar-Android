@@ -2,6 +2,7 @@ package com.humara.nagar.base
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -9,12 +10,18 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.humara.nagar.Logger
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
+import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.analytics.AnalyticsTracker
+import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
 
 /**
@@ -22,6 +29,33 @@ import java.io.IOException
  */
 abstract class BaseFragment : Fragment() {
     private lateinit var progressDialogue: Dialog
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (shouldLogScreenView()) {
+            AnalyticsTracker.sendEvent(
+                getScreenName(),
+                appendCommonParams(null).apply {
+                    put(AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW)
+                }
+            )
+        }
+    }
+
+    open fun appendCommonParams(properties: JSONObject? = null): JSONObject {
+        val params = properties ?: JSONObject()
+        return params.apply {
+            try {
+                arguments?.getString(IntentKeyConstants.SOURCE)?.let {
+                    put(AnalyticsData.Parameters.SOURCE, it)
+                }
+                put(AnalyticsData.Parameters.PAGE_TYPE, getScreenName())
+                put(AnalyticsData.Parameters.LANGUAGE_CODE, getAppPreference().appLanguage)
+            } catch (e: JSONException) {
+                Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
+            }
+        }
+    }
 
     override fun onPause() {
         hideProgress()
@@ -76,7 +110,7 @@ abstract class BaseFragment : Fragment() {
         showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
     }
 
-    protected open fun showErrorDialog(
+    open fun showErrorDialog(
         header: String? = null,
         message: String? = null,
     ) {
@@ -96,17 +130,16 @@ abstract class BaseFragment : Fragment() {
     /* Kotlin requires explicit modifiers for overridable members and overrides. Add open if you need function/member to be overridable by default they are final.
         public, protected, internal and private are visibility modifiers, by default public
      */
-    protected fun showProgress(isDismissible: Boolean) {
+    open fun showProgress(isDismissible: Boolean) {
         if (this::progressDialogue.isInitialized.not()) {
-            progressDialogue =
-                RelativeLayoutProgressDialog.onCreateDialogModel(requireActivity()).apply {
-                    setCancelable(isDismissible)
-                }
+            progressDialogue = RelativeLayoutProgressDialog.onCreateDialogModel(requireActivity()).apply {
+                setCancelable(isDismissible)
+            }
         }
         progressDialogue.show()
     }
 
-    protected fun hideProgress() {
+    open fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
             progressDialogue.dismiss()
             Log.d("saurabh", "hide progress $javaClass")
@@ -116,7 +149,7 @@ abstract class BaseFragment : Fragment() {
     fun showKeyboard(editText: EditText) {
         val imm =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED)
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     fun hideKeyboard() {
@@ -128,10 +161,21 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    /**
+     * Determines whether the current fragment is alive on the window.
+     * @return `true` if the current fragment is alive, `false` otherwise
+     */
+    fun isFragmentAlive(): Boolean {
+        val isDeactivated = isRemoving || isDetached || context == null
+        return !isDeactivated
+    }
+
     abstract fun getScreenName(): String
 
+    open fun shouldLogScreenView(): Boolean = true
+
     /**
-     * Return App preference being set and used throughout the app. An replacement of {com.zinka.fleet.dataBase.StoredObjectValue}
+     * Return App preference being set and used throughout the app.
      *
      * @return [AppPreference]
      */
@@ -140,7 +184,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     /**
-     * Return User preference data(i.e user profile) being set and used throughout the app. An replacement of {com.zinka.fleet.dataBase.StoredObjectValue}
+     * Return User preference data(i.e user profile) being set and used throughout the app.
      *
      * @return [UserPreference]
      */

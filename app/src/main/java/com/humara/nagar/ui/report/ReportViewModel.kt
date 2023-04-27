@@ -50,18 +50,6 @@ class ReportViewModel(
         updateSubmitButtonState()
     }
 
-
-//    fun getUserObjectWithCollectedData(): User {
-//        val user: User = getUserPreference().userProfile!!.apply {
-//            name = _userNameLiveData.value.toString()
-//            parentName = _parentNameLiveData.value.toString()
-//            dateOfBirth = _dateOfBirthLiveData.value.toString()
-//            wardNumber = _wardNumberLiveData.value.toString()
-//            gender = _genderLiveData.value ?: Gender.MALE.name
-//        }
-//        return user
-//    }
-
     private fun updateSubmitButtonState() {
         val anyRequiredFieldEmpty = _inputCategory.value.isNullOrEmpty() || _inputLocality.value.isNullOrEmpty() || _inputComment.value.isNullOrEmpty() || _inputLocation.value.isNullOrEmpty() || _inputImages.value.isNullOrEmpty()
         _enableSubmitButtonLiveData.value = anyRequiredFieldEmpty.not()

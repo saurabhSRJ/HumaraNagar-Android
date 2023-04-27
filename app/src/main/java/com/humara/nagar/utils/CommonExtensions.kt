@@ -1,7 +1,10 @@
 package com.humara.nagar.utils
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -10,7 +13,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.edit
+import com.humara.nagar.NagarApp
 import com.humara.nagar.R
+import com.humara.nagar.shared_pref.AppPreference
+import com.humara.nagar.shared_pref.UserPreference
 
 fun Context.showToast(message: String, shortToast: Boolean = false) {
     Toast.makeText(this, message, if (shortToast) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
@@ -85,3 +91,42 @@ inline fun <reified T> SharedPreferences.put(key: String, value: T) {
         }
     }
 }
+
+/**
+ * For SDK >= 31 we should put immutability flag when using PendingIntent.
+ *
+ *  It is strongly recommended to use `FLAG_IMMUTABLE` when creating a `PendingIntent`.
+ *  `FLAG_MUTABLE` should only be used when some functionality relies on modifying
+ *  the underlying intent, e.g. any `PendingIntent` that needs to be used with inline reply or bubbles.
+ */
+fun Context.getBroadcastPendingIntent(
+    notificationId: Int,
+    intent: Intent,
+    isMutable: Boolean = false
+): PendingIntent {
+    return PendingIntent.getBroadcast(applicationContext, notificationId, intent, getMutabilityFlags(isMutable))
+}
+
+/**
+ * For SDK >= 31 we should put immutability flag when using PendingIntent.
+ *
+ *  It is strongly recommended to use `FLAG_IMMUTABLE` when creating a `PendingIntent`.
+ *  `FLAG_MUTABLE` should only be used when some functionality relies on modifying
+ *  the underlying intent, e.g. any `PendingIntent` that needs to be used with inline reply or bubbles.
+ */
+fun Context.getActivityPendingIntent(
+    notificationId: Int,
+    intent: Intent,
+    isMutable: Boolean = false
+): PendingIntent {
+    return PendingIntent.getActivity(applicationContext, notificationId, intent, getMutabilityFlags(isMutable))
+}
+
+private fun getMutabilityFlags(isMutable: Boolean = false) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isMutable) {
+    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+} else {
+    PendingIntent.FLAG_UPDATE_CURRENT
+}
+
+fun Context.getUserSharedPreferences(): UserPreference = (this.applicationContext as NagarApp).userSharedPreference
+fun Context.getAppSharedPreferences(): AppPreference = (this.applicationContext as NagarApp).appSharedPreference

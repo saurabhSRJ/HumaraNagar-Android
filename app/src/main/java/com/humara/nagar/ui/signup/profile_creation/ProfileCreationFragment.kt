@@ -71,7 +71,6 @@ class ProfileCreationFragment : BaseFragment() {
                 profileCreationViewModel.setParentName(it)
             }
             inputPhoneNumber.setInput(Utils.getMobileNumberWithCountryCode(getUserPreference().mobileNumber))
-
             inputDob.setLayoutListener(false) {
                 DatePickerDialogFragment().show(childFragmentManager, DatePickerDialogFragment.TAG)
             }
@@ -84,7 +83,7 @@ class ProfileCreationFragment : BaseFragment() {
             inputLocality.setImeOptionType(EditorInfo.IME_ACTION_DONE)
             btnSubmit.setNonDuplicateClickListener {
                 hideKeyboard()
-                onBoardingViewModel.updateUserDetails(profileCreationViewModel.getUserObjectWithCollectedData())
+                onBoardingViewModel.updateSavedUserDetailsAndSignup(profileCreationViewModel.getUserObjectWithCollectedData())
             }
         }
     }

@@ -3,6 +3,7 @@ package com.humara.nagar.shared_pref
 import android.content.Context
 import com.humara.nagar.constants.Constants
 import com.humara.nagar.constants.SharedPreferenceKeys
+import com.humara.nagar.ui.signup.model.Role
 import com.humara.nagar.ui.signup.model.User
 
 /**
@@ -37,4 +38,14 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
     inline var refreshToken: String
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.REFRESH_TOKEN, "") ?: ""
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.REFRESH_TOKEN, value)
+
+    inline var role: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, null)
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
+
+    val isAdminUser: Boolean = role == Role.ADMIN.role
+
+    inline var fcmToken: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, null)
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, value)
 }

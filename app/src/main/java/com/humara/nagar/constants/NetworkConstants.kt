@@ -19,6 +19,7 @@ interface NetworkConstants {
             const val LOGIN = "/login"
             const val SIGNUP = "/signup"
             const val CONFIG = "/config"
+            const val LOGOUT = "/logout"
         }
     }
 
