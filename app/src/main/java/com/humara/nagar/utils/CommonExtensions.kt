@@ -5,14 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
+import android.os.Parcelable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.SparseArray
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.edit
+import androidx.core.view.children
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
 import com.humara.nagar.shared_pref.AppPreference
@@ -130,3 +134,13 @@ private fun getMutabilityFlags(isMutable: Boolean = false) = if (Build.VERSION.S
 
 fun Context.getUserSharedPreferences(): UserPreference = (this.applicationContext as NagarApp).userSharedPreference
 fun Context.getAppSharedPreferences(): AppPreference = (this.applicationContext as NagarApp).appSharedPreference
+
+fun ViewGroup.saveChildViewStates(): SparseArray<Parcelable> {
+    val childViewStates = SparseArray<Parcelable>()
+    children.forEach { child -> child.saveHierarchyState(childViewStates) }
+    return childViewStates
+}
+
+fun ViewGroup.restoreChildViewStates(childViewStates: SparseArray<Parcelable>) {
+    children.forEach { child -> child.restoreHierarchyState(childViewStates) }
+}

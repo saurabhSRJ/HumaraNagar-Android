@@ -1,10 +1,12 @@
 package com.humara.nagar.ui.signup.profile_creation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
@@ -15,6 +17,7 @@ import com.humara.nagar.ui.common.DatePickerDialogFragment
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.model.Gender
 import com.humara.nagar.utils.Utils
+import com.humara.nagar.utils.requestFocusAndShowKeyboard
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.showToast
 
@@ -31,29 +34,24 @@ class ProfileCreationFragment : BaseFragment() {
         const val TAG = "ProfileCreationFragment"
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentProfileCreationBinding.inflate(inflater, container, false)
-
         initViewModelObservers()
         initView()
-
         return binding.root
     }
 
     private fun initViewModelObservers() {
         profileCreationViewModel.run {
-            dateOfBirthLiveData.observe(viewLifecycleOwner) { dob ->
+            getDateOfBirth().observe(viewLifecycleOwner) { dob ->
                 binding.inputDob.setInput(dob)
+                binding.inputLocality.requestFocus()
             }
             invalidDateOfBirthLiveData.observe(viewLifecycleOwner) {
                 requireContext().showToast(getString(R.string.dob_invalid_message))
             }
-            enableSubmitButtonLiveData.observe(viewLifecycleOwner) {
-                binding.btnSubmit.isEnabled = it
+            getSubmitButtonState().observe(viewLifecycleOwner) { isEnabled ->
+                binding.btnSubmit.isEnabled = isEnabled
             }
         }
         onBoardingViewModel.run {
@@ -89,10 +87,9 @@ class ProfileCreationFragment : BaseFragment() {
     }
 
     private fun getSelectedGender(checkedId: Int): String {
-        return if (checkedId == binding.buttonMale.id) {
-            Gender.MALE.name
-        } else {
-            Gender.FEMALE.name
+        return when (checkedId) {
+            binding.buttonMale.id -> Gender.MALE.name
+            else -> Gender.FEMALE.name
         }
     }
 

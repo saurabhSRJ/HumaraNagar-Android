@@ -3,55 +3,65 @@ package com.humara.nagar.ui.report
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.humara.nagar.base.BaseViewModel
 
+class ReportViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
+    companion object {
+        private const val CATEGORY_KEY = "category"
+        private const val LOCALITY_KEY = "locality"
+        private const val LOCATION_KEY = "location"
+        private const val COMMENT_KEY = "comment"
+        private const val IMAGES_KEY = "images"
+        private const val SUBMIT_BUTTON_KEY = "submit"
+    }
+    val imageUris = mutableListOf<Uri>()
+    private val categoryData: String? = savedStateHandle[CATEGORY_KEY]
+    private val localityData: String? = savedStateHandle[LOCALITY_KEY]
+    private val locationData: String? = savedStateHandle[LOCATION_KEY]
+    fun getImages(): LiveData<List<Uri>> = savedStateHandle.getLiveData(IMAGES_KEY, mutableListOf())
+    fun getSubmitButtonState(): LiveData<Boolean> = savedStateHandle.getLiveData(SUBMIT_BUTTON_KEY, false)
 
-class ReportViewModel(
-    application: Application
-) : BaseViewModel(application) {
-
-    private val _inputCategory: MutableLiveData<String> by lazy { MutableLiveData() }
-    val inputCategory: LiveData<String> = _inputCategory
-    private val _inputLocality: MutableLiveData<String> by lazy { MutableLiveData() }
-    val inputLocality: LiveData<String> = _inputLocality
-    private val _inputLocation: MutableLiveData<String> by lazy { MutableLiveData() }
-    val inputLocation: LiveData<String> = _inputLocation
-    private val _inputComment: MutableLiveData<String> by lazy { MutableLiveData() }
-    val inputComment: LiveData<String> = _inputComment
-    private val _inputImages: MutableLiveData<List<Uri>> by lazy { MutableLiveData() }
-    val inputImages: LiveData<List<Uri>> = _inputImages
-    private val _enableSubmitButtonLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
-    val enableSubmitButtonLiveData: LiveData<Boolean> = _enableSubmitButtonLiveData
-
+    init {
+        getImages().value?.let { imageUris.addAll(it) }
+    }
 
     fun setCategory(category: String) {
-        _inputCategory.value = category
+        savedStateHandle[CATEGORY_KEY] = category
         updateSubmitButtonState()
     }
 
     fun setLocality(locality: String) {
-        _inputLocality.value = locality
+        savedStateHandle[LOCALITY_KEY] = locality
         updateSubmitButtonState()
     }
 
     fun setLocation(location: String) {
-        _inputLocation.value = location
+        savedStateHandle[LOCATION_KEY] = location
         updateSubmitButtonState()
     }
 
     fun setComment(comment: String) {
-        _inputComment.value = comment
+        savedStateHandle[COMMENT_KEY] = comment
         updateSubmitButtonState()
     }
 
-    fun setImageList(imageList: List<Uri>) {
-        _inputImages.value = imageList
+    private fun getComment(): String? = savedStateHandle[COMMENT_KEY]
+
+    fun addImages(imageList: List<Uri>) {
+        imageUris.addAll(imageList)
+        savedStateHandle[IMAGES_KEY] = imageUris
+        updateSubmitButtonState()
+    }
+
+    fun deleteImage(index: Int) {
+        imageUris.removeAt(index)
+        savedStateHandle[IMAGES_KEY] = imageUris
         updateSubmitButtonState()
     }
 
     private fun updateSubmitButtonState() {
-        val anyRequiredFieldEmpty = _inputCategory.value.isNullOrEmpty() || _inputLocality.value.isNullOrEmpty() || _inputComment.value.isNullOrEmpty() || _inputLocation.value.isNullOrEmpty() || _inputImages.value.isNullOrEmpty()
-        _enableSubmitButtonLiveData.value = anyRequiredFieldEmpty.not()
+        val anyRequiredFieldEmpty = categoryData.isNullOrEmpty() || localityData.isNullOrEmpty() || getComment().isNullOrEmpty() || locationData.isNullOrEmpty() || getImages().value.isNullOrEmpty()
+        savedStateHandle[SUBMIT_BUTTON_KEY] = anyRequiredFieldEmpty.not()
     }
 }

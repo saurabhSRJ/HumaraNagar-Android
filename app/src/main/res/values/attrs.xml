@@ -9,7 +9,6 @@
     <attr name="required_input" format="boolean" />
     <attr name="options" format="reference"/>
     <attr name="minimumHeight" format="integer"/>
-    <attr name="multiLine" format="boolean" />
 
     <declare-styleable name="FormInputWithHeader">
         <attr name="header" />
@@ -19,8 +18,7 @@
         <attr name="input" />
         <attr name="endIcon" />
         <attr name="required_input" />
-        <attr name="minimumHeight" />
-        <attr name="multiLine"/>
+        <attr name="minimumHeight" />/>
 
     </declare-styleable>
 
