@@ -122,7 +122,8 @@ class OnBoardingActivity : BaseActivity() {
 
     private fun showProfileCreationFragment() {
         showFragment(
-            ProfileCreationFragment(),
+            // We want to restore the ProfileCreationFragment instance so that user's input is not lost. If no instance is available then creating a new instance
+            supportFragmentManager.findFragmentByTag(ProfileCreationFragment.TAG) ?: ProfileCreationFragment(),
             shouldShowEntryAndExitAnimations = true,
             shouldShowReverseEntryAnimation = false,
             tag = ProfileCreationFragment.TAG
@@ -134,12 +135,14 @@ class OnBoardingActivity : BaseActivity() {
         shouldShowEntryAndExitAnimations: Boolean,
         shouldShowReverseEntryAnimation: Boolean,
         tag: String?
-    ) = supportFragmentManager.commit(true) {
-        if (shouldShowEntryAndExitAnimations) setCustomAnimations(
-            if (shouldShowReverseEntryAnimation) R.anim.slide_in_from_left else R.anim.slide_in_from_right,
-            R.anim.slide_out_to_left
-        )
-        replace(binding.container.id, fragmentToShow, tag)
+    ) {
+        supportFragmentManager.commit {
+            if (shouldShowEntryAndExitAnimations) setCustomAnimations(
+                if (shouldShowReverseEntryAnimation) R.anim.slide_in_from_left else R.anim.slide_in_from_right,
+                R.anim.slide_out_to_left
+            )
+            replace(R.id.container, fragmentToShow, tag)
+        }
     }
 
     override fun onBackPressed() {

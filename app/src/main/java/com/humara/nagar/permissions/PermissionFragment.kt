@@ -14,7 +14,7 @@ import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.utils.PermissionUtils
 
 /**
- * A base fragment that provides a simple way to request runtime permissions from the user using requestPermissions().
+ * A headless fragment that provides a simple way to request runtime permissions from the user using requestPermissions().
  */
 open class PermissionFragment : BaseFragment() {
     companion object {

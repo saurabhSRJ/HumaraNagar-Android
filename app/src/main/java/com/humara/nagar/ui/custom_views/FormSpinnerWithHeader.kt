@@ -1,7 +1,9 @@
 package com.humara.nagar.ui.custom_views
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,6 +12,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ItemFormSpinnerWithHeaderBinding
+import com.humara.nagar.utils.restoreChildViewStates
+import com.humara.nagar.utils.saveChildViewStates
 
 
 class FormSpinnerWithHeader @JvmOverloads constructor(
@@ -89,6 +93,31 @@ class FormSpinnerWithHeader @JvmOverloads constructor(
         binding.spinnerTV.doAfterTextChanged {
             val input = it.toString().trim()
             listener?.invoke(input)
+        }
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
+        dispatchFreezeSelfOnly(container)
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>) {
+        dispatchThawSelfOnly(container)
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        return FormState(
+            superSavedState = super.onSaveInstanceState(),
+            childrenStates = saveChildViewStates()
+        )
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        when (state) {
+            is FormState -> {
+                super.onRestoreInstanceState(state.superSavedState)
+                state.childrenStates?.let { restoreChildViewStates(it) }
+            }
+            else -> super.onRestoreInstanceState(state)
         }
     }
 }

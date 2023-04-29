@@ -46,9 +46,11 @@
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890. "
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
-                android:maxLength="50"
+                android:maxLength="40"
                 android:paddingVertical="12dp"
                 android:singleLine="true"
+                android:scrollbars="vertical"
+                android:gravity="top|start"
                 android:textColor="@color/dark_grey_333333"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_end_icon"
@@ -64,6 +66,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/commentTouchInterceptor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

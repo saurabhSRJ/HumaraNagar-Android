@@ -17,13 +17,7 @@ class ImagePreviewAdapter(
 
     private val images = mutableListOf<Uri>()
 
-    fun addData(imageList: List<Uri>) {
-        val currentSize = images.size
-        images.addAll(imageList)
-        notifyItemRangeInserted(currentSize, imageList.size)
-    }
-
-    fun setData(imageList: MutableList<Uri>) {
+    fun setData(imageList: List<Uri>) {
         images.clear()
         images.addAll(imageList)
         notifyDataSetChanged()
@@ -46,11 +40,9 @@ class ImagePreviewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val imageUri = images[position]
         holder.binding.imagePreview.setImageURI(imageUri)
-        holder.binding.imageTitle.text = Utils.formatImageString(imageUri.lastPathSegment.toString())
         holder.binding.delete.setOnClickListener {
-            Logger.debugLog("Position: $position")
             if (images.size > position) {
-                listener(position)
+                listener.invoke(position)
             }
         }
     }

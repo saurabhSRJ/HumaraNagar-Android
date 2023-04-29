@@ -21,6 +21,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.util.Util
 import com.google.android.gms.location.LocationServices
 import com.humara.nagar.Logger
 import com.humara.nagar.R
@@ -28,51 +29,47 @@ import com.humara.nagar.adapter.ImagePreviewAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentReportBinding
-import com.humara.nagar.databinding.ToolbarLayoutBinding
 import com.humara.nagar.permissions.PermissionFragment
 import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.utils.IntentUtils
 import com.humara.nagar.utils.PermissionUtils
+import com.humara.nagar.utils.Utils
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
-
-const val maxLength: Int = 300
 
 class ReportFragment : PermissionFragment() {
     companion object {
         const val TAG = "ReportFragment"
+        private const val CURRENT_PATH = "CURRENT_PATH"
+        private const val maxCommentLength: Int = 180
+        private const val maxImageAttachments = 2
+        private const val maxLocationLength = 70
     }
 
     private var _binding: FragmentReportBinding? = null
-    private var currentPhotoPath: String? = null
+    private lateinit var currentPhotoPath: String
     private val reportViewModel by viewModels<ReportViewModel> {
         ViewModelFactory()
     }
     private lateinit var imagePreviewAdapter: ImagePreviewAdapter
-    private val maxSelection = 2
-    private val imageList = mutableListOf<Uri>()
-    private lateinit var toolbar: ToolbarLayoutBinding
-    private var isLocationPicked = false
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     private val getContentLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val intent: Intent? = result?.data
-        val resultCode: Int = result.resultCode
-        if (resultCode != RESULT_OK || intent == null) return@registerForActivityResult
         if (isFragmentAlive()) {
-            onImageSelection(intent)
+            onImageSelection(result?.data)
         }
     }
 
     private val takeCameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val resultCode: Int = result.resultCode
-        if (resultCode != RESULT_OK || context == null) return@registerForActivityResult
+        if (result.resultCode != RESULT_OK || context == null) {
+            Toast.makeText(context, "No image clicked", Toast.LENGTH_SHORT).show()
+            return@registerForActivityResult
+        }
         if (isFragmentAlive()) {
             onImageCapture()
         }
@@ -80,6 +77,9 @@ class ReportFragment : PermissionFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentReportBinding.inflate(inflater, container, false)
+        savedInstanceState?.run {
+            currentPhotoPath = getString(CURRENT_PATH, "")
+        }
         initViewModelObservers()
         initView()
         return binding.root
@@ -104,7 +104,6 @@ class ReportFragment : PermissionFragment() {
                 .setText(resources.getString(R.string.trackYourPastComplaints))
                 .setBalloonAnimation(BalloonAnimation.FADE)
                 .build()
-
             getUserPreference().historyToolTipCounter = historyToolTipCounter + 1
             balloon.showAlignBottom(binding.includedToolbar.rightIcon)
         }
@@ -112,60 +111,66 @@ class ReportFragment : PermissionFragment() {
 
     private fun initViewModelObservers() {
         reportViewModel.run {
-            enableSubmitButtonLiveData.observe(viewLifecycleOwner) {
-                binding.btnSubmit.isEnabled = it
+            getSubmitButtonState().observe(viewLifecycleOwner) { isEnabled ->
+                binding.btnSubmit.isEnabled = isEnabled
+            }
+            getImages().observe(viewLifecycleOwner) {
+                imagePreviewAdapter.setData(it)
+                binding.uploadImageRequired.isVisible = it.isEmpty()
             }
         }
     }
 
     private fun initView() {
         binding.run {
+            clForm.setOnClickListener { hideKeyboard() }
             addImageLayout.setOnClickListener {
                 showPictureDialog()
             }
             //Setting up the top app bar title
-            toolbar = includedToolbar
-            toolbar.toolbarTitle.text = resources.getString(R.string.reportIssueTitle)
-            toolbar.rightIconTV.apply {
-                text = resources.getString(R.string.history)
-                visibility = View.VISIBLE
+            includedToolbar.apply {
+                toolbarTitle.text = resources.getString(R.string.reportIssueTitle)
+                rightIconTv.text = resources.getString(R.string.history)
+                rightIcon.visibility = View.VISIBLE
+                rightIconIv.setImageResource(R.drawable.ic_history)
             }
             //Settings up list for spinners
-            inputCategory.setOptions(R.array.category_list)
-            inputLocality.setOptions(R.array.locality_list)
-            inputLocality.setRequiredInput(true)
-            inputComment.apply {
-                switchToMultiLined()
-                setMaxLength(maxLength)
-                setMultiLined(maxLength)
-            }
-            inputCategory.setUserInputListener {
-                reportViewModel.setCategory(it)
-            }
-            inputLocality.setUserInputListener {
-                reportViewModel.setLocality(it)
-            }
-            inputLocation.setLayoutListener(true) {
-                if (!isLocationPicked) {
-                    checkForLocationPermission()
+            inputCategory.apply {
+                setOptions(R.array.category_list)
+                setUserInputListener {
+                    reportViewModel.setCategory(it)
                 }
             }
-            inputLocation.setUserInputListener {
-                reportViewModel.setLocation(it)
+            inputLocality.apply {
+                setOptions(R.array.locality_list)
+                setUserInputListener {
+                    reportViewModel.setLocality(it)
+                }
             }
-            inputComment.setUserInputListener {
-                reportViewModel.setComment(it)
+            inputComment.apply {
+                switchToMultiLined(4, svForm)
+                setMaxLength(maxCommentLength)
+                setUserInputListener {
+                    reportViewModel.setComment(it)
+                }
             }
-            reportViewModel.inputImages.observe(viewLifecycleOwner) {
-                binding.uploadImageRequired.isVisible = it.isEmpty()
+            inputLocation.apply {
+                switchToMultiLined(2, svForm)
+                setMaxLength(maxLocationLength)
+                setLayoutListener(true) {
+                    if (isInputEmpty()) {
+                        checkForLocationPermission()
+                    }
+                }
+                setUserInputListener {
+                    reportViewModel.setLocation(it)
+                }
             }
-            imagePreviewAdapter = ImagePreviewAdapter {
-                imageList.removeAt(it)
-                imagePreviewAdapter.setData(imageList)
-                reportViewModel.setImageList(imageList)
+            imagePreviewAdapter = ImagePreviewAdapter { idx ->
+                reportViewModel.deleteImage(idx)
             }
             imagePreviewItemRCV.apply {
-                layoutManager = LinearLayoutManager(requireContext())
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 setHasFixedSize(false)
                 adapter = imagePreviewAdapter
             }
@@ -173,7 +178,7 @@ class ReportFragment : PermissionFragment() {
     }
 
     private fun showPictureDialog() {
-        if (imageList.size >= maxSelection) {
+        if (reportViewModel.imageUris.size >= maxImageAttachments) {
             Toast.makeText(requireContext(), resources.getString(R.string.imagePickingLimit), Toast.LENGTH_SHORT).show()
             return
         }
@@ -219,10 +224,10 @@ class ReportFragment : PermissionFragment() {
     private fun clickPicture() {
         val imageFile = createImageFile()
         val imageUri = FileProvider.getUriForFile(
-                requireContext(),
-                resources.getString(R.string.provider_name),
-                imageFile
-            )
+            requireContext(),
+            resources.getString(R.string.provider_name),
+            imageFile
+        )
         val intent: Intent = IntentUtils.getCameraIntent(requireContext(), imageUri)
         if (IntentUtils.hasIntent(requireContext(), intent)) {
             takeCameraLauncher.launch(intent)
@@ -231,9 +236,8 @@ class ReportFragment : PermissionFragment() {
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
+        return File.createTempFile("JPEG_${reportViewModel.imageUris.size + 1}", ".jpg", storageDir).apply {
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
         }
@@ -241,7 +245,7 @@ class ReportFragment : PermissionFragment() {
 
     @Suppress("DEPRECATION")
     private fun getAddress() {
-        showProgress(false)
+        showProgress(true)
         val client = LocationServices.getFusedLocationProviderClient(requireActivity())
         // Get the last known location. In some rare situations, this can be null.
         client.lastLocation.addOnSuccessListener { lastLocation ->
@@ -267,17 +271,15 @@ class ReportFragment : PermissionFragment() {
                 } finally {
                     hideProgress()
                     addresses?.get(0)?.let { address ->
-                        val addressLine = address.getAddressLine(0)
-                        val city = address.locality
-                        val state = address.adminArea
-                        val country = address.countryName
-                        val postalCode = address.postalCode
-                        Logger.debugLog(TAG, "Address:\nAddressLine-> $addressLine\nCity-> $city\nState-> $state\nCountry-> $country\nPostalCode-> $postalCode")
+                        val addressLine = Utils.findLargestPrefixSubstring(address.getAddressLine(0), maxLocationLength, ",")
+                        Logger.debugLog(TAG, "Address: $addressLine")
                         binding.inputLocation.setInput(addressLine)
-                        isLocationPicked = true
                         reportViewModel.setLocation(addressLine)
                     }
                 }
+            } ?: kotlin.run {
+                Toast.makeText(requireContext(), getString(R.string.location_detection_error_message), Toast.LENGTH_LONG).show()
+                hideProgress()
             }
         }
     }
@@ -297,39 +299,33 @@ class ReportFragment : PermissionFragment() {
     private fun onImageSelection(data: Intent?) {
         data?.clipData?.let { selectedImages ->
             val count = selectedImages.itemCount
-            if (count > maxSelection - imageList.size) {
-                Toast.makeText(
-                    requireContext(),
-                    resources.getString(R.string.imagePickingLimit),
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (count > maxImageAttachments - reportViewModel.imageUris.size) {
+                Toast.makeText(requireContext(), getString(R.string.imagePickingLimit), Toast.LENGTH_SHORT).show()
                 return
             }
             for (i in 0 until count) {
                 val imageUri = selectedImages.getItemAt(i).uri
                 imageUri?.let { uri ->
-                    imageList.add(uri)
-                    uri.path?.let { it ->
-                        Logger.debugLog("File name: ${File(it).name}")
-                    }
+                    reportViewModel.addImages(listOf(uri))
                 }
             }
-            imagePreviewAdapter.setData(imageList)
-            reportViewModel.setImageList(imageList)
         } ?: data?.data?.let {
-            imageList.add(it)
-            imagePreviewAdapter.addData(listOf(it))
-            reportViewModel.setImageList(imageList)
+            reportViewModel.addImages(listOf(it))
+        } ?: kotlin.run {
+            Toast.makeText(requireContext(), getString(R.string.no_image_selected), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun onImageCapture() {
-        currentPhotoPath?.let { path ->
-            val imageUri = Uri.fromFile(File(path))
-            imageList.add(imageUri)
-            imagePreviewAdapter.addData(listOf(imageUri))
-            reportViewModel.setImageList(imageList)
-        }
+        val imageUri = Uri.fromFile(File(currentPhotoPath))
+        Logger.debugLog(TAG, imageUri.toString())
+        reportViewModel.addImages(listOf(imageUri))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (this::currentPhotoPath.isInitialized)
+            outState.putString(CURRENT_PATH, currentPhotoPath)
     }
 
     override fun onDestroyView() {
