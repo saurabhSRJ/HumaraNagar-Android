@@ -96,7 +96,7 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         response.onSuccess {
             if (it.isEligibleToLogin) {
                 getUserPreference().mobileNumber = mobileNumber
-                it.passcode?.let {  getUserPreference().passCode = it }
+                it.passcode?.let { getUserPreference().passCode = it }
                 _successfulUserCheckLiveData.postValue(true)
             } else {
                 _successfulUserCheckLiveData.postValue(false)

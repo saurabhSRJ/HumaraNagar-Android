@@ -20,12 +20,11 @@ interface NetworkConstants {
             const val SIGNUP = "/signup"
             const val CONFIG = "/config"
             const val LOGOUT = "/logout"
+            const val COMPLAINT = "/complaint"
         }
     }
 
     interface NetworkQueryConstants {
-        companion object {
-
-        }
+        companion object
     }
 }

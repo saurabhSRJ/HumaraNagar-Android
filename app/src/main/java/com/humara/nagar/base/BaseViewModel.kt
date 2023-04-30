@@ -3,15 +3,15 @@ package com.humara.nagar.base
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.humara.nagar.NagarApp
 import com.humara.nagar.analytics.AnalyticsData
-import com.humara.nagar.network.*
+import com.humara.nagar.network.ApiError
+import com.humara.nagar.network.NetworkResponse
+import com.humara.nagar.network.onError
+import com.humara.nagar.network.onException
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.utils.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
 
 /**

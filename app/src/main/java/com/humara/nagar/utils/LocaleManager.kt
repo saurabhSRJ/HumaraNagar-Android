@@ -15,7 +15,7 @@ object LocaleManager {
         val language = (context.applicationContext as NagarApp).appSharedPreference.appLanguage
         val localeContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             updateResources(context, language)
-        }  else {
+        } else {
             updateResourcesLegacy(context, language)
         }
         return ContextWrapper(localeContext)

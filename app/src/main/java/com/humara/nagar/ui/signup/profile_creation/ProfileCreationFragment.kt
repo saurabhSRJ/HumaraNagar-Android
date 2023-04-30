@@ -1,23 +1,20 @@
 package com.humara.nagar.ui.signup.profile_creation
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
-import com.humara.nagar.base.BaseFragment
-import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseFragment
+import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentProfileCreationBinding
 import com.humara.nagar.ui.common.DatePickerDialogFragment
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.model.Gender
 import com.humara.nagar.utils.Utils
-import com.humara.nagar.utils.requestFocusAndShowKeyboard
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.showToast
 

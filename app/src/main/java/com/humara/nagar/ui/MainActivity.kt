@@ -46,6 +46,7 @@ class MainActivity : BaseActivity() {
                 override fun onPermissionGranted() {
                     //NA
                 }
+
                 override fun onPermissionDenied(permissions: List<String>) {
                     //NA
                 }

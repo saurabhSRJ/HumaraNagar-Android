@@ -7,7 +7,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.humara.nagar.Logger
@@ -19,6 +19,7 @@ import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
+import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
 import org.json.JSONException
 import org.json.JSONObject
@@ -111,20 +112,16 @@ abstract class BaseFragment : Fragment() {
     }
 
     open fun showErrorDialog(
-        header: String? = null,
-        message: String? = null,
+        title: String? = null,
+        subtitle: String? = null,
+        ctaText: String? = null,
+        @DrawableRes icon: Int? = null,
+        clickListener: GenericStatusDialog.StatusDialogClickListener? = null,
+        errorAction: () -> Unit = {},
+        dismissAction: () -> Unit = {},
     ) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(if (header.isNullOrEmpty()) getString(R.string.error) else header)
-        builder.setMessage(if (message.isNullOrEmpty()) getString(R.string.some_error_occoured) else message)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-        }
-        builder.setOnDismissListener {
-        }
-        builder.setCancelable(false)
-        val dialog = builder.create()
-        dialog.show()
+        val activity = getParentActivity<BaseActivity>()
+        activity?.showErrorDialog(title, subtitle, ctaText, icon, clickListener, errorAction, dismissAction)
     }
 
     /* Kotlin requires explicit modifiers for overridable members and overrides. Add open if you need function/member to be overridable by default they are final.

@@ -26,5 +26,5 @@
         android:id="@+id/navigation_certificates"
         android:name="com.humara.nagar.ui.certificates.CertificatesFragment"
         android:label="@string/certificates"
-        tools:layout="@layout/fragment_certificates"/>
+        tools:layout="@layout/fragment_certificates" />
 </navigation>

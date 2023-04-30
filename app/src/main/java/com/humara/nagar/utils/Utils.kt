@@ -1,5 +1,6 @@
 package com.humara.nagar.utils
 
+import android.content.res.Resources
 import android.os.Bundle
 import com.humara.nagar.constants.Constants
 
@@ -18,6 +19,27 @@ class Utils {
                 bundle.putString(key, value)
             }
             return bundle
+        }
+
+        /**
+         * Function which returns a modified string with consecutive whitespace characters replaced by a single space for [input] string.
+         */
+        fun replaceWhitespace(input: String): String {
+            return input.replace("\\s+".toRegex(), " ")
+        }
+
+        /**
+         * Returns Android screen width
+         */
+        fun getScreenWidth(): Int {
+            return Resources.getSystem().displayMetrics.widthPixels
+        }
+
+        /**
+         * Returns Android screen height excluding the navigation bar
+         */
+        fun getScreenHeight(): Int {
+            return Resources.getSystem().displayMetrics.heightPixels
         }
 
         /**

@@ -9,15 +9,15 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import com.humara.nagar.base.BaseFragment
-import com.humara.nagar.base.ViewModelFactory
-import com.humara.nagar.ui.signup.signup_or_login.model.WelcomeBannerModel
-import com.humara.nagar.ui.common.ViewPagerSwitcher
-import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseFragment
+import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentSignupOrLoginBinding
+import com.humara.nagar.ui.common.ViewPagerSwitcher
+import com.humara.nagar.ui.signup.OnBoardingViewModel
+import com.humara.nagar.ui.signup.signup_or_login.model.WelcomeBannerModel
 
 class SignupOrLoginFragment : BaseFragment() {
     private lateinit var binding: FragmentSignupOrLoginBinding

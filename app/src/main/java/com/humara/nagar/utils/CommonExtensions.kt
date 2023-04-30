@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
+import android.os.Bundle
 import android.os.Parcelable
 import android.text.Spannable
 import android.text.SpannableString
@@ -82,7 +83,7 @@ fun TextView.setStringWithColor(text: String, color: Int) {
  * An inline function to put the value into the shared preferences with their respective key.
  */
 inline fun <reified T> SharedPreferences.put(key: String, value: T) {
-    edit() {
+    edit {
         when (value) {
             is Boolean -> putBoolean(key, value)
             is Float -> putFloat(key, value)
@@ -143,4 +144,14 @@ fun ViewGroup.saveChildViewStates(): SparseArray<Parcelable> {
 
 fun ViewGroup.restoreChildViewStates(childViewStates: SparseArray<Parcelable>) {
     children.forEach { child -> child.restoreHierarchyState(childViewStates) }
+}
+
+inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getParcelableExtra(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+}
+
+inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getParcelable(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getParcelable(key) as? T
 }

@@ -141,7 +141,7 @@ open class PermissionFragment : BaseFragment() {
     }
 
     private fun getPermanentlyDeniedPermissionRequestMessage(permission: String): String {
-        val permissionName = when(permission) {
+        val permissionName = when (permission) {
             Manifest.permission.CAMERA -> getString(R.string.camera_permission)
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE -> getString(R.string.storage_permission)
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION -> getString(R.string.location_permission)

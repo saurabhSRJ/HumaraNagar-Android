@@ -19,5 +19,5 @@
     <item
         android:id="@+id/navigation_certificates"
         android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/certificates"/>
+        android:title="@string/certificates" />
 </menu>

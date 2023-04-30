@@ -3,7 +3,7 @@ package com.humara.nagar.ui.report
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Typeface
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
@@ -16,12 +16,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.util.Util
 import com.google.android.gms.location.LocationServices
 import com.humara.nagar.Logger
 import com.humara.nagar.R
@@ -31,33 +31,39 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentReportBinding
 import com.humara.nagar.permissions.PermissionFragment
 import com.humara.nagar.permissions.PermissionHandler
+import com.humara.nagar.ui.common.GenericStatusDialog
+import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.utils.IntentUtils
 import com.humara.nagar.utils.PermissionUtils
 import com.humara.nagar.utils.Utils
+import com.humara.nagar.utils.setNonDuplicateClickListener
+import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonSizeSpec
 import java.io.File
 import java.io.IOException
 import java.util.*
 
 class ReportFragment : PermissionFragment() {
-    companion object {
-        const val TAG = "ReportFragment"
-        private const val CURRENT_PATH = "CURRENT_PATH"
-        private const val maxCommentLength: Int = 180
-        private const val maxImageAttachments = 2
-        private const val maxLocationLength = 70
-    }
 
     private var _binding: FragmentReportBinding? = null
-    private lateinit var currentPhotoPath: String
     private val reportViewModel by viewModels<ReportViewModel> {
         ViewModelFactory()
     }
+    private lateinit var currentPhotoPath: String
     private lateinit var imagePreviewAdapter: ImagePreviewAdapter
-
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+
+    companion object {
+
+        const val TAG = "ReportFragment"
+        private const val CURRENT_PATH = "CURRENT_PATH"
+        private const val maxCommentLength: Int = 200
+        private const val maxImageAttachments = 2
+        private const val maxLocationLength = 70
+    }
 
     private val getContentLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (isFragmentAlive()) {
@@ -67,7 +73,7 @@ class ReportFragment : PermissionFragment() {
 
     private val takeCameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != RESULT_OK || context == null) {
-            Toast.makeText(context, "No image clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.no_image_clicked), Toast.LENGTH_SHORT).show()
             return@registerForActivityResult
         }
         if (isFragmentAlive()) {
@@ -90,34 +96,73 @@ class ReportFragment : PermissionFragment() {
         val historyToolTipCounter = getUserPreference().historyToolTipCounter
         if (historyToolTipCounter < 3) {
             val balloon = Balloon.Builder(requireContext())
+                .setWidth(BalloonSizeSpec.WRAP)
+                .setHeight(BalloonSizeSpec.WRAP)
+                .setPaddingHorizontal(8)
+                .setPaddingVertical(8)
+                .setMarginHorizontal(8)
+                .setTextSize(12f)
+                .setTextTypeface(Typeface.DEFAULT_BOLD)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.card_color))
+                .setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_4285F4))
+                .setText(resources.getString(R.string.trackYourPastComplaints))
                 .setArrowSize(10)
                 .setIsVisibleArrow(true)
-                .setArrowPosition(0.85f)
-                .setWidthRatio(0.65f)
-                .setHeight(56)
+                .setArrowPosition(0.50f)
+                .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
                 .setCornerRadius(4f)
-                .setAlpha(0.9f)
-                .setTextSize(14f)
-                .setAutoDismissDuration(5000L)
-                .setTextColor(Color.WHITE)
-                .setBackgroundColor(ResourcesCompat.getColor(resources, R.color.grey_4F4F4F, null))
-                .setText(resources.getString(R.string.trackYourPastComplaints))
-                .setBalloonAnimation(BalloonAnimation.FADE)
+                .setBalloonAnimation(BalloonAnimation.ELASTIC)
+                .setAutoDismissDuration(4000L)
+                .setLifecycleOwner(this)
                 .build()
-            getUserPreference().historyToolTipCounter = historyToolTipCounter + 1
             balloon.showAlignBottom(binding.includedToolbar.rightIcon)
         }
     }
 
     private fun initViewModelObservers() {
         reportViewModel.run {
-            getSubmitButtonState().observe(viewLifecycleOwner) { isEnabled ->
+            observeProgress(this, false)
+            observerException(this)
+            submitButtonStateData.observe(viewLifecycleOwner) { isEnabled ->
                 binding.btnSubmit.isEnabled = isEnabled
             }
-            getImages().observe(viewLifecycleOwner) {
+            imagesData.observe(viewLifecycleOwner) {
                 imagePreviewAdapter.setData(it)
                 binding.uploadImageRequired.isVisible = it.isEmpty()
             }
+            postComplaintStatusLiveData.observe(viewLifecycleOwner) { success ->
+                if (success) {
+                    showComplaintSuccessDialog()
+                } else {
+                    showErrorDialog(errorAction = { resetComplaintForm() }, dismissAction = { resetComplaintForm() })
+                }
+            }
+        }
+    }
+
+    private fun showComplaintSuccessDialog() {
+        GenericStatusDialog.show(parentFragmentManager,
+            StatusData(GenericStatusDialog.State.SUCCESS, getString(R.string.complaint_raised), getString(R.string.complaint_raised_subtitle), getString(R.string.track)),
+            object : GenericStatusDialog.StatusDialogClickListener {
+                override fun ctaClickListener() {
+                    resetComplaintForm() //todo: redirect to all complaints screen
+                }
+
+                override fun dismissClickListener() {
+                    super.dismissClickListener()
+                    resetComplaintForm()
+                }
+            })
+    }
+
+    private fun resetComplaintForm() {
+        binding.run {
+            inputCategory.setInput("")
+            inputLocality.setInput("")
+            inputComment.setInput("")
+            inputLocation.setInput("")
+            reportViewModel.deleteAllImages()
+            currentPhotoPath = ""
         }
     }
 
@@ -129,10 +174,17 @@ class ReportFragment : PermissionFragment() {
             }
             //Setting up the top app bar title
             includedToolbar.apply {
+                leftIcon.setOnClickListener {
+                    findNavController().navigateUp()
+                }
                 toolbarTitle.text = resources.getString(R.string.reportIssueTitle)
                 rightIconTv.text = resources.getString(R.string.history)
                 rightIcon.visibility = View.VISIBLE
+                rightIconTv.visibility = View.VISIBLE
                 rightIconIv.setImageResource(R.drawable.ic_history)
+                rightIcon.setOnClickListener {
+                    getUserPreference().historyToolTipCounter += 1
+                }
             }
             //Settings up list for spinners
             inputCategory.apply {
@@ -153,6 +205,7 @@ class ReportFragment : PermissionFragment() {
                 setUserInputListener {
                     reportViewModel.setComment(it)
                 }
+                setHint(getString(R.string.comments_short_hint, maxCommentLength))
             }
             inputLocation.apply {
                 switchToMultiLined(2, svForm)
@@ -174,6 +227,9 @@ class ReportFragment : PermissionFragment() {
                 setHasFixedSize(false)
                 adapter = imagePreviewAdapter
             }
+            btnSubmit.setNonDuplicateClickListener {
+                reportViewModel.postComplaint()
+            }
         }
     }
 
@@ -184,10 +240,7 @@ class ReportFragment : PermissionFragment() {
         }
         val pictureDialog = AlertDialog.Builder(requireContext())
         pictureDialog.setTitle(resources.getString(R.string.selectAction))
-        val pictureDialogItems = arrayOf(
-            resources.getString(R.string.selectFromGallery),
-            resources.getString(R.string.captureFromCamera)
-        )
+        val pictureDialogItems = arrayOf(resources.getString(R.string.selectFromGallery), resources.getString(R.string.captureFromCamera))
         pictureDialog.setItems(pictureDialogItems) { _, which ->
             when (which) {
                 0 -> choosePhotoFromGallery()
@@ -204,6 +257,7 @@ class ReportFragment : PermissionFragment() {
                 val intent = IntentUtils.getImageGalleryIntent()
                 getContentLauncher.launch(intent)
             }
+
             override fun onPermissionDenied(permissions: List<String>) {
                 //NA
             }
@@ -215,6 +269,7 @@ class ReportFragment : PermissionFragment() {
             override fun onPermissionGranted() {
                 clickPicture()
             }
+
             override fun onPermissionDenied(permissions: List<String>) {
                 //NA
             }
@@ -223,11 +278,7 @@ class ReportFragment : PermissionFragment() {
 
     private fun clickPicture() {
         val imageFile = createImageFile()
-        val imageUri = FileProvider.getUriForFile(
-            requireContext(),
-            resources.getString(R.string.provider_name),
-            imageFile
-        )
+        val imageUri = FileProvider.getUriForFile(requireContext(), resources.getString(R.string.provider_name), imageFile)
         val intent: Intent = IntentUtils.getCameraIntent(requireContext(), imageUri)
         if (IntentUtils.hasIntent(requireContext(), intent)) {
             takeCameraLauncher.launch(intent)
@@ -289,6 +340,7 @@ class ReportFragment : PermissionFragment() {
             override fun onPermissionGranted() {
                 getAddress()
             }
+
             override fun onPermissionDenied(permissions: List<String>) {
                 //TODO: Add a common helper dialog with message about permanently denied permission
                 Toast.makeText(requireContext(), getString(R.string.you_can_still_enter_location_manually), Toast.LENGTH_LONG).show()
@@ -317,15 +369,16 @@ class ReportFragment : PermissionFragment() {
     }
 
     private fun onImageCapture() {
-        val imageUri = Uri.fromFile(File(currentPhotoPath))
-        Logger.debugLog(TAG, imageUri.toString())
-        reportViewModel.addImages(listOf(imageUri))
+        if (this::currentPhotoPath.isInitialized && currentPhotoPath.isNotEmpty()) {
+            val imageUri = Uri.fromFile(File(currentPhotoPath))
+            Logger.debugLog(TAG, imageUri.toString())
+            reportViewModel.addImages(listOf(imageUri))
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (this::currentPhotoPath.isInitialized)
-            outState.putString(CURRENT_PATH, currentPhotoPath)
+        if (this::currentPhotoPath.isInitialized) outState.putString(CURRENT_PATH, currentPhotoPath)
     }
 
     override fun onDestroyView() {

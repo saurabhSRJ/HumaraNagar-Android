@@ -11,7 +11,10 @@
         <!--Toolbar-->
         <include
             android:id="@+id/includedToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             layout="@layout/toolbar_layout"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +68,7 @@
                     android:layout_marginTop="12dp"
                     app:header="@string/comment"
                     app:layout_constraintTop_toBottomOf="@id/input_location"
-                    app:minimumHeight="250" />
+                    app:minimumHeight="300" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/addImageLayout"
@@ -132,7 +135,7 @@
                     android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@+id/addImageLayout"
                     tools:listitem="@layout/image_preview_recyclerview_item"
-                    tools:itemCount="2"/>
+                    tools:itemCount="2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
