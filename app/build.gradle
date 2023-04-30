@@ -13,7 +13,7 @@ plugins {
  * The android block is where you configure all your Android-specific build options.
  */
 android {
-    def appId =  'com.humara.nagar'
+    def appId = 'com.humara.nagar'
     //The app's namespace. Used primarily to access app resources.
     namespace appId
     compileSdk rootProject.compileSdkVersion

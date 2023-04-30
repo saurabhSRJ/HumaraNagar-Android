@@ -19,7 +19,7 @@ object PermissionUtils {
 
     @JvmName("getNotificationPermissions1")
     private fun getNotificationPermissions(): Array<String> {
-        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             arrayOf()
@@ -69,10 +69,7 @@ object PermissionUtils {
     }
 
     fun hasPermission(context: Context, permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     }
 
     fun askPermissions(fragmentManager: FragmentManager, permissions: Array<String>, permissionHandler: PermissionHandler, isPermissionNecessary: Boolean = true) {

@@ -4,9 +4,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.humara.nagar.Logger
 import com.humara.nagar.databinding.ImagePreviewRecyclerviewItemBinding
-import com.humara.nagar.utils.Utils
 
 /**
  * Created by binay on 09,February,2023
@@ -24,8 +22,7 @@ class ImagePreviewAdapter(
     }
 
     class ViewHolder(val binding: ImagePreviewRecyclerviewItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-    }
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

@@ -8,7 +8,7 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.databinding.FragmentPendingApprovalBinding
 
-class PendingApprovalFragment: BaseFragment() {
+class PendingApprovalFragment : BaseFragment() {
     private lateinit var binding: FragmentPendingApprovalBinding
 
     companion object {

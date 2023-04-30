@@ -9,7 +9,7 @@ import com.humara.nagar.ui.signup.model.Gender
 import com.humara.nagar.ui.signup.model.User
 import com.humara.nagar.utils.UserDataValidator
 
-class ProfileCreationViewModel(application: Application, private val savedStateHandle: SavedStateHandle): BaseViewModel(application) {
+class ProfileCreationViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
     companion object {
         private const val USERNAME_KEY = "username"
         private const val PARENT_NAME_KEY = "parent"
@@ -18,6 +18,7 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
         private const val LOCALITY_KEY = "locality"
         private const val SUBMIT_BUTTON_KEY = "submit"
     }
+
     private val _invalidDateOfBirthLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val invalidDateOfBirthLiveData: LiveData<Boolean> = _invalidDateOfBirthLiveData
 

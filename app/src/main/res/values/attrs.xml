@@ -7,8 +7,8 @@
     <attr name="input" format="string" />
     <attr name="endIcon" format="integer" />
     <attr name="required_input" format="boolean" />
-    <attr name="options" format="reference"/>
-    <attr name="minimumHeight" format="integer"/>
+    <attr name="options" format="reference" />
+    <attr name="minimumHeight" format="integer" />
 
     <declare-styleable name="FormInputWithHeader">
         <attr name="header" />
@@ -24,11 +24,6 @@
 
     <declare-styleable name="FormSpinnerWithHeader">
         <attr name="header" />
-        <attr name="inputEnabled" />
-        <attr name="invalidInput" />
         <attr name="hint" />
-        <attr name="input" />
-        <attr name="endIcon" />
-        <attr name="required_input" />
     </declare-styleable>
 </resources>

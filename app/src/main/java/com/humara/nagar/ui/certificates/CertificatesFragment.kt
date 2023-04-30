@@ -38,5 +38,5 @@ class CertificatesFragment : BaseFragment() {
         _binding = null
     }
 
-    override fun getScreenName()= AnalyticsData.ScreenName.CERTIFICATES_FRAGMENT
+    override fun getScreenName() = AnalyticsData.ScreenName.CERTIFICATES_FRAGMENT
 }

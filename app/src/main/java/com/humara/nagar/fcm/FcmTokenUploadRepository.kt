@@ -7,7 +7,7 @@ import com.humara.nagar.constants.SharedPreferenceKeys
 import com.humara.nagar.network.BaseRepository
 import com.humara.nagar.utils.getUserSharedPreferences
 
-class FcmTokenUploadRepository(context: Context): BaseRepository(context) {
+class FcmTokenUploadRepository(context: Context) : BaseRepository(context) {
     /**
      * Get the push token using Firebase SDK and replace with existing token
      * when the user sign in/ sign up

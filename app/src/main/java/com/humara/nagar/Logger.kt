@@ -17,7 +17,7 @@ object Logger {
         }
     }
 
-    fun logException(tag: String, exception: Exception, logLevel: LogLevel, logToCrashlytics : Boolean = false) {
+    fun logException(tag: String, exception: Exception, logLevel: LogLevel, logToCrashlytics: Boolean = false) {
         when (logLevel) {
             LogLevel.DEBUG -> Log.d(tag, null, exception)
             LogLevel.ERROR -> Log.e(tag, null, exception)
@@ -31,6 +31,10 @@ object Logger {
     }
 
     enum class LogLevel {
-        DEBUG, ERROR, INFO, VERBOSE, WARN
+        DEBUG,
+        ERROR,
+        INFO,
+        VERBOSE,
+        WARN
     }
 }

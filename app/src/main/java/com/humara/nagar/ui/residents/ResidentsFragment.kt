@@ -41,5 +41,5 @@ class ResidentsFragment : BaseFragment() {
         _binding = null
     }
 
-    override fun getScreenName()= AnalyticsData.ScreenName.RESIDENTS_FRAGMENT
+    override fun getScreenName() = AnalyticsData.ScreenName.RESIDENTS_FRAGMENT
 }

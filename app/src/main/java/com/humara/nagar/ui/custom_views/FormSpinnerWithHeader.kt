@@ -5,9 +5,9 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.humara.nagar.R
@@ -15,14 +15,9 @@ import com.humara.nagar.databinding.ItemFormSpinnerWithHeaderBinding
 import com.humara.nagar.utils.restoreChildViewStates
 import com.humara.nagar.utils.saveChildViewStates
 
-
-class FormSpinnerWithHeader @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+class FormSpinnerWithHeader @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) {
     private lateinit var binding: ItemFormSpinnerWithHeaderBinding
-    private var isRequired: Boolean = true
+    private var isRestoredView = false
 
     init {
         initView(context, attrs)
@@ -33,69 +28,65 @@ class FormSpinnerWithHeader @JvmOverloads constructor(
         context.obtainStyledAttributes(attrs, R.styleable.FormSpinnerWithHeader).apply {
             try {
                 val header = getString(R.styleable.FormSpinnerWithHeader_header)
-                val inputEnabled = getBoolean(R.styleable.FormSpinnerWithHeader_inputEnabled, true)
                 val hint = getString(R.styleable.FormSpinnerWithHeader_hint)
-                val input = getString(R.styleable.FormSpinnerWithHeader_input)
-                val isRequired = getBoolean(R.styleable.FormSpinnerWithHeader_required_input, true)
+                val input = binding.spinnerTV.text.toString()
                 setHeader(header)
-                setInputEnabled(inputEnabled)
                 setHint(hint)
                 setInput(input)
-                setRequiredInput(isRequired)
-                if (isRequired) {
-                    binding.spinnerTV.doAfterTextChanged {
-                        val text = it.toString().trim()
-                        setRequiredInput(text.isEmpty())
-                    }
-                }
             } finally {
                 recycle()
             }
         }
     }
 
-    fun setHeader(header: String?) {
+    private fun setHeader(header: String?) {
         binding.tvHeader.text = header
     }
 
-    fun setInputEnabled(isEnabled: Boolean) {
-        binding.run {
-            spinnerTV.isEnabled = isEnabled
-            spinnerTV.setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    if (isEnabled) R.color.dark_grey_333333 else R.color.grey_828282
-                )
-            )
-        }
-    }
-
-    fun setHint(hint: String?) {
+    private fun setHint(hint: String?) {
         binding.spinnerTV.hint = hint
     }
 
     fun setInput(text: String?) {
         binding.spinnerTV.setText(text)
+        binding.tvRequiredAsterisk.isVisible = text.isNullOrEmpty()
     }
 
     fun setOptions(optionsArrayId: Int) {
         val options = context.resources.getStringArray(optionsArrayId)
         val adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, options)
-        binding.spinnerTV.setAdapter(adapter)
-    }
-
-    fun setRequiredInput(isRequired: Boolean) {
-        this.isRequired = isRequired
-        binding.tvRequiredAsterisk.isVisible = isRequired
-    }
-
-    fun setUserInputListener(listener: ((input: String) -> Unit)? = null) {
-        binding.spinnerTV.doAfterTextChanged {
-            val input = it.toString().trim()
-            listener?.invoke(input)
+        binding.spinnerTV.run {
+            setAdapter(adapter)
         }
     }
 
+    fun setUserInputListener(listener: ((input: String) -> Unit)? = null) {
+        binding.run {
+            spinnerTV.setOnItemClickListener { parent, _, position, _ ->
+                val input = parent.getItemAtPosition(position)
+                tvRequiredAsterisk.visibility = View.GONE
+                tvError.visibility = View.GONE
+                if (input is String) {
+                    listener?.invoke(input)
+                }
+            }
+            binding.spinnerTV.doAfterTextChanged {
+                if (isRestoredView) {
+                    isRestoredView = false
+                    tvRequiredAsterisk.isVisible = it.toString().trim().isEmpty()
+                } else {
+                    tvRequiredAsterisk.visibility = View.VISIBLE
+                    tvError.visibility = View.VISIBLE
+                    listener?.invoke("")
+                }
+            }
+        }
+    }
+
+    /**
+     * In order to save the state of a custom view in case of configuration changes or process death below steps are needed.
+     * Refer: https://www.netguru.com/blog/how-to-correctly-save-the-state-of-a-custom-view-in-android
+     */
     override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
         dispatchFreezeSelfOnly(container)
     }
@@ -105,13 +96,11 @@ class FormSpinnerWithHeader @JvmOverloads constructor(
     }
 
     override fun onSaveInstanceState(): Parcelable {
-        return FormState(
-            superSavedState = super.onSaveInstanceState(),
-            childrenStates = saveChildViewStates()
-        )
+        return FormState(superSavedState = super.onSaveInstanceState(), childrenStates = saveChildViewStates())
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
+        isRestoredView = true
         when (state) {
             is FormState -> {
                 super.onRestoreInstanceState(state.superSavedState)

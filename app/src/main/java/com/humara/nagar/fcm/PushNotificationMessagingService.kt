@@ -7,7 +7,7 @@ import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.utils.NotificationUtils
 import org.json.JSONObject
 
-class PushNotificationMessagingService: FirebaseMessagingService() {
+class PushNotificationMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         val pushPayload = remoteMessage.data
         if (pushPayload.isEmpty()) return

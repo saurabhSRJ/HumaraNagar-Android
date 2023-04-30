@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-class NetworkResponseCallAdapterFactory: CallAdapter.Factory() {
+class NetworkResponseCallAdapterFactory : CallAdapter.Factory() {
     override fun get(
         returnType: Type,
         annotations: Array<out Annotation>,
@@ -19,7 +19,7 @@ class NetworkResponseCallAdapterFactory: CallAdapter.Factory() {
         }
         // get the response type inside the `Call` type
         val callType = getParameterUpperBound(0, returnType as ParameterizedType)
-        if (getRawType(callType) !=  NetworkResponse::class.java) {
+        if (getRawType(callType) != NetworkResponse::class.java) {
             return null
         }
 

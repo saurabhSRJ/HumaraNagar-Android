@@ -3,12 +3,12 @@ package com.humara.nagar.network.retrofit
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import com.google.gson.GsonBuilder
+import com.humara.nagar.BuildConfig
 import com.humara.nagar.NagarApp
 import com.humara.nagar.constants.NetworkConstants.NetworkHeaderConstants.Companion.ACCEPT_LANGUAGE
 import com.humara.nagar.constants.NetworkConstants.NetworkHeaderConstants.Companion.ANDROID_VERSION
 import com.humara.nagar.constants.NetworkConstants.NetworkHeaderConstants.Companion.APP_VERSION
-import com.google.gson.GsonBuilder
-import com.humara.nagar.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -39,8 +39,8 @@ class RetrofitService private constructor(val application: Application) {
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: RetrofitService(context.applicationContext as Application)
                     .also {
-                    INSTANCE = it
-                }
+                        INSTANCE = it
+                    }
             }
     }
 

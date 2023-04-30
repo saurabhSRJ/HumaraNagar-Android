@@ -6,7 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
@@ -19,7 +19,9 @@ import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
+import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
+import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.utils.LocaleManager
 import org.json.JSONException
 import org.json.JSONObject
@@ -112,22 +114,35 @@ abstract class BaseActivity : AppCompatActivity() {
         showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
     }
 
-    fun showErrorDialog(
-        header: String? = null,
-        message: String? = null,
+    open fun showErrorDialog(
+        title: String? = null,
+        subtitle: String? = null,
+        ctaText: String? = null,
+        @DrawableRes icon: Int? = null,
+        clickListener: GenericStatusDialog.StatusDialogClickListener? = null,
+        errorAction: () -> Unit = {},
+        dismissAction: () -> Unit = {},
     ) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(if (header.isNullOrEmpty()) getString(R.string.error) else header)
-        builder.setMessage(if (message.isNullOrEmpty()) getString(R.string.some_error_occoured) else message)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-            dialogInterface.dismiss()
-        }
-        builder.setOnDismissListener {
-            finish()
-        }
-        builder.setCancelable(false)
-        val dialog = builder.create()
-        dialog.show()
+        GenericStatusDialog.show(
+            supportFragmentManager,
+            StatusData(
+                GenericStatusDialog.State.ERROR,
+                if (title.isNullOrEmpty()) getString(R.string.error) else title,
+                if (subtitle.isNullOrEmpty()) getString(R.string.some_error_occoured) else subtitle,
+                ctaText,
+                icon
+            ),
+            object : GenericStatusDialog.StatusDialogClickListener {
+                override fun ctaClickListener() {
+                    errorAction.invoke()
+                }
+
+                override fun dismissClickListener() {
+                    super.dismissClickListener()
+                    dismissAction.invoke()
+                }
+            }
+        )
     }
 
     protected fun showProgress(isDismissible: Boolean) {
