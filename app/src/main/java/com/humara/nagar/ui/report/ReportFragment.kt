@@ -134,7 +134,7 @@ class ReportFragment : PermissionFragment() {
                 if (success) {
                     showComplaintSuccessDialog()
                 } else {
-                    showErrorDialog(errorAction = { resetComplaintForm() }, dismissAction = { resetComplaintForm() })
+                    showErrorDialog()
                 }
             }
         }
@@ -169,9 +169,6 @@ class ReportFragment : PermissionFragment() {
     private fun initView() {
         binding.run {
             clForm.setOnClickListener { hideKeyboard() }
-            addImageLayout.setOnClickListener {
-                showPictureDialog()
-            }
             //Setting up the top app bar title
             includedToolbar.apply {
                 leftIcon.setOnClickListener {
@@ -199,14 +196,6 @@ class ReportFragment : PermissionFragment() {
                     reportViewModel.setLocality(it)
                 }
             }
-            inputComment.apply {
-                switchToMultiLined(4, svForm)
-                setMaxLength(maxCommentLength)
-                setUserInputListener {
-                    reportViewModel.setComment(it)
-                }
-                setHint(getString(R.string.comments_short_hint, maxCommentLength))
-            }
             inputLocation.apply {
                 switchToMultiLined(2, svForm)
                 setMaxLength(maxLocationLength)
@@ -218,6 +207,17 @@ class ReportFragment : PermissionFragment() {
                 setUserInputListener {
                     reportViewModel.setLocation(it)
                 }
+            }
+            inputComment.apply {
+                switchToMultiLined(4, svForm)
+                setMaxLength(maxCommentLength)
+                setUserInputListener {
+                    reportViewModel.setComment(it)
+                }
+                setHint(getString(R.string.comments_short_hint))
+            }
+            addImageLayout.setOnClickListener {
+                showPictureDialog()
             }
             imagePreviewAdapter = ImagePreviewAdapter { idx ->
                 reportViewModel.deleteImage(idx)
@@ -251,9 +251,26 @@ class ReportFragment : PermissionFragment() {
         dialog.show()
     }
 
+    private fun checkForLocationPermission() {
+        requestPermissions(PermissionUtils.locationPermissions, object : PermissionHandler {
+            override fun onPermissionGranted() {
+                getAddress()
+            }
+
+            override fun onPermissionDenied(permissions: List<String>) {
+                //TODO: Add a common helper dialog with message about permanently denied permission
+                Toast.makeText(requireContext(), getString(R.string.you_can_still_enter_location_manually), Toast.LENGTH_LONG).show()
+            }
+        }, isPermissionNecessary = false)
+    }
+
     private fun choosePhotoFromGallery() {
         requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(TAG, "fragment detached from the activity")
+                    return
+                }
                 val intent = IntentUtils.getImageGalleryIntent()
                 getContentLauncher.launch(intent)
             }
@@ -267,6 +284,10 @@ class ReportFragment : PermissionFragment() {
     private fun takePhotoFromCamera() {
         requestPermissions(PermissionUtils.cameraPermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(TAG, "Fragment detached from the activity")
+                    return
+                }
                 clickPicture()
             }
 
@@ -333,19 +354,6 @@ class ReportFragment : PermissionFragment() {
                 hideProgress()
             }
         }
-    }
-
-    private fun checkForLocationPermission() {
-        requestPermissions(PermissionUtils.locationPermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                getAddress()
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //TODO: Add a common helper dialog with message about permanently denied permission
-                Toast.makeText(requireContext(), getString(R.string.you_can_still_enter_location_manually), Toast.LENGTH_LONG).show()
-            }
-        }, isPermissionNecessary = false)
     }
 
     private fun onImageSelection(data: Intent?) {

@@ -23,10 +23,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/ActivityTheme"
-        tools:targetApi="32">
+        tools:targetApi="s">
 
         <provider
             android:name="androidx.core.content.FileProvider"

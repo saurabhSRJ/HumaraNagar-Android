@@ -139,7 +139,7 @@ class OnBoardingActivity : BaseActivity() {
         supportFragmentManager.commit {
             if (shouldShowEntryAndExitAnimations) setCustomAnimations(
                 if (shouldShowReverseEntryAnimation) R.anim.slide_in_from_left else R.anim.slide_in_from_right,
-                R.anim.slide_out_to_left
+                if (shouldShowReverseEntryAnimation) R.anim.slide_out_to_right else R.anim.slide_out_to_left
             )
             replace(R.id.container, fragmentToShow, tag)
         }

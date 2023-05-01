@@ -7,10 +7,20 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.Settings
 
 object IntentUtils {
     fun hasIntent(context: Context, intent: Intent): Boolean {
         return intent.resolveActivity(context.packageManager) != null
+    }
+
+    fun getAppSettingIntent(context: Context): Intent {
+        return Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", context.packageName, null)
+            addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+            addCategory(Intent.CATEGORY_DEFAULT)
+        }
     }
 
     fun getCameraIntent(context: Context, uri: Uri): Intent {

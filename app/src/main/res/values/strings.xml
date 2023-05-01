@@ -68,7 +68,7 @@
 
     <string name="ward_no_exampe">E12</string>
     <string name="pending_approval_message">You are not yet onboarded on Humara Nagar App. Please reach out to the municipal corporation of your ward to get you started.</string>
-    <string name="you_can_still_enter_location_manually">You can still enter location manually</string>
+    <string name="you_can_still_enter_location_manually">You permanently denied location permission. Please enter location manually</string>
     <string name="please_provide_requested_permission">Please provide requested permission</string>
     <string name="camera_permission_denied_message">Please grant Camera permission to take photo</string>
     <string name="storage_permission_denied_message">Please grant Storage permission to choose file</string>
