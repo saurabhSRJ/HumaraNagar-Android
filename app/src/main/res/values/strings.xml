@@ -60,11 +60,23 @@
     <string name="provider_name" translatable="false">com.example.provider</string>
     <string name="trackYourPastComplaints">Track Your Past Complaints</string>
     <string name="history">History</string>
+    <string name="past_complaints">Past Complaints</string>
+    <string name="all_complaints">All Complaints</string>
+    <string name="complaint_status">Complaint Status</string>
+    <string name="dateFormatPatternForImageName">yyyyMMdd_HHmmss</string>
+    <string name="anErrorOccurred">An error occurred, please try again</string>
+    <string name="successfullySent">Successfully sent</string>
+    <string name="saved">Saved successfully</string>
+    <string name="failed">Failed to save</string>
 
     <!-- Report Status Values -->
     <string name="sent">Sent</string>
     <string name="inprogress">In Progress</string>
     <string name="resolved">Resolved</string>
+    <string name="resolvedOn">Resolved on</string>
+    <string name="resolutionExpectedBy">Resolution expected by</string>
+    <string name="update">Update</string>
+    <string name="track">Track</string>
 
     <string name="ward_no_exampe">E12</string>
     <string name="pending_approval_message">You are not yet onboarded on Humara Nagar App. Please reach out to the municipal corporation of your ward to get you started.</string>
@@ -87,6 +99,25 @@
     <string name="complaint_raised_subtitle">We will do our best to resolve the issue</string>
     <string name="track">Track</string>
     <string name="invalid_input">Invalid input</string>
+    <string name="ticketID_example">E12</string>
+    <string name="complaint_sent_to_admin">Complaint sent to admin</string>
+
+    <string name="withdraw">Withdraw</string>
+    <string name="acknowledge">Acknowledge</string>
+    <string name="finish">Finish</string>
+    <string name="few_second_ago">Few seconds ago</string>
+    <string name="rate_this_service">Rate this service</string>
+    <string name="provide_more_details">Provide more details</string>
+    <string name="confirm">Confirm</string>
+    <string name="call">Call</string>
+    <string name="spouse_name">Spouse Name</string>
+    <string name="fathers_name">Father\'s Name</string>
+    <string name="age">Age</string>
+    <string name="house_no">House No</string>
+    <string name="voterid">Voter ID</string>
+    <string name="search">Search</string>
+    <string name="fellow_residents">Fellow Residents</string>
+    <string name="an_error_occurred">An error Occurred</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">

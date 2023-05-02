@@ -56,14 +56,16 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun initConfig() {
-        if (getUserPreference().isUserLoggedIn) {
-            appConfigViewModel.getAppConfig()
-        } else {
-            Handler(Looper.getMainLooper()).postDelayed({
-                OnBoardingActivity.startActivity(this, getScreenName())
-                finish()
-            }, 1000)
-        }
+        MainActivity.startActivity(this@SplashActivity, getScreenName())
+        finish()
+//        if (getUserPreference().isUserLoggedIn) {
+//            appConfigViewModel.getAppConfig()
+//        } else {
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                OnBoardingActivity.startActivity(this, getScreenName())
+//                finish()
+//            }, 1000)
+//        }
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.SPLASH_ACTIVITY

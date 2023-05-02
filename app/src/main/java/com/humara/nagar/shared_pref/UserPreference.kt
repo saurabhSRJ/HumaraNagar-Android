@@ -23,6 +23,10 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, 0)
         set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, value)
 
+    inline var isUserAdmin: Boolean
+        get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.ADMIN_USER, false)
+        set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.ADMIN_USER, value)
+
     inline var isUserLoggedIn: Boolean
         get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, false)
         set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, value)

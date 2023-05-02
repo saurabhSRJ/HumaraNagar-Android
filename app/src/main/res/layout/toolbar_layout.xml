@@ -55,7 +55,9 @@
                 android:textSize="12sp"
                 android:visibility="gone"
                 tools:text="History"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:visibility="gone"
+                tools:text="TextHere" />
 
         </LinearLayout>
 
