@@ -1,8 +1,8 @@
 package com.humara.nagar.ui.report.complaint_status
 
+import ApiService
 import android.content.Context
 import com.humara.nagar.network.BaseRepository
-import com.humara.nagar.network.retrofit.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

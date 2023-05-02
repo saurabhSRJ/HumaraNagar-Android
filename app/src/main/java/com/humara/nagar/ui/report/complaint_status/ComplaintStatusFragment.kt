@@ -86,7 +86,7 @@ class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListen
     }
 
     private fun initView() {
-        isUserAdmin = getUserPreference().isUserAdmin
+        isUserAdmin = getUserPreference().isAdminUser
         complaintId = args.complaintId
 
         binding.apply {

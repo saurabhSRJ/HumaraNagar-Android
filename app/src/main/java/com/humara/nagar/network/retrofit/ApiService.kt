@@ -2,7 +2,6 @@
 import com.humara.nagar.network.NetworkResponse
 import com.humara.nagar.ui.report.model.*
 import com.humara.nagar.ui.residents.model.FiltersResponse
-import com.humara.nagar.ui.residents.model.Residents
 import com.humara.nagar.ui.residents.model.ResidentsResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -10,9 +9,6 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface ApiService {
-
-    @GET("users")
-    suspend fun getUsers(): NetworkResponse<List<User>>
 
     @GET("16521ae4-340f-4119-936d-ad4d21996dce")
     suspend fun getComplaintStatus(): NetworkResponse<ComplaintStatus>

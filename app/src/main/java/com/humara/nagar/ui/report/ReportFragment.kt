@@ -306,7 +306,6 @@ class ReportFragment : PermissionFragment() {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)

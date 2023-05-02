@@ -52,7 +52,7 @@ class ComplaintsFragment : BaseFragment() {
 
     private fun initView() {
 
-        isCurrentUserAdmin = getUserPreference().isUserAdmin
+        isCurrentUserAdmin = getUserPreference().isAdminUser
 
         binding.apply {
 
@@ -63,14 +63,14 @@ class ComplaintsFragment : BaseFragment() {
             } else {
                 toolbar.toolbarTitle.text = resources.getString(R.string.past_complaints)
             }
-            toolbar.rightIconTV.apply {
+            toolbar.rightIconTv.apply {
                 text = resources.getString(R.string.history)
                 visibility = View.VISIBLE
             }
 
             //Set-up recyclerview and adapter
             recyclerView = complaintsRCV
-            complaintsAdapter = ComplaintsAdapter(getUserPreference().isUserAdmin) {
+            complaintsAdapter = ComplaintsAdapter(getUserPreference().isAdminUser) {
                 // Handle on click (Pass complain_id: String, when the API is completed)
                 val action =
                     ComplaintsFragmentDirections.actionComplaintsFragmentToComplaintStatusFragment(
