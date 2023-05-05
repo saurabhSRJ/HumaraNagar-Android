@@ -17,7 +17,7 @@ import com.humara.nagar.databinding.DialogGenericStatusBinding
 import com.humara.nagar.utils.Utils
 import com.humara.nagar.utils.parcelable
 import com.humara.nagar.utils.setNonDuplicateClickListener
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import kotlin.math.roundToInt
 
 class GenericStatusDialog private constructor() : DialogFragment() {

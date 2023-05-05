@@ -1,16 +1,16 @@
 package com.humara.nagar.permissions
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
-import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.base.BaseFragment
+import com.humara.nagar.ui.common.GenericAlertDialog
+import com.humara.nagar.utils.IntentUtils
 import com.humara.nagar.utils.PermissionUtils
 
 /**
@@ -27,9 +27,14 @@ open class PermissionFragment : BaseFragment() {
     private var isPermissionNecessary: Boolean = true
 
     // Activity result launcher for opening app settings
-    private val appSettingLauncher = registerForActivityResult(OpenAppSettings()) {
+    private val appSettingLauncher = registerForActivityResult(OpenAppSettings()) { information ->
+        this.deniedPermissionList = information.permissionList
+        this.handler = information.handler
         if (PermissionUtils.hasPermission(requireContext(), deniedPermissionList.last())) {
             handleGrantedPermission()
+        } else {
+            //TODO: Handle permanently denied permission not given from app settings
+            Logger.debugLog(TAG, "permission not granted")
         }
     }
 
@@ -107,27 +112,17 @@ open class PermissionFragment : BaseFragment() {
     }
 
     private fun showPermissionRationaleDialog(permission: String) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(getString(R.string.permission_required_title))
-            .setMessage(getPermissionGuideMessage(permission))
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                builder.create().dismiss()
-                singlePermissionLauncher.launch(permission)
-            }
-            .setCancelable(true)
-        builder.create().show()
+        GenericAlertDialog.show(requireContext(), getString(R.string.permission_required_title), getPermissionGuideMessage(permission),
+            isCancelable = true, getString(R.string.ok)) {
+            singlePermissionLauncher.launch(permission)
+        }
     }
 
     private fun openAppSettingToAskPermanentlyDeniedPermissions() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(getString(R.string.permission_required_title))
-            .setMessage(getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()))
-            .setPositiveButton(getString(R.string.grant_permission)) { _, _ ->
-                builder.create().dismiss()
-                appSettingLauncher.launch(requireContext().packageName)
-            }
-            .setCancelable(true)
-        builder.create().show()
+        GenericAlertDialog.show(requireContext(), getString(R.string.permission_required_title), getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()),
+            isCancelable = true, getString(R.string.grant_permission)) {
+            appSettingLauncher.launch(PermissionInformation(handler, deniedPermissionList, IntentUtils.getAppSettingIntent(requireContext())))
+        }
     }
 
     private fun getPermissionGuideMessage(permission: String): String {
@@ -150,20 +145,27 @@ open class PermissionFragment : BaseFragment() {
         return getString(R.string.permnanetly_denied_permission_message, permissionName)
     }
 
-    inner class OpenAppSettings : ActivityResultContract<String, Unit>() {
-        override fun createIntent(context: Context, input: String): Intent {
-            val uri = Uri.fromParts("package", input, null)
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            intent.data = uri
-            return intent
+    data class PermissionInformation(
+        val handler: PermissionHandler?,
+        val permissionList: MutableList<String>,
+        var intent: Intent
+    )
+
+    class OpenAppSettings : ActivityResultContract<PermissionInformation, PermissionInformation>() {
+        companion object {
+            private lateinit var information: PermissionInformation
         }
 
-        override fun parseResult(resultCode: Int, intent: Intent?) {
-            // This method is not used for this contract
+        override fun createIntent(context: Context, input: PermissionInformation): Intent {
+            information = input
+            return input.intent
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): PermissionInformation {
+            intent?.let { information.intent = it }
+            return information
         }
     }
 
     override fun getScreenName() = "Permission Fragment"
-
-    override fun shouldLogScreenView() = false
 }

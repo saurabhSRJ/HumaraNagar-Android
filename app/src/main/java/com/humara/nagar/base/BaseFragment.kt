@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.humara.nagar.Logger
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
@@ -19,7 +20,6 @@ import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
-import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
 import org.json.JSONException
 import org.json.JSONObject
@@ -116,12 +116,11 @@ abstract class BaseFragment : Fragment() {
         subtitle: String? = null,
         ctaText: String? = null,
         @DrawableRes icon: Int? = null,
-        clickListener: GenericStatusDialog.StatusDialogClickListener? = null,
-        errorAction: () -> Unit = {},
-        dismissAction: () -> Unit = {},
+        errorAction: () -> Unit = { findNavController().navigateUp() },
+        dismissAction: () -> Unit = { findNavController().navigateUp() },
     ) {
         val activity = getParentActivity<BaseActivity>()
-        activity?.showErrorDialog(title, subtitle, ctaText, icon, clickListener, errorAction, dismissAction)
+        activity?.showErrorDialog(title, subtitle, ctaText, icon, errorAction, dismissAction)
     }
 
     /* Kotlin requires explicit modifiers for overridable members and overrides. Add open if you need function/member to be overridable by default they are final.
@@ -144,8 +143,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     fun showKeyboard(editText: EditText) {
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 

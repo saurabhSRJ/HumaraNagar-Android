@@ -25,6 +25,8 @@ interface NetworkConstants {
     }
 
     interface NetworkQueryConstants {
-        companion object
+        companion object {
+            const val ID = "id"
+        }
     }
 }
