@@ -2,7 +2,6 @@ package com.humara.nagar.utils
 
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.net.Uri
@@ -31,13 +30,6 @@ class Utils {
                 bundle.putString(key, value)
             }
             return bundle
-        }
-
-        /**
-         * Function which returns a modified string with consecutive whitespace characters replaced by a single space for [input] string.
-         */
-        fun replaceWhitespace(input: String): String {
-            return input.replace("\\s+".toRegex(), " ")
         }
 
         /**
@@ -77,11 +69,6 @@ class Utils {
             return resultBuilder.toString().dropLast(separator.length)
         }
 
-        fun makeCallViaIntent(context: Context, phoneNumber: String) {
-            val intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:$phoneNumber")
-            context.startActivity(intent)
-        }
         fun saveMediaToStorage(bitmap: Bitmap, context: Context): Boolean {
             var success = false
             val filename = "${System.currentTimeMillis()}.jpg"
@@ -109,24 +96,6 @@ class Utils {
                 success = true
             }
             return success
-        }
-
-        fun toStringWithoutSpaces(inputString: String) : String {
-            val stringBuilder = StringBuilder()
-            for (char in inputString.toCharArray())
-                if (char.isDigit() or char.isLetter())
-                    stringBuilder.append(char)
-            return stringBuilder.toString()
-        }
-
-        fun showDotStringAfterLimitReached(length: Int, string: String) : String {
-            val stringBuilder = StringBuilder()
-            Logger.debugLog("string: $string")
-           for (i in 0 until length) {
-                stringBuilder.append(string[i])
-           }
-
-            return stringBuilder.append("...").toString()
         }
     }
 }

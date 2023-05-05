@@ -18,8 +18,7 @@ import java.net.HttpURLConnection
  * Base ViewModel for other view models. Provides some common functionality for error handling and api response processing
  * NOTE: Always call observerErrorAndException() function from the base activity/fragment for error handling to work
  */
-open class BaseViewModel(application: Application) :
-    AndroidViewModel(application) {
+open class BaseViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * LiveData to show progress in activity/fragment
      */
@@ -62,13 +61,11 @@ open class BaseViewModel(application: Application) :
      * Return User preference data(i.e user profile) being set and used throughout the app.
      * @return [UserPreference]
      */
-    protected fun getUserPreference(): UserPreference =
-        (getApplication() as NagarApp).userSharedPreference
+    protected fun getUserPreference(): UserPreference = (getApplication() as NagarApp).userSharedPreference
 
     /**
      * Return App preference being set and used throughout the app.
      * @return [AppPreference]
      */
-    protected fun getAppPreference(): AppPreference =
-        (getApplication() as NagarApp).appSharedPreference
+    protected fun getAppPreference(): AppPreference = (getApplication() as NagarApp).appSharedPreference
 }

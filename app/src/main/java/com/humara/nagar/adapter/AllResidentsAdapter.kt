@@ -8,9 +8,9 @@ import com.humara.nagar.R
 import com.humara.nagar.databinding.ResidentLayoutItemBinding
 import com.humara.nagar.ui.residents.model.Residents
 import com.humara.nagar.ui.signup.model.Gender
-import com.humara.nagar.utils.Utils
+import com.humara.nagar.utils.IntentUtils
+import com.humara.nagar.utils.StringUtils
 import java.util.*
-
 
 class AllResidentsAdapter(
     private val context: Context,
@@ -37,7 +37,7 @@ class AllResidentsAdapter(
             if (currentResident.spouseName?.isNotEmpty() == true) {
                 var spouseName = currentResident.spouseName.toString()
                 if (spouseName.length > maxStringLength) {
-                    spouseName = Utils.showDotStringAfterLimitReached(modifiedStringLength, spouseName)
+                    spouseName = StringUtils.showDotStringAfterLimitReached(modifiedStringLength, spouseName)
                 }
                 fatherNameDataTV.text = spouseName
                 fathernameTV.text = context.getString(R.string.spouse_name)
@@ -48,7 +48,7 @@ class AllResidentsAdapter(
                 //Make the string end with ... if it exceeds a length of 16
                 if (fatherName.length > maxStringLength) {
                     fatherName =
-                        Utils.showDotStringAfterLimitReached(modifiedStringLength, fatherName)
+                        StringUtils.showDotStringAfterLimitReached(modifiedStringLength, fatherName)
                 }
                 fatherNameDataTV.text = fatherName
             }
@@ -57,7 +57,7 @@ class AllResidentsAdapter(
 
             var locality = currentResident.locality.toString()
             if (locality.length > maxStringLength) {
-                locality = Utils.showDotStringAfterLimitReached(modifiedStringLength, locality)
+                locality = StringUtils.showDotStringAfterLimitReached(modifiedStringLength, locality)
             }
             localityDataTV.text = locality
             votedIdDataTV.text = currentResident.voterId
@@ -74,7 +74,7 @@ class AllResidentsAdapter(
                 listener(currentResident)
             }
             callComplaintInitiatorCard.setOnClickListener {
-                currentResident.phoneNumber?.let { it1 -> Utils.makeCallViaIntent(context, it1) }
+                currentResident.phoneNumber?.let { it1 -> context.startActivity(IntentUtils.getCallIntent(it1)) }
             }
         }
     }

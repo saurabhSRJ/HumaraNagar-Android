@@ -1,37 +1,44 @@
 package com.humara.nagar.utils
 
-
 import android.content.Context
 import com.humara.nagar.R
 
-
 object ComplaintsUtils {
-
-    enum class StateName(val currentState: String) {
+    enum class ComplaintState(val currentState: String) {
         SENT("sent"),
         IN_PROGRESS("inprogress"),
         RESOLVED("resolved"),
-        WITHDRAW("withdrawn");
+        WITHDRAWN("withdrawn");
 
         companion object {
-            fun getName(stateName: StateName, context: Context): String {
-                context.resources.apply {
-                    return when (stateName) {
-                        SENT -> this.getString(R.string.sent)
-                        IN_PROGRESS -> this.getString(R.string.inprogress)
-                        RESOLVED -> this.getString(R.string.resolved)
-                        WITHDRAW -> this.getString(R.string.withdraw)
-                    }
+            fun getName(state: String, context: Context): String {
+                return when (state) {
+                    SENT.currentState -> context.getString(R.string.sent)
+                    IN_PROGRESS.currentState -> context.getString(R.string.inprogress)
+                    RESOLVED.currentState -> context.getString(R.string.resolved)
+                    WITHDRAWN.currentState -> context.getString(R.string.withdrawn)
+                    else -> ""
+                }
+            }
+
+            fun getStateColor(state: String): Int {
+                return when (state) {
+                    SENT.currentState -> R.color.stroke_red
+                    IN_PROGRESS.currentState -> R.color.stroke_yellow
+                    RESOLVED.currentState -> R.color.stroke_green
+                    WITHDRAWN.currentState -> R.color.blue_4285F4
+                    else -> R.color.stroke_red
+                }
+            }
+
+            fun getCtaText(state: String, context: Context, isUserAdmin: Boolean, ratingPresent: Boolean): String {
+                return when (state) {
+                    SENT.currentState, IN_PROGRESS.currentState -> if (isUserAdmin) context.getString(R.string.update) else context.getString(R.string.track)
+                    RESOLVED.currentState, WITHDRAWN.currentState -> if (ratingPresent) context.getString(R.string.details) else context.getString(R.string.review)
+                    else -> ""
                 }
             }
         }
-    }
-
-    enum class StateColor(val color: Int) {
-        SENT(R.color.stroke_red),
-        IN_PROGRESS(R.color.stroke_yellow),
-        RESOLVED(R.color.stroke_green),
-        WITHDRAW(R.color.stroke_red);
     }
 
     enum class StateDrawable(val categoryName: String) {
@@ -47,7 +54,6 @@ object ComplaintsUtils {
                     DRAINAGE_SYSTEM -> R.drawable.street_animal_control
                     ROAD_MAINTENANCE -> R.drawable.road_repair
                     WATER_SUPPLY -> R.drawable.garbage_disposal
-
                 }
             }
         }

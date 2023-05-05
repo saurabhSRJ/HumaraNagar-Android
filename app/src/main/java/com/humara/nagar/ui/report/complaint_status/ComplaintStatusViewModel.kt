@@ -1,7 +1,9 @@
 package com.humara.nagar.ui.report.complaint_status
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.ApiError
@@ -9,65 +11,112 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.report.model.ComplaintStatus
 import com.humara.nagar.ui.report.model.StatusResponse
+import com.humara.nagar.utils.ComplaintsUtils
 import com.humara.nagar.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
-
-class ComplaintStatusViewModel(
-    application: Application
-) : BaseViewModel(application) {
+class ComplaintStatusViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
+    companion object {
+        private const val IMAGES_KEY = "images"
+        private const val RATING_KEY = "rating"
+        //Note: savedStateHandle can provide the navigation fragment arguments. Key should be same as mentioned in the navigation action
+        private const val COMPLAINT_ID = "complaint_id"
+    }
 
     private val repository = ComplaintStatusRepository(application)
-    val complaintStatusLiveData: MutableLiveData<ComplaintStatus> = MutableLiveData()
-    val acknowledgementLiveData: MutableLiveData<StatusResponse> = MutableLiveData()
-    val finishLiveData: MutableLiveData<StatusResponse> = MutableLiveData()
-    val withdrawLiveData: MutableLiveData<StatusResponse> = MutableLiveData()
-    val ratingLiveData: MutableLiveData<StatusResponse> = MutableLiveData()
-    val complaintStatsErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
-    val postAcknowledgeErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
-    val postFinishErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
-    val postWithdrawErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
-    val postRatingErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
+    private val _complaintStatusLiveData: MutableLiveData<ComplaintStatus> = MutableLiveData()
+    val complaintStatusLiveData: LiveData<ComplaintStatus> = _complaintStatusLiveData
+    private val _complaintStatusErrorLiveData: MutableLiveData<ApiError> by lazy { MutableLiveData() }
+    val complaintStatusErrorLiveData: LiveData<ApiError> = _complaintStatusErrorLiveData
+    private val _ratingSuccessLiveData: MutableLiveData<StatusResponse> = SingleLiveEvent()
+    val ratingSuccessLiveData: LiveData<StatusResponse> = _ratingSuccessLiveData
+    private val _ratingErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
+    val ratingErrorLiveData: LiveData<ApiError> = _ratingErrorLiveData
+    private val _withdrawSuccessLiveData: MutableLiveData<StatusResponse> = SingleLiveEvent()
+    val withdrawSuccessLiveData: LiveData<StatusResponse> = _withdrawSuccessLiveData
+    private val _withdrawErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
+    val withdrawErrorLiveData: LiveData<ApiError> = _withdrawErrorLiveData
+    private val _acknowledgementSuccessLiveData: MutableLiveData<StatusResponse> = SingleLiveEvent()
+    val acknowledgementSuccessLiveData: LiveData<StatusResponse> = _acknowledgementSuccessLiveData
+    private val _acknowledgementErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
+    val acknowledgementErrorLiveData: LiveData<ApiError> = _acknowledgementErrorLiveData
+    private val _finishComplaintSuccessLiveData: MutableLiveData<StatusResponse> = SingleLiveEvent()
+    val finishComplaintSuccessLiveData: LiveData<StatusResponse> = _finishComplaintSuccessLiveData
+    private val _finishComplaintErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
+    val finishComplaintErrorLiveData: LiveData<ApiError> = _finishComplaintErrorLiveData
 
-    fun getComplaintStatus() = viewModelScope.launch {
-        val response = processCoroutine({ repository.getComplaintStatus() })
+    val imageListData: LiveData<List<String>> = savedStateHandle.getLiveData(IMAGES_KEY, mutableListOf())
+    private val complaintId: String = savedStateHandle[COMPLAINT_ID]!! //null safety is ensured by safe args
+    val ratingData: LiveData<Int> = savedStateHandle.getLiveData(RATING_KEY, 0)
+    val rating: Int get() = ratingData.value ?: 0
+    private var state: String = ""
+
+    init {
+        getComplaintStatus(complaintId)
+    }
+
+    private fun getComplaintStatus(id: String) = viewModelScope.launch {
+        val response = processCoroutine({ repository.getComplaintStatus(id) })
         response.onSuccess {
-            complaintStatusLiveData.postValue(it)
+            _complaintStatusLiveData.postValue(it)
+            savedStateHandle[IMAGES_KEY] = it.images
+            updateRatingData(it.rating)
+            state = it.currentState
         }.onError {
-            complaintStatsErrorLiveData.postValue(it)
+            _complaintStatusErrorLiveData.postValue(it)
         }
     }
 
-    fun postAcknowledgementRequest(id: String, comment: String) = viewModelScope.launch {
-        val response = processCoroutine({ repository.postAcknowledge(id, comment)})
-        response.onSuccess {
-            acknowledgementLiveData.postValue(it)
-        }.onError {
-            postAcknowledgeErrorLiveData.postValue(it)
+    fun updateRatingData(rating: Int) {
+        savedStateHandle[RATING_KEY] = rating
+    }
+
+    fun onUserCommentReceived(comment: String, isUserAdmin: Boolean) {
+        if (isUserAdmin && state == ComplaintsUtils.ComplaintState.SENT.currentState) {
+            acknowledgeComplaint(comment)
+        } else if (isUserAdmin && state == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState) {
+            finishComplaint(comment)
+        } else if (isUserAdmin.not() && (state == ComplaintsUtils.ComplaintState.SENT.currentState || state == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState)) {
+            withdrawComplaint(comment)
+        } else if (isUserAdmin.not() && rating > 0) {
+            rateComplaintService(comment)
         }
     }
-    fun postFinishRequest(id: String, comment: String) = viewModelScope.launch {
-        val response = processCoroutine({ repository.postFinish(id, comment)})
+
+    private fun acknowledgeComplaint(comment: String) = viewModelScope.launch {
+        val response = processCoroutine({ repository.acknowledgeComplaint(complaintId, comment) })
         response.onSuccess {
-            finishLiveData.postValue(it)
+            _acknowledgementSuccessLiveData.postValue(it)
         }.onError {
-            postFinishErrorLiveData.postValue(it)
+            _acknowledgementErrorLiveData.postValue(it)
         }
     }
-    fun postWithdrawRequest(id: String, comment: String) = viewModelScope.launch {
-        val response = processCoroutine({ repository.postWithdraw(id, comment)})
+
+    private fun finishComplaint(comment: String) = viewModelScope.launch {
+        val response = processCoroutine({ repository.finishComplaint(complaintId, comment) })
         response.onSuccess {
-            withdrawLiveData.postValue(it)
+            _finishComplaintSuccessLiveData.postValue(it)
         }.onError {
-            postWithdrawErrorLiveData.postValue(it)
+            _finishComplaintErrorLiveData.postValue(it)
         }
     }
-    fun postRatingRequest(id: String, rating: Int) = viewModelScope.launch {
-        val response = processCoroutine({ repository.postRating(id, rating)})
+
+    private fun withdrawComplaint(comment: String) = viewModelScope.launch {
+        val response = processCoroutine({ repository.withdrawComplaint(complaintId, comment) })
         response.onSuccess {
-            ratingLiveData.postValue(it)
+            _withdrawSuccessLiveData.postValue(it)
         }.onError {
-            postRatingErrorLiveData.postValue(it)
+            _withdrawErrorLiveData.postValue(it)
+        }
+    }
+
+    private fun rateComplaintService(comment: String) = viewModelScope.launch {
+        val response = processCoroutine({ repository.rateComplaintService(complaintId, rating, comment) })
+        response.onSuccess {
+            _ratingSuccessLiveData.postValue(it)
+        }.onError {
+            _ratingErrorLiveData.postValue(it)
+            updateRatingData(0)
         }
     }
 }

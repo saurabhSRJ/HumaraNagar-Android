@@ -14,33 +14,20 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.databinding.FragmentFullImagePreviewBinding
 
-
 class FullImagePreviewFragment : BaseFragment() {
-
     private var _binding: FragmentFullImagePreviewBinding? = null
     private val binding get() = _binding!!
     private val args: FullImagePreviewFragmentArgs by navArgs()
     private lateinit var fullImagePreviewAdapter: FullImagePreviewAdapter
     private lateinit var thumbnailAdapter: ThumbnailAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFullImagePreviewBinding.inflate(layoutInflater, container, false)
-
-        binding.close.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
         initView()
-
         return binding.root
     }
 
     private fun initView() {
-
         binding.apply {
             fullImagePreviewAdapter = FullImagePreviewAdapter(requireContext())
             fullImagePreviewVP.adapter = fullImagePreviewAdapter
@@ -60,8 +47,10 @@ class FullImagePreviewFragment : BaseFragment() {
                     binding.thumbnailRCV.smoothScrollToPosition(position)
                 }
             })
+            close.setOnClickListener {
+                findNavController().navigateUp()
+            }
         }
-
         fullImagePreviewAdapter.addImages(args.imagesList.toList())
         thumbnailAdapter.addImages(args.imagesList.toList())
     }

@@ -1,11 +1,10 @@
 package com.humara.nagar.ui.residents
 
-import ApiService
 import android.content.Context
 import com.humara.nagar.network.BaseRepository
+import com.humara.nagar.network.retrofit.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
 
 class ResidentsRepository(context: Context) : BaseRepository(context) {
 

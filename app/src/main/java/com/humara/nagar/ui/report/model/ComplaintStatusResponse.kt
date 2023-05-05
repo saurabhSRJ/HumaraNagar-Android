@@ -1,6 +1,7 @@
 package com.humara.nagar.ui.report.model
 
 import com.google.gson.annotations.SerializedName
+import com.humara.nagar.utils.ComplaintsUtils
 
 /*  #2
     Type: GET
@@ -8,26 +9,29 @@ import com.google.gson.annotations.SerializedName
 */
 
 data class ComplaintStatus(
-    @SerializedName("phone_number") val phone_number: String? = null,
-    @SerializedName("resident_name") val resident_name: String? = null,
+    @SerializedName("current_state") var currentState: String,
+    @SerializedName("phone_number") val phoneNumber: String? = null,
+    @SerializedName("resident_name") val residentName: String? = null,
     @SerializedName("location") val location: String? = null,
     @SerializedName("comments") val comments: String? = null,
     @SerializedName("images") val images: ArrayList<String> = arrayListOf(),
     @SerializedName("category") val category: String? = null,
     @SerializedName("locality") val locality: String? = null,
-    @SerializedName("is_resolved") val is_resolved: Boolean? = null,
-    @SerializedName("trackingInfo") val trackingInfo: TrackingInfo? = TrackingInfo(),
-    @SerializedName("rating") val rating: Int? = null
-)
+    @SerializedName("tracking_info") val trackingInfo: TrackingInfo? = null,
+    @SerializedName("rating") val rating: Int = 0
+) {
+    fun showRatingSection(): Boolean {
+        return currentState == ComplaintsUtils.ComplaintState.RESOLVED.currentState || currentState == ComplaintsUtils.ComplaintState.WITHDRAWN.currentState
+    }
+}
 
 data class TrackingInfo(
-    @SerializedName("current_state") var currentState : String? = null,
     @SerializedName("states") var states: ArrayList<States> = arrayListOf()
 )
 
 data class States(
-    @SerializedName("state_text") val state_text: String?  = null,
-    @SerializedName("state_subtext") val state_subtext: String?  = null,
-    @SerializedName("state_comment") val state_comment: String?  = null,
-    @SerializedName("Is_finished") val Is_finished: Boolean? = null
+    @SerializedName("state_text") val stateText: String? = null,
+    @SerializedName("state_subtext") val stateSubtext: String? = null,
+    @SerializedName("state_comment") val stateComment: String? = null,
+    @SerializedName("is_finished") val isFinished: Boolean = false
 )

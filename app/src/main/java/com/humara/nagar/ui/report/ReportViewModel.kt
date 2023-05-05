@@ -10,7 +10,7 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.report.model.PostComplaintRequest
 import com.humara.nagar.utils.SingleLiveEvent
-import com.humara.nagar.utils.Utils
+import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -97,7 +97,7 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
 
     private fun getComplaintObjectWithCollectedData(): PostComplaintRequest {
         return PostComplaintRequest(category = categoryData.value!!, locality = localityData.value!!, phone_number = getUserPreference().mobileNumber,
-            location = Utils.replaceWhitespace(locationData.value!!.trim()), comments = Utils.replaceWhitespace(commentData.value!!.trim()), images = getImageMultipart())
+            location = StringUtils.replaceWhitespaces(locationData.value!!.trim()), comments = StringUtils.replaceWhitespaces(commentData.value!!.trim()), images = getImageMultipart())
     }
 
     private fun getImageMultipart(): ArrayList<MultipartBody.Part> {

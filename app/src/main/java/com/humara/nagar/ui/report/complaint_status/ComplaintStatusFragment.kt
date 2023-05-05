@@ -4,262 +4,222 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat.getColorStateList
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.humara.nagar.Logger
+import com.google.android.material.snackbar.Snackbar
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ComplaintStatusAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentComplaintStatusBinding
-import com.humara.nagar.databinding.ToolbarLayoutBinding
-import com.humara.nagar.utils.Utils
+import com.humara.nagar.ui.report.complaints.ComplaintsFragment
+import com.humara.nagar.ui.report.model.ComplaintStatus
+import com.humara.nagar.utils.*
 
-
-class ComplaintStatusFragment : BaseFragment(), AdminDialogFragment.DialogListener {
+class ComplaintStatusFragment : BaseFragment() {
+    companion object {
+        const val COMMENT_KEY = "comment"
+        const val COMMENT_RESULT_REQUEST = "COMMENT_RESULT_REQUEST"
+    }
 
     private var _binding: FragmentComplaintStatusBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
     private val complaintStatusViewModel by viewModels<ComplaintStatusViewModel> {
         ViewModelFactory()
     }
-    private lateinit var complaintStatusAdapter: ComplaintStatusAdapter
+    private val complaintStatusAdapter: ComplaintStatusAdapter by lazy {
+        ComplaintStatusAdapter()
+    }
     private val args: ComplaintStatusFragmentArgs by navArgs()
-    private var complaintId: String? = null
 
-    private var isUserAdmin = false
-    private lateinit var toolbar: ToolbarLayoutBinding
-    private val binding get() = _binding!!
-    private var currentState = ""
-    private val imageList = mutableListOf<String>()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentComplaintStatusBinding.inflate(layoutInflater, container, false)
-
-        initViewModelObservers()
-        initView()
-
-        binding.apply {
-
-            buttonCTA.setOnClickListener {
-                showCustomDialog()
-            }
-
-            imageView.setOnClickListener {
-                val action = ComplaintStatusFragmentDirections.actionComplaintStatusFragmentToImagePreviewFragment(
-                    imageList.toList().toTypedArray()
-                )
-                findNavController().navigate(action)
-            }
-
-            includedToolbar.leftIcon.setOnClickListener {
-                findNavController().navigateUp()
-            }
-
-            callComplaintInitiatorCard.setOnClickListener {
-                Utils.makeCallViaIntent(requireContext(), complaintStatusViewModel.complaintStatusLiveData.value?.phone_number.toString())
-            }
-
-            ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-                Logger.debugLog("Rating bar result $rating")
-
-                if (rating.toInt() != 0) {
-                    complaintId?.let {
-                        complaintStatusViewModel.postRatingRequest(
-                            it,
-                            rating.toInt()
-                        )
-                    }
-                }
-            }
-        }
-
         return binding.root
     }
 
-    private fun initView() {
-        isUserAdmin = getUserPreference().isAdminUser
-        complaintId = args.complaintId
-
-        binding.apply {
-            //Setting up the top app bar title
-            toolbar = includedToolbar
-            toolbar.toolbarTitle.text = resources.getString(R.string.complaint_status)
-
-            if (isUserAdmin) {
-                complaintInitiatorDetailsLayout.visibility = View.VISIBLE
-                buttonCTA.text = resources.getString(R.string.acknowledge)
-                currentState = resources.getString(R.string.acknowledge)
-            } else {
-                complaintInitiatorDetailsLayout.visibility = View.GONE
-                currentState = resources.getString(R.string.withdraw)
-            }
-
-            //Set-up recyclerview and adapter
-            complaintStatusAdapter = ComplaintStatusAdapter(requireContext())
-            recyclerView.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = complaintStatusAdapter
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModelObservers()
+        initView()
+        // result listener for getting the comment from dialog fragment
+        setFragmentResultListener(COMMENT_RESULT_REQUEST) { _, bundle ->
+            val comment = StringUtils.replaceWhitespaces(bundle.getString(COMMENT_KEY) ?: "")
+            complaintStatusViewModel.onUserCommentReceived(comment, getUserPreference().isAdminUser)
         }
-
     }
 
     private fun initViewModelObservers() {
         complaintStatusViewModel.run {
             observeProgress(this, false)
             observerException(this)
-
-            if (this.complaintStatusLiveData.value == null) {
-                //Api call was never made
-                getComplaintStatus()
+            ratingData.observe(viewLifecycleOwner) {
+                binding.ratingBar.rating = it.toFloat()
             }
             complaintStatusLiveData.observe(viewLifecycleOwner) {
-
-                binding.apply {
-
-                    categoryTV.text = it.category
-                    localityTV.text = it.locality
-                    locationTV.text = it.location
-                    complaintInitiatorNameTV.text = it.resident_name
-                    descriptionTV.text = it.comments
-                    complaintIdTV.text = args.complaintId
-                    imageList.apply {
-                        clear()
-                        addAll(it.images)
-                    }
-
-                    it.trackingInfo?.let {
-                        complaintStatusAdapter.addData(it.states)
-                    }
-                }
+                handleComplaintStatusUI(it)
             }
-            complaintStatsErrorLiveData.observe(viewLifecycleOwner) {
-                val errorString = StringBuilder()
-                errorString.append(resources.getString(R.string.anErrorOccurred))
-                    .append(" ${it.message}")
-                Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show()
-                //Might need to put findNavController().navigateUp() -> But as it goes back, it re-calls API for All complaints
+            complaintStatusErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog()
             }
-            acknowledgementLiveData.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    resources.getString(R.string.successfullySent),
-                    Toast.LENGTH_SHORT
-                ).show()
-                onSuccess("", true)
+            acknowledgementSuccessLiveData.observe(viewLifecycleOwner) {
+                showSnackBar(getString(R.string.complaint_acknowledgment_sent))
+                setComplaintsListReload()
+                findNavController().navigateUp()
             }
-            postAcknowledgeErrorLiveData.observe(viewLifecycleOwner) {
-                val errorString = StringBuilder()
-                errorString.append(resources.getString(R.string.anErrorOccurred))
-                    .append(" ${it.message}")
-                Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show()
+            acknowledgementErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(errorAction = {}, dismissAction = {})
             }
-            finishLiveData.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    resources.getString(R.string.successfullySent),
-                    Toast.LENGTH_SHORT
-                ).show()
-                onSuccess("", true)
+            finishComplaintSuccessLiveData.observe(viewLifecycleOwner) {
+                showSnackBar(getString(R.string.complaint_resolved))
+                setComplaintsListReload()
+                findNavController().navigateUp()
             }
-            postFinishErrorLiveData.observe(viewLifecycleOwner) {
-                val errorString = StringBuilder()
-                errorString.append(resources.getString(R.string.anErrorOccurred))
-                    .append(" ${it.message}")
-                Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show()
+            finishComplaintErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(errorAction = {}, dismissAction = {})
             }
-            withdrawLiveData.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    resources.getString(R.string.successfullySent),
-                    Toast.LENGTH_SHORT
-                ).show()
-                onSuccess("", true)
+            withdrawSuccessLiveData.observe(viewLifecycleOwner) {
+                showSnackBar(getString(R.string.complaint_successfully_withdrawn))
+                setComplaintsListReload()
+                findNavController().navigateUp()
             }
-            postWithdrawErrorLiveData.observe(viewLifecycleOwner) {
-                val errorString = StringBuilder()
-                errorString.append(resources.getString(R.string.anErrorOccurred))
-                    .append(" ${it.message}")
-                Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show()
+            withdrawErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(errorAction = {}, dismissAction = {})
             }
-            ratingLiveData.observe(viewLifecycleOwner) {
-                Toast.makeText(
-                    requireContext(),
-                    resources.getString(R.string.successfullySent),
-                    Toast.LENGTH_SHORT
-                ).show()
+            ratingSuccessLiveData.observe(viewLifecycleOwner) {
+                showSnackBar(getString(R.string.thank_you_for_the_rating))
+                showRatingSubmittedUI()
+                setComplaintsListReload()
             }
-            postRatingErrorLiveData.observe(viewLifecycleOwner) {
-                val errorString = StringBuilder()
-                errorString.append(resources.getString(R.string.anErrorOccurred))
-                    .append(" ${it.message}")
-                Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show()
+            ratingErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(errorAction = {}, dismissAction = {})
                 binding.ratingBar.rating = 0F
             }
         }
     }
 
-    private fun showCustomDialog() {
-        val dialog = AdminDialogFragment()
-        dialog.setCustomDialogListener(this)
-        dialog.show(requireActivity().supportFragmentManager, "DialogFragment")
+    private fun setComplaintsListReload() {
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(ComplaintsFragment.RELOAD_COMPLAINTS_LIST, true)
     }
 
-    override fun onDataEntered(data: String) {
-        onSuccess(data.trim(), false)
+    private fun showSnackBar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun onSuccess(dialogInput: String, isCalledAfterAPISuccess: Boolean) {
+    private fun handleComplaintStatusUI(response: ComplaintStatus) {
+        binding.run {
+            nsvMain.visibility = View.VISIBLE
+            categoryTV.setVisibilityAndText(response.category)
+            localityTV.setVisibilityAndText(response.locality)
+            locationTV.setVisibilityAndText(response.location)
+            if (getUserPreference().isAdminUser) {
+                response.residentName?.let { name ->
+                    complaintInitiatorDetailsLayout.visibility = View.VISIBLE
+                    complaintInitiatorNameTV.text = name
+                }
+            }
+            descriptionTV.setVisibilityAndText(response.comments)
+            complaintIdTV.text = args.complaintId
+            response.trackingInfo?.let {
+                complaintStatusAdapter.setData(it.states)
+            }
+            if (getUserPreference().isAdminUser) {
+                handleAdminResponse(response)
+            } else {
+                handleUserResponse(response)
+            }
+        }
+    }
 
-        val requestAcknowledge = resources.getString(R.string.acknowledge)
-        val requestFinish = resources.getString(R.string.finish)
-        val requestWithdraw = resources.getString(R.string.withdraw)
+    private fun initView() {
+        binding.apply {
+            //Setting up the top app bar title
+            includedToolbar.toolbarTitle.text = resources.getString(R.string.complaint_status)
+            includedToolbar.leftIcon.setOnClickListener {
+                findNavController().navigateUp()
+            }
+            recyclerView.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = complaintStatusAdapter
+            }
+            imageView.setOnClickListener {
+                complaintStatusViewModel.imageListData.value?.let { images ->
+                    if (images.isNotEmpty()) {
+                        val action = ComplaintStatusFragmentDirections.actionComplaintStatusToImagePreview(
+                            images.toTypedArray()
+                        )
+                        findNavController().navigate(action)
+                    }
+                }
+            }
+            buttonCTA.setOnClickListener {
+                showComplaintStatusUpdateDialog()
+            }
+            callComplaintInitiatorCard.setNonDuplicateClickListener {
+                complaintStatusViewModel.complaintStatusLiveData.value?.phoneNumber?.let { number ->
+                    context?.startActivity(IntentUtils.getCallIntent(number))
+                }
+            }
+        }
+    }
 
-        when (binding.buttonCTA.text) {
-            requestAcknowledge -> {
-                if (isCalledAfterAPISuccess) {
-                    binding.buttonCTA.apply {
-                        text = requestFinish
-                        backgroundTintList =
-                            AppCompatResources.getColorStateList(context, R.color.stroke_green)
-                    }
+    private fun showComplaintStatusUpdateDialog() {
+        val action = ComplaintStatusFragmentDirections.actionComplaintStatusFragmentToComplaintStatusUpdateDialogFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun handleAdminResponse(response: ComplaintStatus) {
+        binding.run {
+            if (response.showRatingSection()) {
+                ratingBar.apply {
+                    visibility = View.VISIBLE
+                    setIsIndicator(true)
+                }
+            } else {
+                buttonCTA.visibility = View.VISIBLE
+                if (response.currentState == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState) {
+                    buttonCTA.text = getString(R.string.finish)
+                    buttonCTA.backgroundTintList = getColorStateList(requireContext(), R.color.stroke_green)
                 } else {
-                    complaintId?.let {
-                        complaintStatusViewModel.postAcknowledgementRequest(it, dialogInput)
-                    }
+                    buttonCTA.text = getString(R.string.acknowledge)
                 }
             }
-            requestFinish -> {
-                if (isCalledAfterAPISuccess) {
-                    binding.rateServiceLayout.visibility = View.GONE
-                    binding.buttonCTA.visibility = View.GONE
+        }
+    }
+
+    private fun handleUserResponse(response: ComplaintStatus) {
+        binding.run {
+            if (response.showRatingSection()) {
+                if (complaintStatusViewModel.rating > 0) {
+                    showRatingSubmittedUI()
                 } else {
-                    complaintId?.let {
-                        complaintStatusViewModel.postFinishRequest(it, dialogInput)
+                    rateThisServiceTV.text = getString(R.string.rate_this_service)
+                    ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+                        if (rating.toInt() != 0) {
+                            complaintStatusViewModel.updateRatingData(rating.toInt())
+                            //TODO: show a rating dialog instead of generic comment dialog
+                            showComplaintStatusUpdateDialog()
+                        }
                     }
                 }
+                rateThisServiceTV.visibility = View.VISIBLE
+                ratingBar.visibility = View.VISIBLE
+            } else {
+                buttonCTA.visibility = View.VISIBLE
+                buttonCTA.text = getString(R.string.withdraw)
             }
-            requestWithdraw -> {
-                if (isCalledAfterAPISuccess) {
-                    binding.apply {
-                        buttonCTA.visibility = View.GONE
-                        rateServiceLayout.visibility = View.VISIBLE
-                    }
-                } else {
-                    complaintId?.let {
-                        complaintStatusViewModel.postWithdrawRequest(it, dialogInput)
-                    }
-                }
-            }
+        }
+    }
+
+    private fun showRatingSubmittedUI() {
+        binding.run {
+            ratingBar.setIsIndicator(true)
+            rateThisServiceTV.text = getString(R.string.you_rated_this_service)
         }
     }
 

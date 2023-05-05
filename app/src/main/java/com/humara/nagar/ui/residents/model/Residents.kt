@@ -2,7 +2,6 @@ package com.humara.nagar.ui.residents.model
 
 import com.google.gson.annotations.SerializedName
 
-
 data class Residents(
     @SerializedName("name") var name: String? = null,
     @SerializedName("fathers_name") var fathersName: String? = null,

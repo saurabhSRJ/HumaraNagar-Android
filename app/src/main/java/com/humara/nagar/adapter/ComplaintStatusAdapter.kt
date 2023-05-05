@@ -1,61 +1,57 @@
 package com.humara.nagar.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.R
 import com.humara.nagar.databinding.StepperItemBinding
 import com.humara.nagar.ui.report.model.States
 
-
-class ComplaintStatusAdapter(
-    private val context: Context
-) : RecyclerView.Adapter<ComplaintStatusAdapter.ViewHolder>() {
-
+class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewHolder>() {
     private val stepperList = mutableListOf<States>()
 
-    fun addData(steps: List<States>) {
-        val currentSize = stepperList.size
+    fun setData(steps: List<States>) {
+        stepperList.clear()
         stepperList.addAll(steps)
-        notifyItemRangeInserted(currentSize, stepperList.size)
+        notifyItemRangeInserted(0, stepperList.size)
     }
-
-    class ViewHolder(val binding: StepperItemBinding) :
-        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            StepperItemBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false
-            )
-        )
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentStep = stepperList[position]
-        val stateText = currentStep.state_text
-        val stateSubText = currentStep.state_subtext
-        val stateIsFinished = currentStep.Is_finished
-
-        holder.binding.apply {
-            textTV.text = stateText
-            subTextTV.text = stateSubText
-
-            if (position == stepperList.size - 1)
-                barView.visibility = View.GONE
-
-            if (stateIsFinished == true) {
-                val color = ResourcesCompat.getColor(context.resources, R.color.stroke_green, null)
-                checkIV.setImageResource(R.drawable.stepper_complete)
-                textTV.setTextColor(color)
-                if (position < stepperList.size - 1 && stepperList[position + 1].Is_finished == true)
-                    barView.setBackgroundResource(R.drawable.solid_complete_bar)
-            }
-        }
+        return ViewHolder(StepperItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount() = stepperList.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(stepperList[position])
+    }
+
+    inner class ViewHolder(val binding: StepperItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: States) {
+            binding.run {
+                textTV.text = item.stateText
+                subTextTV.text = item.stateSubtext
+                setUIBasedOnState(binding, item.isFinished)
+                //hide vertical line for last item
+                barView.isVisible = adapterPosition < (stepperList.size - 1)
+            }
+        }
+
+        private fun setUIBasedOnState(binding: StepperItemBinding, isFinished: Boolean) {
+            binding.run {
+                val color = ContextCompat.getColor(root.context, if (isFinished) R.color.stroke_green else R.color.grey_4F4F4F)
+                val typeFace = ResourcesCompat.getFont(root.context, if (isFinished) R.font.open_sans_semibold else R.font.open_sans_regular)
+                textTV.setTextColor(color)
+                textTV.typeface = typeFace
+                checkIV.setImageResource(if (isFinished) R.drawable.stepper_complete else R.drawable.stepper_incomplete)
+                if (adapterPosition < stepperList.size - 1 && stepperList[adapterPosition + 1].isFinished)
+                    barView.setBackgroundResource(R.drawable.solid_complete_bar)
+                else
+                    barView.setBackgroundResource(R.drawable.stepper_dotted_bar)
+            }
+        }
+    }
 }

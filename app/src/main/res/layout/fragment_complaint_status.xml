@@ -16,47 +16,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ScrollView
-            android:id="@+id/scrollView2"
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/black_with_opacity_20"
+            app:layout_constraintTop_toBottomOf="@id/includedToolbar" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsvMain"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingBottom="20dp"
-            app:layout_goneMarginBottom="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/rate_this_service_TV"
-            app:layout_constraintTop_toBottomOf="@+id/includedToolbar">
+            android:visibility="gone"
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@+id/divider1"
+            app:layout_constraintBottom_toTopOf="@id/cl_bottom"
+            tools:visibility="visible">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/complaintStatus_ConstraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20dp">
-
-                <View
-                    android:id="@+id/view1"
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp"
-                    android:background="@color/black_with_opacity_20"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="0dp" />
+                android:layout_height="wrap_content">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="16dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="20dp"
-                    app:layout_constraintTop_toBottomOf="@+id/view1"
-                    tools:layout_editor_absoluteX="-142dp">
+                    android:paddingVertical="20dp"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/categoryTV"
-                        style="@style/OpenSansSemiBold20sp"
+                        style="@style/OpenSansSemiBold18sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="5dp"
-                        android:layout_marginTop="10dp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/grey_4F4F4F"
                         app:layout_constraintEnd_toStartOf="@+id/cardTickedID"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -64,13 +59,13 @@
 
                     <TextView
                         android:id="@+id/localityTV"
-                        style="@style/OpenSansRegular16sp"
+                        style="@style/OpenSansRegular14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="4dp"
                         android:textColor="@color/grey_4F4F4F"
-                        app:layout_constraintEnd_toEndOf="@+id/categoryTV"
-                        app:layout_constraintStart_toStartOf="@+id/categoryTV"
+                        app:layout_constraintEnd_toStartOf="@+id/cardTickedID"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/categoryTV"
                         tools:text="@string/locality" />
 
@@ -78,11 +73,8 @@
                         android:id="@+id/cardTickedID"
                         android:layout_width="45dp"
                         android:layout_height="35dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="5dp"
-                        app:cardBackgroundColor="@color/card_color"
+                        app:cardBackgroundColor="@color/grey_F1F1F1"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
@@ -92,10 +84,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:clickable="false"
-                            android:enabled="false"
-                            android:textColor="@color/black"
-                            tools:text="@string/ticketID_example" />
+                            android:textColor="@color/grey_4F4F4F"
+                            tools:text="E12" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -103,69 +93,69 @@
                         android:id="@+id/imageView"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:layout_marginTop="12dp"
-                        app:layout_constraintStart_toStartOf="@+id/localityTV"
-                        app:layout_constraintTop_toBottomOf="@+id/localityTV"
-                        app:srcCompat="@drawable/garbage_disposal" />
+                        android:layout_marginTop="16dp"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/garbage_disposal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/localityTV" />
 
                     <TextView
                         android:id="@+id/descriptionTV"
-                        style="@style/OpenSansRegular14sp"
+                        style="@style/OpenSansRegular12sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
+                        android:layout_marginStart="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="6"
                         android:textColor="@color/grey_4F4F4F"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView"
                         app:layout_constraintEnd_toEndOf="@+id/cardTickedID"
                         app:layout_constraintStart_toEndOf="@+id/imageView"
                         app:layout_constraintTop_toTopOf="@+id/imageView"
-                        tools:text="@string/premission_required_description" />
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:layout_constraintStart_toStartOf="@+id/imageView"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView"
-                        app:srcCompat="@drawable/ic_location_on" />
+                        tools:text="Garbage is lying on the road for last three days. Please send some one to clear this asap Garbage is lying on the road for last three days. Please send some one to clear this asap" />
 
                     <TextView
                         android:id="@+id/locationTV"
-                        style="@style/OpenSansSemiBold16sp"
+                        style="@style/OpenSansSemiBold14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:textColor="@color/black"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                        android:layout_marginTop="16dp"
+                        android:drawablePadding="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/black_with_opacity_70"
+                        app:drawableStartCompat="@drawable/ic_location_on"
                         app:layout_constraintEnd_toEndOf="@+id/descriptionTV"
-                        app:layout_constraintStart_toEndOf="@+id/imageView2"
-                        app:layout_constraintTop_toTopOf="@+id/imageView2"
-                        tools:text="@string/location" />
+                        app:layout_constraintStart_toStartOf="@+id/imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView"
+                        tools:text="Opposite Jain Glass house" />
 
                     <androidx.constraintlayout.widget.Group
                         android:id="@+id/complaint_initiator_details_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         app:constraint_referenced_ids="complaintInitiatorIV, complaintInitiatorNameTV, callComplaintInitiatorCard"
-                        app:layout_constraintStart_toStartOf="@+id/imageView2" />
+                        app:layout_constraintStart_toStartOf="@+id/locationTV"
+                        tools:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/complaintInitiatorIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        app:layout_constraintStart_toStartOf="@+id/imageView2"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                        android:layout_marginTop="16dp"
+                        android:adjustViewBounds="true"
+                        app:layout_constraintStart_toStartOf="@+id/locationTV"
+                        app:layout_constraintTop_toBottomOf="@+id/locationTV"
                         app:srcCompat="@drawable/man_user_icon" />
 
                     <TextView
                         android:id="@+id/complaintInitiatorNameTV"
-                        style="@style/OpenSansSemiBold16sp"
+                        style="@style/OpenSansSemiBold14sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:textColor="@color/black"
+                        android:layout_marginStart="12dp"
+                        android:textColor="@color/black_with_opacity_70"
                         app:layout_constraintBottom_toBottomOf="@+id/complaintInitiatorIV"
                         app:layout_constraintStart_toEndOf="@+id/complaintInitiatorIV"
                         app:layout_constraintTop_toTopOf="@+id/complaintInitiatorIV"
@@ -175,10 +165,9 @@
                         android:id="@+id/callComplaintInitiatorCard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginStart="12dp"
                         app:cardBackgroundColor="@color/white"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
+                        app:cardCornerRadius="12dp"
                         app:cardUseCompatPadding="true"
                         app:layout_constraintBottom_toBottomOf="@+id/complaintInitiatorNameTV"
                         app:layout_constraintStart_toEndOf="@+id/complaintInitiatorNameTV"
@@ -195,14 +184,14 @@
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginVertical="10dp"
-                                app:srcCompat="@drawable/ic_call_24"
+                                app:srcCompat="@drawable/ic_call"
                                 app:tint="@color/blue_4285F4" />
 
                             <TextView
                                 style="@style/OpenSansSemiBold14sp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
+                                android:layout_marginStart="4dp"
                                 android:text="@string/call"
                                 android:textColor="@color/blue_4285F4" />
 
@@ -213,97 +202,73 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
-                    android:id="@+id/view2"
+                    android:id="@+id/divider2"
                     android:layout_width="match_parent"
-                    android:layout_height="4dp"
+                    android:layout_height="2dp"
                     android:background="@color/black_with_opacity_20"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-                    tools:layout_editor_absoluteX="0dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="16dp"
-                    app:layout_constraintTop_toBottomOf="@+id/view2"
-                    tools:layout_editor_absoluteX="0dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="15dp"
-                        android:orientation="vertical"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:itemCount="3"
-                        tools:listitem="@layout/stepper_item" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintTop_toBottomOf="@+id/divider2"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/stepper_item" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-        <Button
-            android:id="@+id/buttonCTA"
-            style="@style/negative_red_button"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="@font/open_sans_semibold"
-            android:text="@string/withdraw"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:background="@color/white"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="20dp"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <!--LinearLayout
-            android:id="@+id/rateThisServiceLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-            app:layout_constraintStart_toStartOf="@+id/scrollView2"-->
+            <Button
+                android:id="@+id/buttonCTA"
+                style="@style/negative_red_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="@string/withdraw"
+                tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/rate_service_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:constraint_referenced_ids="rate_this_service_TV, ratingBar"/>
+            <TextView
+                android:id="@+id/rate_this_service_TV"
+                style="@style/OpenSansSemiBold16sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center"
+                android:textColor="@color/dark_grey_333333"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/ratingBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="@string/rate_this_service" />
 
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:minHeight="28dp"
+                android:numStars="5"
+                android:stepSize="1"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/rate_this_service_TV"
-            style="@style/OpenSansSemiBold20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text="@string/rate_this_service"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@+id/ratingBar"
-            app:layout_constraintEnd_toEndOf="@+id/ratingBar"
-            app:layout_constraintStart_toStartOf="@+id/ratingBar" />
-
-        <com.humara.nagar.ui.custom_views.SvgRatingBar
-            android:id="@+id/ratingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="30dp"
-            android:minHeight="28dp"
-            android:numStars="5"
-            android:progressDrawable="@drawable/ratingbar_full"
-            android:rating="0"
-            android:stepSize="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-            app:layout_constraintStart_toStartOf="@+id/scrollView2" />
-
-        <!--/LinearLayout-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,9 +7,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:background="@android:color/transparent"
         android:minHeight="?android:attr/actionBarSize"
-        android:paddingVertical="4dp"
-        android:background="@android:color/transparent">
+        android:paddingBottom="4dp">
 
         <ImageView
             android:id="@+id/leftIcon"
@@ -35,11 +36,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
-            android:visibility="gone"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="4dp"
-            tools:visibility="visible">
+            android:foreground="?android:attr/selectableItemBackground"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:ignore="UnusedAttribute">
 
             <ImageView
                 android:id="@+id/rightIconIv"
@@ -55,8 +58,6 @@
                 android:fontFamily="@font/open_sans_semibold"
                 android:textColor="@color/grey_4F4F4F"
                 android:textSize="12sp"
-                android:visibility="gone"
-                tools:visibility="visible"
                 tools:text="TextHere" />
 
         </LinearLayout>

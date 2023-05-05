@@ -3,149 +3,100 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@color/white">
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp">
 
-        <androidx.cardview.widget.CardView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="10dp"
+            android:paddingBottom="16dp"
+            tools:ignore="RtlSymmetry">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="16dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/garbage_disposal" />
+
+            <Button
+                android:id="@+id/state_btn"
+                style="@style/ComplaintStateButton"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="12dp"
+                android:clickable="false"
+                app:layout_constraintEnd_toEndOf="@+id/imageView"
+                app:layout_constraintStart_toStartOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                tools:strokeColor="@color/stroke_red"
+                tools:text="@string/sent"
+                tools:textColor="@color/stroke_red" />
+
+            <TextView
+                android:id="@+id/categoryTV"
+                style="@style/OpenSansBold16sp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:paddingHorizontal="5dp"
-                android:paddingBottom="12dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:textColor="@color/grey_4F4F4F"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/imageView"
+                tools:text="Garbage Disposal" />
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/garbage_disposal" />
+            <TextView
+                android:id="@+id/localityTV"
+                style="@style/OpenSansSemiBold14sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/grey_828282"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@+id/categoryTV"
+                app:layout_constraintStart_toStartOf="@+id/categoryTV"
+                app:layout_constraintTop_toBottomOf="@+id/categoryTV"
+                tools:text="Deep Chand Mandi" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/state_btn"
-                    style="@style/OpenSansSemiBold12sp"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/stroke_button"
-                    android:clickable="false"
-                    tools:text="@string/sent"
-                    android:textAllCaps="false"
-                    android:textColor="@color/stroke_red"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView"
-                    app:layout_constraintStart_toStartOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            <TextView
+                android:id="@+id/resolvedTV"
+                style="@style/OpenSansRegular12sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/grey_4F4F4F"
+                app:layout_constraintEnd_toEndOf="@+id/localityTV"
+                app:layout_constraintStart_toStartOf="@+id/localityTV"
+                app:layout_constraintTop_toBottomOf="@+id/localityTV"
+                tools:text="Resolution expected by 24th june" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardTickedID"
-                    android:layout_width="45dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="3dp"
-                    app:cardBackgroundColor="@color/card_color"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+            <Button
+                android:id="@+id/cta_button"
+                style="@style/primary_blue_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:enabled="true"
+                android:padding="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/state_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/resolvedTV"
+                app:layout_constraintTop_toTopOf="@+id/state_btn"
+                tools:text="Track" />
 
-                    <TextView
-                        android:id="@+id/complaintIdTV"
-                        style="@style/OpenSansSemiBold12sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:clickable="false"
-                        android:enabled="false"
-                        tools:text="@string/ticketID_example"
-                        android:textColor="@color/black" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:id="@+id/categoryTV"
-                    style="@style/OpenSansBold16sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="12dp"
-                    android:textColor="@color/grey_4F4F4F"
-                    app:layout_constraintEnd_toStartOf="@+id/cardTickedID"
-                    app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toTopOf="@+id/imageView"
-                    tools:text="Garbage Disposal" />
-
-                <TextView
-                    android:id="@+id/localityTV"
-                    style="@style/OpenSansSemiBold14sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/grey_828282"
-                    app:layout_constraintEnd_toEndOf="@+id/cardTickedID"
-                    app:layout_constraintStart_toStartOf="@+id/categoryTV"
-                    app:layout_constraintTop_toBottomOf="@+id/categoryTV"
-                    tools:text="Deep Chand Mandi" />
-
-                <TextView
-                    android:id="@+id/resolvedTV"
-                    style="@style/OpenSansRegular14sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/grey_4F4F4F"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintEnd_toEndOf="@+id/localityTV"
-                    app:layout_constraintStart_toStartOf="@+id/localityTV"
-                    app:layout_constraintTop_toBottomOf="@+id/localityTV"
-                    tools:text="Resolution expected by 24th june" />
-
-                <Button
-                    android:id="@+id/cta_button"
-                    style="@style/primary_blue_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:enabled="true"
-                    android:padding="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@+id/state_btn"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/resolvedTV"
-                    app:layout_constraintTop_toTopOf="@+id/state_btn"
-                    tools:text="Track" />
-
-                <com.humara.nagar.ui.custom_views.SvgRatingBar
-                    android:id="@+id/ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="28dp"
-                    android:numStars="5"
-                    android:progressDrawable="@drawable/ratingbar_full"
-                    android:rating="0"
-                    android:stepSize="1"
-                    android:isIndicator="true"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/state_btn"
-                    app:layout_constraintStart_toStartOf="@+id/resolvedTV"
-                    app:layout_constraintTop_toTopOf="@+id/state_btn" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
 </layout>

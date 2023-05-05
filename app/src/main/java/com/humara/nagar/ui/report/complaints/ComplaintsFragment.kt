@@ -4,104 +4,101 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ComplaintsAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentComplaintsBinding
-import com.humara.nagar.databinding.ToolbarLayoutBinding
+import com.humara.nagar.ui.report.model.ComplaintDetails
 
 class ComplaintsFragment : BaseFragment() {
+    companion object {
+        const val RELOAD_COMPLAINTS_LIST = "reload_list"
+    }
 
     private var _binding: FragmentComplaintsBinding? = null
-    private lateinit var toolbar: ToolbarLayoutBinding
     private val complaintsViewModel by viewModels<ComplaintsViewModel> {
         ViewModelFactory()
     }
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var complaintsAdapter: ComplaintsAdapter
-    private var isCurrentUserAdmin = false
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private val complaintsAdapter: ComplaintsAdapter by lazy {
+        ComplaintsAdapter(getUserPreference().isAdminUser) {
+            //Handle on click (Pass complain_id: String)
+            val action = ComplaintsFragmentDirections.actionComplaintsToComplaintStatus(it)
+            findNavController().navigate(action)
+        }
+    }
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentComplaintsBinding.inflate(layoutInflater, container, false)
-
-        initViewModelObservers()
-        initView()
-
-        //Back button
-        binding.includedToolbar.leftIcon.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
         return binding.root
     }
 
-    private fun initView() {
-
-        isCurrentUserAdmin = getUserPreference().isAdminUser
-
-        binding.apply {
-
-            //Setting up the top app bar title
-            toolbar = includedToolbar
-            if (isCurrentUserAdmin) {
-                toolbar.toolbarTitle.text = resources.getString(R.string.all_complaints)
-            } else {
-                toolbar.toolbarTitle.text = resources.getString(R.string.past_complaints)
-            }
-            toolbar.rightIconTv.apply {
-                text = resources.getString(R.string.history)
-                visibility = View.VISIBLE
-            }
-
-            //Set-up recyclerview and adapter
-            recyclerView = complaintsRCV
-            complaintsAdapter = ComplaintsAdapter(getUserPreference().isAdminUser) {
-                // Handle on click (Pass complain_id: String, when the API is completed)
-                val action =
-                    ComplaintsFragmentDirections.actionComplaintsFragmentToComplaintStatusFragment(
-                        it
-                    )
-                findNavController().navigate(action)
-            }
-            recyclerView.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = complaintsAdapter
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModelObservers()
+        initView()
+        findNavController().currentBackStackEntry?.savedStateHandle?.run {
+            getLiveData<Boolean>(RELOAD_COMPLAINTS_LIST).observe(viewLifecycleOwner) { shouldReload ->
+                Logger.debugLog("reload data: $shouldReload")
+                if (shouldReload) {
+                    complaintsViewModel.getAllComplaints()
+                    // To handle a result only once, you must call remove() on the SavedStateHandle to clear the result.
+                    // If you do not remove the result, the LiveData will be triggered each time we come back to this fragment
+                    remove<Boolean>(RELOAD_COMPLAINTS_LIST)
+                }
             }
         }
     }
 
     private fun initViewModelObservers() {
-        //Initialize ViewModel Observers here
         complaintsViewModel.run {
             observeProgress(this, false)
             observerException(this)
-            getAllComplaints()
-
             allComplaintLiveData.observe(viewLifecycleOwner) {
-                complaintsAdapter.clearAllData()
-                complaintsAdapter.addData(it.complaints)
+                val list = it.complaints
+                if (list.isEmpty()) {
+                    showNoComplaintsView()
+                } else {
+                    showAllComplaints(list)
+                }
             }
             errorLiveData.observe(viewLifecycleOwner) {
-                val errorString = StringBuilder()
-                errorString.append(resources.getString(R.string.anErrorOccurred))
-                    .append(" ${it.message}")
-                Toast.makeText(requireContext(), errorString, Toast.LENGTH_SHORT).show()
+                showErrorDialog()
+            }
+        }
+    }
+
+    private fun showAllComplaints(complaints: ArrayList<ComplaintDetails>) {
+        binding.complaintsRCV.visibility = View.VISIBLE
+        complaintsAdapter.submitList(complaints)
+    }
+
+    private fun showNoComplaintsView() {
+       binding.clNoComplaints.visibility = View.VISIBLE
+    }
+
+    private fun initView() {
+        binding.run {
+            //Setting up the toolbar
+            includedToolbar.toolbarTitle.text = if (getUserPreference().isAdminUser) getString(R.string.all_complaints) else getString(R.string.past_complaints)
+            includedToolbar.rightIconTv.apply {
+                text = resources.getString(R.string.history)
+                visibility = View.VISIBLE
+            }
+            includedToolbar.leftIcon.setOnClickListener {
                 findNavController().navigateUp()
+            }
+            complaintsRCV.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = complaintsAdapter
+                setHasFixedSize(true)
             }
         }
     }

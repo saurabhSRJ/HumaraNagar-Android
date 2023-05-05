@@ -12,6 +12,7 @@ import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.databinding.ActivitiyOnboardingBinding
+import com.humara.nagar.fluid_resize.FluidContentResizer
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.otp_verification.OtpVerificationFragment
@@ -42,6 +43,7 @@ class OnBoardingActivity : BaseActivity() {
         binding = ActivitiyOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViewModelObservers()
+        FluidContentResizer.listen(this)
     }
 
     private fun initViewModelObservers() {

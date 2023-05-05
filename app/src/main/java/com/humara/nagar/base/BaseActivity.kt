@@ -118,7 +118,6 @@ abstract class BaseActivity : AppCompatActivity() {
         subtitle: String? = null,
         ctaText: String? = null,
         @DrawableRes icon: Int? = null,
-        clickListener: GenericStatusDialog.StatusDialogClickListener? = null,
         errorAction: () -> Unit = {},
         dismissAction: () -> Unit = {},
     ) {

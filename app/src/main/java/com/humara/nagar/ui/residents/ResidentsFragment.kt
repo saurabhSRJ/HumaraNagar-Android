@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.humara.nagar.R
 import com.humara.nagar.adapter.AllResidentsAdapter
@@ -18,8 +17,7 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentResidentsBinding
 import com.humara.nagar.ui.residents.model.FiltersResponse
 import com.humara.nagar.ui.residents.model.Residents
-import com.humara.nagar.utils.Utils
-
+import com.humara.nagar.utils.StringUtils
 
 class ResidentsFragment : BaseFragment() {
 
@@ -67,7 +65,7 @@ class ResidentsFragment : BaseFragment() {
                 val cid = checkedId[0]
                 val chip: Chip? = group.findViewById(cid)
                 if (chip != null) {
-                    if (previousFilterId != - 1) {
+                    if (previousFilterId != -1) {
                         //Somethings was checked before this, not the first time
                         group.findViewById<Chip>(previousFilterId).isCloseIconVisible = false
                     }
@@ -94,7 +92,7 @@ class ResidentsFragment : BaseFragment() {
             override fun afterTextChanged(p0: Editable?) {
                 val residentList = residentsViewModel.residentsResponse.value?.Residents
                 if (p0.toString().isNotEmpty()) {
-                    filter(Utils.toStringWithoutSpaces(p0.toString().lowercase()), residentList)
+                    filter(StringUtils.toStringWithoutSpaces(p0.toString().lowercase()), residentList)
                 } else {
                     if (residentList != null) {
                         residentAdapter.setData(residentList)
@@ -109,7 +107,7 @@ class ResidentsFragment : BaseFragment() {
         if (search.isNotEmpty()) {
             if (residentList != null) {
                 for (current in residentList) {
-                    if (Utils.toStringWithoutSpaces(current.name!!.lowercase()).contains(search)) {
+                    if (StringUtils.toStringWithoutSpaces(current.name!!.lowercase()).contains(search)) {
                         filterList.add(current)
                     }
                 }

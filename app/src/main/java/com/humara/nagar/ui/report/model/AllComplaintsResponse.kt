@@ -8,5 +8,5 @@ import com.google.gson.annotations.SerializedName
 */
 
 data class AllComplaintsResponse(
-    @SerializedName("complaints") var complaints: ArrayList<ComplaintsResponse> = arrayListOf()
+    @SerializedName("complaints") var complaints: ArrayList<ComplaintDetails> = arrayListOf()
 )

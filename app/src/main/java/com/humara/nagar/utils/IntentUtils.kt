@@ -14,6 +14,12 @@ object IntentUtils {
         return intent.resolveActivity(context.packageManager) != null
     }
 
+    fun getCallIntent(phoneNumber: String): Intent {
+        return Intent(Intent.ACTION_DIAL).apply {
+            data = Uri.parse("tel:$phoneNumber")
+        }
+    }
+
     fun getAppSettingIntent(context: Context): Intent {
         return Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.fromParts("package", context.packageName, null)

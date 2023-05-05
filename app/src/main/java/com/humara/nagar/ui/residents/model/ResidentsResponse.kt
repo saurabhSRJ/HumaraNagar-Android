@@ -2,7 +2,6 @@ package com.humara.nagar.ui.residents.model
 
 import com.google.gson.annotations.SerializedName
 
-
 data class ResidentsResponse(
     @SerializedName("totalPages") var totalPages: Int? = null,
     @SerializedName("nextPage") var nextPage: Int? = null,

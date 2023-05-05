@@ -71,6 +71,11 @@
         <item name="android:fontFamily">@font/open_sans_bold</item>
     </style>
 
+    <style name="OpenSansBold18sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+    </style>
+
     <style name="OpenSansBold20sp" parent="@android:style/Widget.TextView">
         <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/open_sans_bold</item>
@@ -86,7 +91,6 @@
         <item name="rippleColor">@color/white</item>
     </style>
 
-    <!-- Button Styles -->
     <style name="negative_red_button" parent="@style/Widget.Material3.Button.ElevatedButton">
         <item name="android:backgroundTint">@color/negative_red_button_background_selector</item>
         <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
@@ -110,11 +114,19 @@
         <item name="backgroundTint">@color/white</item>
         <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
         <item name="android:padding">16dp</item>
-        <item name="cornerRadius">5dp</item>
-        <item name="strokeWidth">1.5dp</item>
-        <item name="strokeColor">@color/grey_4F4F4F</item>
-        <item name="android:textColor">@color/toggle_button_text_color_selector</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/black_with_opacity_70</item>
+        <item name="android:textColor">@color/black_with_opacity_70</item>
         <item name="rippleColor">@color/grey_AEAEAE</item>
+    </style>
+
+    <style name="ComplaintStateButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textAppearance">@style/OpenSansSemiBold12sp</item>
+        <item name="android:padding">2dp</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="strokeWidth">1dp</item>
     </style>
 
     <style name="TextButtonStyle" parent="Widget.Material3.Button.TextButton">
@@ -134,16 +146,6 @@
         <item name="android:textColor">@color/black</item>
         <item name="textEndPadding">30dp</item>
         <item name="textStartPadding">32dp</item>
-
-        <!--Icon End on check/click (Stay)-->
-        <item name="closeIcon">@drawable/ic_close</item>
-        <item name="closeIconTint">@color/blue_4285F4</item>
-        <item name="closeIconVisible">false</item>
-        <item name="closeIconEnabled">false</item>
-        <item name="closeIconStartPadding">0dp</item>
-
-        <!--Icon Start on check/click (Toggle)-->
-        <item name="checkedIconVisible">false</item>
     </style>
 
 </resources>

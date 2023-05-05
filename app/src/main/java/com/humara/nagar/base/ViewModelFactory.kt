@@ -33,7 +33,7 @@ class ViewModelFactory : ViewModelProvider.Factory {
                     ReportViewModel(application, extras.createSavedStateHandle())
                 }
                 isAssignableFrom(ComplaintStatusViewModel::class.java) -> {
-                    ComplaintStatusViewModel(application)
+                    ComplaintStatusViewModel(application, extras.createSavedStateHandle())
                 }
                 isAssignableFrom(ComplaintsViewModel::class.java) -> {
                     ComplaintsViewModel(application)

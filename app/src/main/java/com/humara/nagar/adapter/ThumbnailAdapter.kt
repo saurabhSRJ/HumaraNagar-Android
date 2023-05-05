@@ -9,14 +9,8 @@ import com.bumptech.glide.Glide
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ThumbnailLayoutItemBinding
 
-
-class ThumbnailAdapter(
-    val context: Context,
-    val onThumbnailClick: (String) -> Unit
-) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
-
+class ThumbnailAdapter(val context: Context, val onThumbnailClick: (String) -> Unit) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
     private val imageList = mutableListOf<String>()
-
     private var selectedPosition: Int = 0
 
     fun updateSelectedPosition(position: Int) {
@@ -43,14 +37,11 @@ class ThumbnailAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentImageUrl = imageList[position]
-
         holder.binding.apply {
-
             Glide.with(context)
                 .load(Uri.parse(currentImageUrl))
                 .placeholder(R.drawable.default_drawable)
                 .into(thumbnailIV)
-
             thumbnailRL.setOnClickListener {
                 onThumbnailClick(currentImageUrl)
             }

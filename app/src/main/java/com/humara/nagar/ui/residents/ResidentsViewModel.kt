@@ -3,7 +3,6 @@ package com.humara.nagar.ui.residents
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.humara.nagar.Logger
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.network.onError
@@ -12,7 +11,6 @@ import com.humara.nagar.ui.residents.model.FiltersResponse
 import com.humara.nagar.ui.residents.model.ResidentsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 class ResidentsViewModel(application: Application) : BaseViewModel(application) {
 

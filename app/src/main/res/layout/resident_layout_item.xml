@@ -193,8 +193,7 @@
                     <ImageView
                         android:layout_width="12dp"
                         android:layout_height="12dp"
-                        app:srcCompat="@drawable/ic_call_24"
-                        app:tint="@color/blue_4285F4" />
+                        app:srcCompat="@drawable/ic_call" />
 
                 </LinearLayout>
 

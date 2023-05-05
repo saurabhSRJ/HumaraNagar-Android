@@ -1,7 +1,6 @@
 package com.humara.nagar.permissions
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.base.BaseFragment
+import com.humara.nagar.ui.common.GenericAlertDialog
 import com.humara.nagar.utils.IntentUtils
 import com.humara.nagar.utils.PermissionUtils
 
@@ -112,27 +112,17 @@ open class PermissionFragment : BaseFragment() {
     }
 
     private fun showPermissionRationaleDialog(permission: String) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(getString(R.string.permission_required_title))
-            .setMessage(getPermissionGuideMessage(permission))
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                builder.create().dismiss()
-                singlePermissionLauncher.launch(permission)
-            }
-            .setCancelable(true)
-        builder.create().show()
+        GenericAlertDialog.show(requireContext(), getString(R.string.permission_required_title), getPermissionGuideMessage(permission),
+            isCancelable = true, getString(R.string.ok)) {
+            singlePermissionLauncher.launch(permission)
+        }
     }
 
     private fun openAppSettingToAskPermanentlyDeniedPermissions() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-        builder.setTitle(getString(R.string.permission_required_title))
-            .setMessage(getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()))
-            .setPositiveButton(getString(R.string.grant_permission)) { _, _ ->
-                builder.create().dismiss()
-                appSettingLauncher.launch(PermissionInformation(handler, deniedPermissionList, IntentUtils.getAppSettingIntent(requireContext())))
-            }
-            .setCancelable(true)
-        builder.create().show()
+        GenericAlertDialog.show(requireContext(), getString(R.string.permission_required_title), getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()),
+            isCancelable = true, getString(R.string.grant_permission)) {
+            appSettingLauncher.launch(PermissionInformation(handler, deniedPermissionList, IntentUtils.getAppSettingIntent(requireContext())))
+        }
     }
 
     private fun getPermissionGuideMessage(permission: String): String {
