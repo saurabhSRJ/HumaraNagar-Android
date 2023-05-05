@@ -20,6 +20,7 @@
     <color name="grey_F1F1F1">#F1F1F1</color>
     <color name="grey_E4E4E4">#E4E4E4</color>
     <color name="black_with_opacity_70">#B3000000</color>
+    <color name="rating_star_gold_bg">#FFCB02</color>
     <!--Stroke Button Colors-->
     <color name="stroke_red">#CF0A0A</color>
     <color name="stroke_yellow">#FF9E0D</color>
