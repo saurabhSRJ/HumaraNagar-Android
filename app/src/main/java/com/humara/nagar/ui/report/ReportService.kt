@@ -16,9 +16,9 @@ interface ReportService {
     suspend fun getAllComplaints(): NetworkResponse<AllComplaintsResponse>
 
 //    @GET("4eaa4106-f2e8-4ffb-871e-a758d622152a") //Sent Status
-    @GET("934f8fcd-7ae7-465b-a017-f0a37e4c7399") // progress
+//    @GET("934f8fcd-7ae7-465b-a017-f0a37e4c7399") // progress
 //    @GET("bf0edf89-2c5b-4346-bc4f-0e6f450d9a0d") // resolved with rating
-//    @GET("cc9537ae-048b-4ca8-8967-69dc95fc29c0") // resolved without rating
+    @GET("cc9537ae-048b-4ca8-8967-69dc95fc29c0") // resolved without rating
     suspend fun getComplaintStatus(@Query(NetworkConstants.NetworkQueryConstants.ID) id: String): NetworkResponse<ComplaintStatus>
 
     @POST("191a7744-3474-4b20-9884-5e81a3b791db")

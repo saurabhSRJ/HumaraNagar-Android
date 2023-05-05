@@ -2,6 +2,7 @@ package com.humara.nagar.ui.report
 
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.location.Address
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
@@ -72,6 +74,15 @@ class ReportFragment : PermissionFragment() {
         }
         if (isFragmentAlive()) {
             onImageCapture()
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        //if user is admin navigate to all complaints screen and make that start destination
+        if (getUserPreference().isAdminUser) {
+            val navOptions = NavOptions.Builder().setPopUpTo(R.id.reportFragment, true).build()
+            findNavController().navigate(ReportFragmentDirections.actionReportToComplaints(), navOptions = navOptions)
         }
     }
 

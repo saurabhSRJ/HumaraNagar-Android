@@ -61,11 +61,11 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
      * Return User preference data(i.e user profile) being set and used throughout the app.
      * @return [UserPreference]
      */
-    protected fun getUserPreference(): UserPreference = (getApplication() as NagarApp).userSharedPreference
+    protected fun getUserPreference(): UserPreference = getApplication<NagarApp>().userSharedPreference
 
     /**
      * Return App preference being set and used throughout the app.
      * @return [AppPreference]
      */
-    protected fun getAppPreference(): AppPreference = (getApplication() as NagarApp).appSharedPreference
+    protected fun getAppPreference(): AppPreference = getApplication<NagarApp>().appSharedPreference
 }

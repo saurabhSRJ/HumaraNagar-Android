@@ -148,4 +148,10 @@
         <item name="textStartPadding">32dp</item>
     </style>
 
+    <style name="RatingBarGold" parent="Theme.MaterialComponents">
+        <item name="android:progressTint">@color/rating_star_gold_bg</item>
+        <item name="android:progressBackgroundTint">@color/grey_E4E4E4</item>
+        <item name="android:secondaryProgressTint">@android:color/transparent</item>
+    </style>
+
 </resources>

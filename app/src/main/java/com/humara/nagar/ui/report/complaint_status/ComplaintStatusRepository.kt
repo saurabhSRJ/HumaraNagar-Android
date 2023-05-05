@@ -1,6 +1,6 @@
 package com.humara.nagar.ui.report.complaint_status
 
-import android.content.Context
+import android.app.Application
 import com.humara.nagar.network.BaseRepository
 import com.humara.nagar.ui.report.ReportService
 import com.humara.nagar.ui.report.model.RateComplaintServiceRequest
@@ -8,7 +8,7 @@ import com.humara.nagar.ui.report.model.UpdateComplaintRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ComplaintStatusRepository(context: Context) : BaseRepository(context) {
+class ComplaintStatusRepository(application: Application) : BaseRepository(application) {
     private val apiService = getRetrofit().create(ReportService::class.java)
 
     suspend fun getComplaintStatus(id: String) = withContext(Dispatchers.IO) {

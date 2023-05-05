@@ -257,16 +257,19 @@
 
             <RatingBar
                 android:id="@+id/ratingBar"
+                android:theme="@style/RatingBarGold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:minHeight="28dp"
                 android:numStars="5"
                 android:stepSize="1"
                 android:visibility="gone"
+                android:scaleX="1"
+                android:scaleY="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:rating="3"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

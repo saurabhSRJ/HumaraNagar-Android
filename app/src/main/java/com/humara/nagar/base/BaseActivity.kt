@@ -23,6 +23,8 @@ import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
 import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.utils.LocaleManager
+import com.humara.nagar.utils.getAppSharedPreferences
+import com.humara.nagar.utils.getUserSharedPreferences
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -56,6 +58,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
                 put(AnalyticsData.Parameters.PAGE_TYPE, getScreenName())
                 put(AnalyticsData.Parameters.LANGUAGE_CODE, getAppPreference().appLanguage)
+                put(AnalyticsData.Parameters.IS_ADMIN, getUserPreference().isAdminUser)
             } catch (e: JSONException) {
                 Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
             }
@@ -67,7 +70,8 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        onBackPressedDispatcher.onBackPressed()
+        super.onBackPressed()
+//        onBackPressedDispatcher.onBackPressed()
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right)
     }
 
@@ -189,17 +193,13 @@ abstract class BaseActivity : AppCompatActivity() {
      * Return App preference being set and used throughout the app
      * @return [AppPreference]
      */
-    fun getAppPreference(): AppPreference {
-        return (application as NagarApp).appSharedPreference
-    }
+    fun getAppPreference(): AppPreference = application.getAppSharedPreferences()
 
     /**
      * Return User preference data(i.e user profile) being set and used throughout the app.
      * @return [UserPreference]
      */
-    fun getUserPreference(): UserPreference {
-        return (application as NagarApp).userSharedPreference
-    }
+    fun getUserPreference(): UserPreference = application.getUserSharedPreferences()
 
     fun getSource(): String {
         return intent?.getStringExtra(IntentKeyConstants.SOURCE) ?: getScreenName()

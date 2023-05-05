@@ -21,6 +21,8 @@ import com.humara.nagar.network.ApiError
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
+import com.humara.nagar.utils.getAppSharedPreferences
+import com.humara.nagar.utils.getUserSharedPreferences
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -52,6 +54,7 @@ abstract class BaseFragment : Fragment() {
                 }
                 put(AnalyticsData.Parameters.PAGE_TYPE, getScreenName())
                 put(AnalyticsData.Parameters.LANGUAGE_CODE, getAppPreference().appLanguage)
+                put(AnalyticsData.Parameters.IS_ADMIN, getUserPreference().isAdminUser)
             } catch (e: JSONException) {
                 Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
             }
@@ -174,16 +177,12 @@ abstract class BaseFragment : Fragment() {
      *
      * @return [AppPreference]
      */
-    fun getAppPreference(): AppPreference {
-        return (requireContext().applicationContext as NagarApp).appSharedPreference
-    }
+    fun getAppPreference(): AppPreference = requireContext().getAppSharedPreferences()
 
     /**
      * Return User preference data(i.e user profile) being set and used throughout the app.
      *
      * @return [UserPreference]
      */
-    fun getUserPreference(): UserPreference {
-        return (requireContext().applicationContext as NagarApp).userSharedPreference
-    }
+    fun getUserPreference(): UserPreference = requireContext().getUserSharedPreferences()
 }
