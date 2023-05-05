@@ -10,6 +10,8 @@
     <attr name="options" format="reference" />
     <attr name="minimumHeight" format="integer" />
 
+    <attr name="FilterChips" format="reference" />
+
     <declare-styleable name="FormInputWithHeader">
         <attr name="header" />
         <attr name="inputEnabled" />
@@ -26,4 +28,5 @@
         <attr name="header" />
         <attr name="hint" />
     </declare-styleable>
+
 </resources>

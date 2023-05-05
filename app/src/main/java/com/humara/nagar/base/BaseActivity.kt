@@ -36,7 +36,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        changeStatusBarColor(R.color.white)
         overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
         if (shouldLogScreenView()) {
             AnalyticsTracker.sendEvent(
@@ -119,7 +118,6 @@ abstract class BaseActivity : AppCompatActivity() {
         subtitle: String? = null,
         ctaText: String? = null,
         @DrawableRes icon: Int? = null,
-        clickListener: GenericStatusDialog.StatusDialogClickListener? = null,
         errorAction: () -> Unit = {},
         dismissAction: () -> Unit = {},
     ) {

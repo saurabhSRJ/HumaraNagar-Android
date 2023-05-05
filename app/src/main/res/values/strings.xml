@@ -52,23 +52,34 @@
     <string name="comment">Comments</string>
     <string name="addImage">Add Image</string>
     <string name="uploadImageDescription">Upload the image of issues</string>
+    <string name="select_option">Select Option</string>
     <string name="permission_required_title">Permission Required</string>
-    <string name="selectAction">Select Action</string>
     <string name="selectFromGallery">Select photo from gallery</string>
     <string name="captureFromCamera">Capture photo from camera</string>
     <string name="imagePickingLimit">You can add total 2 images</string>
     <string name="provider_name" translatable="false">com.example.provider</string>
     <string name="trackYourPastComplaints">Track Your Past Complaints</string>
     <string name="history">History</string>
+    <string name="past_complaints">Past Complaints</string>
+    <string name="all_complaints">All Complaints</string>
+    <string name="complaint_status">Complaint Status</string>
+    <string name="dateFormatPatternForImageName">yyyyMMdd_HHmmss</string>
+    <string name="anErrorOccurred">An error occurred, please try again</string>
+    <string name="successfullySent">Successfully sent</string>
+    <string name="saved">Saved successfully</string>
+    <string name="failed">Failed to save</string>
 
     <!-- Report Status Values -->
     <string name="sent">Sent</string>
     <string name="inprogress">In Progress</string>
     <string name="resolved">Resolved</string>
+    <string name="resolvedOn">Resolved on</string>
+    <string name="resolutionExpectedBy">Resolution expected by</string>
+    <string name="update">Update</string>
 
     <string name="ward_no_exampe">E12</string>
     <string name="pending_approval_message">You are not yet onboarded on Humara Nagar App. Please reach out to the municipal corporation of your ward to get you started.</string>
-    <string name="you_can_still_enter_location_manually">You can still enter location manually</string>
+    <string name="you_can_still_enter_location_manually">You permanently denied location permission. Please enter location manually</string>
     <string name="please_provide_requested_permission">Please provide requested permission</string>
     <string name="camera_permission_denied_message">Please grant Camera permission to take photo</string>
     <string name="storage_permission_denied_message">Please grant Storage permission to choose file</string>
@@ -87,6 +98,31 @@
     <string name="complaint_raised_subtitle">We will do our best to resolve the issue</string>
     <string name="track">Track</string>
     <string name="invalid_input">Invalid input</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="withdrawn">Withdrawn</string>
+    <string name="acknowledge">Acknowledge</string>
+    <string name="finish">Finish</string>
+    <string name="few_second_ago">Few seconds ago</string>
+    <string name="rate_this_service">Please rate this service</string>
+    <string name="provide_more_details">Provide more details</string>
+    <string name="confirm">Confirm</string>
+    <string name="call">Call</string>
+    <string name="spouse_name">Spouse Name</string>
+    <string name="fathers_name">Father\'s Name</string>
+    <string name="age">Age</string>
+    <string name="house_no">House No</string>
+    <string name="voterid">Voter ID</string>
+    <string name="search">Search</string>
+    <string name="fellow_residents">Fellow Residents</string>
+    <string name="an_error_occurred">An error Occurred</string>
+    <string name="review">Review</string>
+    <string name="you_rated_this_service">You rated this service</string>
+    <string name="details">Details</string>
+    <string name="thank_you_for_the_rating">Thank you for the rating</string>
+    <string name="complaint_successfully_withdrawn">Complaint withdrawn</string>
+    <string name="complaint_acknowledgment_sent">Complaint acknowledgement sent</string>
+    <string name="complaint_resolved">Complaint resolved</string>
+    <string name="no_complaints_message">Nothing to manage yet!\nStart by creating a new complaint</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">

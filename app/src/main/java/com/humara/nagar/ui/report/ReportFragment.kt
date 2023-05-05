@@ -13,7 +13,6 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -33,10 +32,7 @@ import com.humara.nagar.permissions.PermissionFragment
 import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.StatusData
-import com.humara.nagar.utils.IntentUtils
-import com.humara.nagar.utils.PermissionUtils
-import com.humara.nagar.utils.Utils
-import com.humara.nagar.utils.setNonDuplicateClickListener
+import com.humara.nagar.utils.*
 import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
@@ -46,7 +42,6 @@ import java.io.IOException
 import java.util.*
 
 class ReportFragment : PermissionFragment() {
-
     private var _binding: FragmentReportBinding? = null
     private val reportViewModel by viewModels<ReportViewModel> {
         ViewModelFactory()
@@ -57,7 +52,6 @@ class ReportFragment : PermissionFragment() {
     private val binding get() = _binding!!
 
     companion object {
-
         const val TAG = "ReportFragment"
         private const val CURRENT_PATH = "CURRENT_PATH"
         private const val maxCommentLength: Int = 200
@@ -73,7 +67,7 @@ class ReportFragment : PermissionFragment() {
 
     private val takeCameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != RESULT_OK || context == null) {
-            Toast.makeText(context, getString(R.string.no_image_clicked), Toast.LENGTH_SHORT).show()
+            context?.showToast(getString(R.string.no_image_clicked), true)
             return@registerForActivityResult
         }
         if (isFragmentAlive()) {
@@ -86,37 +80,14 @@ class ReportFragment : PermissionFragment() {
         savedInstanceState?.run {
             currentPhotoPath = getString(CURRENT_PATH, "")
         }
-        initViewModelObservers()
-        initView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val historyToolTipCounter = getUserPreference().historyToolTipCounter
-        if (historyToolTipCounter < 3) {
-            val balloon = Balloon.Builder(requireContext())
-                .setWidth(BalloonSizeSpec.WRAP)
-                .setHeight(BalloonSizeSpec.WRAP)
-                .setPaddingHorizontal(8)
-                .setPaddingVertical(8)
-                .setMarginHorizontal(8)
-                .setTextSize(12f)
-                .setTextTypeface(Typeface.DEFAULT_BOLD)
-                .setTextColor(ContextCompat.getColor(requireContext(), R.color.card_color))
-                .setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_4285F4))
-                .setText(resources.getString(R.string.trackYourPastComplaints))
-                .setArrowSize(10)
-                .setIsVisibleArrow(true)
-                .setArrowPosition(0.50f)
-                .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
-                .setCornerRadius(4f)
-                .setBalloonAnimation(BalloonAnimation.ELASTIC)
-                .setAutoDismissDuration(4000L)
-                .setLifecycleOwner(this)
-                .build()
-            balloon.showAlignBottom(binding.includedToolbar.rightIcon)
-        }
+        initViewModelObservers()
+        initView()
+        initHistoryTooltip()
     }
 
     private fun initViewModelObservers() {
@@ -134,10 +105,15 @@ class ReportFragment : PermissionFragment() {
                 if (success) {
                     showComplaintSuccessDialog()
                 } else {
-                    showErrorDialog(errorAction = { resetComplaintForm() }, dismissAction = { resetComplaintForm() })
+                    showErrorDialog(errorAction = {}, dismissAction = {})
                 }
             }
         }
+    }
+
+    private fun openComplaintsScreen() {
+        val action = ReportFragmentDirections.actionReportToComplaints()
+        findNavController().navigate(action)
     }
 
     private fun showComplaintSuccessDialog() {
@@ -145,7 +121,8 @@ class ReportFragment : PermissionFragment() {
             StatusData(GenericStatusDialog.State.SUCCESS, getString(R.string.complaint_raised), getString(R.string.complaint_raised_subtitle), getString(R.string.track)),
             object : GenericStatusDialog.StatusDialogClickListener {
                 override fun ctaClickListener() {
-                    resetComplaintForm() //todo: redirect to all complaints screen
+                    resetComplaintForm()
+                    openComplaintsScreen()
                 }
 
                 override fun dismissClickListener() {
@@ -169,9 +146,6 @@ class ReportFragment : PermissionFragment() {
     private fun initView() {
         binding.run {
             clForm.setOnClickListener { hideKeyboard() }
-            addImageLayout.setOnClickListener {
-                showPictureDialog()
-            }
             //Setting up the top app bar title
             includedToolbar.apply {
                 leftIcon.setOnClickListener {
@@ -182,8 +156,9 @@ class ReportFragment : PermissionFragment() {
                 rightIcon.visibility = View.VISIBLE
                 rightIconTv.visibility = View.VISIBLE
                 rightIconIv.setImageResource(R.drawable.ic_history)
-                rightIcon.setOnClickListener {
+                rightIcon.setNonDuplicateClickListener {
                     getUserPreference().historyToolTipCounter += 1
+                    openComplaintsScreen()
                 }
             }
             //Settings up list for spinners
@@ -199,14 +174,6 @@ class ReportFragment : PermissionFragment() {
                     reportViewModel.setLocality(it)
                 }
             }
-            inputComment.apply {
-                switchToMultiLined(4, svForm)
-                setMaxLength(maxCommentLength)
-                setUserInputListener {
-                    reportViewModel.setComment(it)
-                }
-                setHint(getString(R.string.comments_short_hint, maxCommentLength))
-            }
             inputLocation.apply {
                 switchToMultiLined(2, svForm)
                 setMaxLength(maxLocationLength)
@@ -218,6 +185,17 @@ class ReportFragment : PermissionFragment() {
                 setUserInputListener {
                     reportViewModel.setLocation(it)
                 }
+            }
+            inputComment.apply {
+                switchToMultiLined(4, svForm)
+                setMaxLength(maxCommentLength)
+                setUserInputListener {
+                    reportViewModel.setComment(it)
+                }
+                setHint(getString(R.string.comments_short_hint))
+            }
+            addImageLayout.setOnClickListener {
+                showPictureDialog()
             }
             imagePreviewAdapter = ImagePreviewAdapter { idx ->
                 reportViewModel.deleteImage(idx)
@@ -233,13 +211,40 @@ class ReportFragment : PermissionFragment() {
         }
     }
 
+    private fun initHistoryTooltip() {
+        val historyToolTipCounter = getUserPreference().historyToolTipCounter
+        if (historyToolTipCounter < 3) {
+            val balloon = Balloon.Builder(requireContext())
+                .setWidth(BalloonSizeSpec.WRAP)
+                .setHeight(BalloonSizeSpec.WRAP)
+                .setPaddingHorizontal(8)
+                .setPaddingVertical(8)
+                .setMarginHorizontal(8)
+                .setTextSize(12f)
+                .setTextTypeface(Typeface.DEFAULT_BOLD)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_F1F1F1))
+                .setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_4285F4))
+                .setText(resources.getString(R.string.trackYourPastComplaints))
+                .setArrowSize(10)
+                .setIsVisibleArrow(true)
+                .setArrowPosition(0.50f)
+                .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+                .setCornerRadius(4f)
+                .setBalloonAnimation(BalloonAnimation.ELASTIC)
+                .setAutoDismissDuration(4000L)
+                .setLifecycleOwner(this)
+                .build()
+            balloon.showAlignBottom(binding.includedToolbar.rightIcon)
+        }
+    }
+
     private fun showPictureDialog() {
         if (reportViewModel.imageUris.size >= maxImageAttachments) {
-            Toast.makeText(requireContext(), resources.getString(R.string.imagePickingLimit), Toast.LENGTH_SHORT).show()
+            context?.showToast(getString(R.string.imagePickingLimit), true)
             return
         }
         val pictureDialog = AlertDialog.Builder(requireContext())
-        pictureDialog.setTitle(resources.getString(R.string.selectAction))
+        pictureDialog.setTitle(resources.getString(R.string.select_option))
         val pictureDialogItems = arrayOf(resources.getString(R.string.selectFromGallery), resources.getString(R.string.captureFromCamera))
         pictureDialog.setItems(pictureDialogItems) { _, which ->
             when (which) {
@@ -251,9 +256,26 @@ class ReportFragment : PermissionFragment() {
         dialog.show()
     }
 
+    private fun checkForLocationPermission() {
+        requestPermissions(PermissionUtils.locationPermissions, object : PermissionHandler {
+            override fun onPermissionGranted() {
+                getAddress()
+            }
+
+            override fun onPermissionDenied(permissions: List<String>) {
+                //TODO: Add a common helper dialog with message about permanently denied permission
+                context?.showToast(getString(R.string.you_can_still_enter_location_manually))
+            }
+        }, isPermissionNecessary = false)
+    }
+
     private fun choosePhotoFromGallery() {
         requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(TAG, "fragment detached from the activity")
+                    return
+                }
                 val intent = IntentUtils.getImageGalleryIntent()
                 getContentLauncher.launch(intent)
             }
@@ -267,6 +289,10 @@ class ReportFragment : PermissionFragment() {
     private fun takePhotoFromCamera() {
         requestPermissions(PermissionUtils.cameraPermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(TAG, "Fragment detached from the activity")
+                    return
+                }
                 clickPicture()
             }
 
@@ -302,7 +328,6 @@ class ReportFragment : PermissionFragment() {
         client.lastLocation.addOnSuccessListener { lastLocation ->
             lastLocation?.let { location ->
                 // Logic to handle location object.
-                val errorMessage: String
                 var addresses: List<Address>? = null
                 try {
                     val geocoder = Geocoder(requireContext(), Locale("en", "IN"))
@@ -314,11 +339,9 @@ class ReportFragment : PermissionFragment() {
                         addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                     }
                 } catch (ioException: IOException) {
-                    errorMessage = "Service Not Available"
-                    Logger.debugLog(TAG, errorMessage)
+                    Logger.logException(TAG, ioException, Logger.LogLevel.ERROR, true)
                 } catch (illegalArgumentException: IllegalArgumentException) {
-                    errorMessage = "Invalid Latitude or Longitude Used"
-                    Logger.debugLog(TAG, "$errorMessage. Latitude = ${location.latitude}, Longitude = ${location.longitude}")
+                    Logger.logException(TAG, illegalArgumentException, Logger.LogLevel.ERROR, true)
                 } finally {
                     hideProgress()
                     addresses?.get(0)?.let { address ->
@@ -329,30 +352,17 @@ class ReportFragment : PermissionFragment() {
                     }
                 }
             } ?: kotlin.run {
-                Toast.makeText(requireContext(), getString(R.string.location_detection_error_message), Toast.LENGTH_LONG).show()
+                context?.showToast(getString(R.string.location_detection_error_message))
                 hideProgress()
             }
         }
-    }
-
-    private fun checkForLocationPermission() {
-        requestPermissions(PermissionUtils.locationPermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                getAddress()
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //TODO: Add a common helper dialog with message about permanently denied permission
-                Toast.makeText(requireContext(), getString(R.string.you_can_still_enter_location_manually), Toast.LENGTH_LONG).show()
-            }
-        }, isPermissionNecessary = false)
     }
 
     private fun onImageSelection(data: Intent?) {
         data?.clipData?.let { selectedImages ->
             val count = selectedImages.itemCount
             if (count > maxImageAttachments - reportViewModel.imageUris.size) {
-                Toast.makeText(requireContext(), getString(R.string.imagePickingLimit), Toast.LENGTH_SHORT).show()
+                context?.showToast(getString(R.string.imagePickingLimit), true)
                 return
             }
             for (i in 0 until count) {
@@ -364,7 +374,7 @@ class ReportFragment : PermissionFragment() {
         } ?: data?.data?.let {
             reportViewModel.addImages(listOf(it))
         } ?: kotlin.run {
-            Toast.makeText(requireContext(), getString(R.string.no_image_selected), Toast.LENGTH_SHORT).show()
+            context?.showToast(getString(R.string.no_image_selected), true)
         }
     }
 

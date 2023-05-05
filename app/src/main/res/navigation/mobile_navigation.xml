@@ -11,17 +11,14 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
-    <fragment
-        android:id="@+id/navigation_report"
-        android:name="com.humara.nagar.ui.report.ReportFragment"
-        android:label="@string/report"
-        tools:layout="@layout/fragment_report" />
+    <include app:graph="@navigation/report_navigation" />
 
     <fragment
         android:id="@+id/navigation_residents"
         android:name="com.humara.nagar.ui.residents.ResidentsFragment"
         android:label="@string/residents"
         tools:layout="@layout/fragment_residents" />
+
     <fragment
         android:id="@+id/navigation_certificates"
         android:name="com.humara.nagar.ui.certificates.CertificatesFragment"
