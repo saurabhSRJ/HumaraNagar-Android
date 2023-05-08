@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.humara.nagar.Logger
-import com.humara.nagar.NagarApp
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.analytics.AnalyticsTracker
@@ -88,30 +87,46 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    protected open fun obServeErrorAndException(apiError: ApiError, viewModel: BaseViewModel) {
-        (activity as BaseActivity).showErrorDialog(null, apiError.message)
-        observerException(viewModel)
+    protected open fun obServeErrorAndException(
+        apiError: ApiError,
+        viewModel: BaseViewModel,
+        errorAction: () -> Unit = { findNavController().navigateUp() },
+        dismissAction: () -> Unit = { findNavController().navigateUp() }
+    ) {
+        showErrorDialog(null, apiError.message, errorAction = errorAction, dismissAction = dismissAction)
+        observeException(viewModel, errorAction, dismissAction)
     }
 
-    protected open fun observeErrorAndException(viewModel: BaseViewModel) {
+    protected open fun observeErrorAndException(
+        viewModel: BaseViewModel,
+        errorAction: () -> Unit = { findNavController().navigateUp() },
+        dismissAction: () -> Unit = { findNavController().navigateUp() }
+    ) {
         viewModel.errorLiveData.observe(this) {
-            showErrorDialog(null, it.message)
+            showErrorDialog(null, it.message, errorAction = errorAction, dismissAction = dismissAction)
         }
-        observerException(viewModel)
+        observeException(viewModel, errorAction, dismissAction)
     }
 
-    protected open fun observerException(viewModel: BaseViewModel) {
+    protected open fun observeException(
+        viewModel: BaseViewModel,
+        errorAction: () -> Unit = { findNavController().navigateUp() },
+        dismissAction: () -> Unit = { findNavController().navigateUp() }
+    ) {
         viewModel.exceptionLiveData.observe(this) { exception ->
             if (exception is IOException) {
-                showNoInternetDialog()
+                showNoInternetDialog(errorAction = errorAction, dismissAction = dismissAction)
             } else {
-                showErrorDialog()
+                showErrorDialog(errorAction = errorAction, dismissAction = dismissAction)
             }
         }
     }
 
-    private fun showNoInternetDialog() {
-        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
+    private fun showNoInternetDialog(
+        errorAction: () -> Unit = { findNavController().navigateUp() },
+        dismissAction: () -> Unit = { findNavController().navigateUp() }
+    ) {
+        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message), errorAction = errorAction, dismissAction = dismissAction)
     }
 
     open fun showErrorDialog(
@@ -120,7 +135,7 @@ abstract class BaseFragment : Fragment() {
         ctaText: String? = null,
         @DrawableRes icon: Int? = null,
         errorAction: () -> Unit = { findNavController().navigateUp() },
-        dismissAction: () -> Unit = { findNavController().navigateUp() },
+        dismissAction: () -> Unit = { findNavController().navigateUp() }
     ) {
         val activity = getParentActivity<BaseActivity>()
         activity?.showErrorDialog(title, subtitle, ctaText, icon, errorAction, dismissAction)

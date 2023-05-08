@@ -5,6 +5,6 @@ package com.humara.nagar.constants
  */
 interface IntentKeyConstants {
     companion object {
-        const val SOURCE = "SOURCE"
+        const val SOURCE = "source"
     }
 }

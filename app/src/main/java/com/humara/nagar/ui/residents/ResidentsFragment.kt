@@ -133,7 +133,7 @@ class ResidentsFragment : BaseFragment() {
     private fun initObservers() {
         residentsViewModel.run {
             observeProgress(this, false)
-            observerException(this)
+            observeException(this)
 
             fetchAllFilters()
             fetchAllResidents()

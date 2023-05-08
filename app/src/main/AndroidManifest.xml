@@ -74,12 +74,10 @@
             android:name="com.humara.nagar.ui.signup.OnBoardingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
-        <!-- TODO: make this activity singleTop -->
         <activity
             android:name="com.humara.nagar.ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
-        <activity android:name=".ui.ForceLogoutActivity" />
     </application>
 
     <queries>

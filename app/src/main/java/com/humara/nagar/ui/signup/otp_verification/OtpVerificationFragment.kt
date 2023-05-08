@@ -46,7 +46,7 @@ class OtpVerificationFragment : BaseFragment() {
     private fun initViewModelObservers() {
         onBoardingViewModel.run {
             observeProgress(this, false)
-            observeErrorAndException(this)
+            observeErrorAndException(this, errorAction = {}, dismissAction = {})
             invalidOtpLiveData.observe(viewLifecycleOwner) { message ->
                 binding.tvOtpErrorMessage.setStringWithColor(
                     message ?: getString(R.string.incorrect_otp_message),

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColorStateList
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +34,7 @@ class ComplaintStatusFragment : BaseFragment() {
     private val complaintStatusViewModel by viewModels<ComplaintStatusViewModel> {
         ViewModelFactory()
     }
+    private val navController: NavController by lazy { findNavController() }
     private val complaintStatusAdapter: ComplaintStatusAdapter by lazy {
         ComplaintStatusAdapter()
     }
@@ -57,7 +59,7 @@ class ComplaintStatusFragment : BaseFragment() {
     private fun initViewModelObservers() {
         complaintStatusViewModel.run {
             observeProgress(this, false)
-            observerException(this)
+            observeException(this)
             ratingData.observe(viewLifecycleOwner) {
                 binding.ratingBar.rating = it.toFloat()
             }
@@ -70,7 +72,7 @@ class ComplaintStatusFragment : BaseFragment() {
             acknowledgementSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_acknowledgment_sent))
                 setComplaintsListReload()
-                findNavController().navigateUp()
+                navController.navigateUp()
             }
             acknowledgementErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(errorAction = {}, dismissAction = {})
@@ -78,7 +80,7 @@ class ComplaintStatusFragment : BaseFragment() {
             finishComplaintSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_resolved))
                 setComplaintsListReload()
-                findNavController().navigateUp()
+                navController.navigateUp()
             }
             finishComplaintErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(errorAction = {}, dismissAction = {})
@@ -86,7 +88,7 @@ class ComplaintStatusFragment : BaseFragment() {
             withdrawSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_successfully_withdrawn))
                 setComplaintsListReload()
-                findNavController().navigateUp()
+                navController.navigateUp()
             }
             withdrawErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(errorAction = {}, dismissAction = {})
@@ -104,7 +106,7 @@ class ComplaintStatusFragment : BaseFragment() {
     }
 
     private fun setComplaintsListReload() {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(ComplaintsFragment.RELOAD_COMPLAINTS_LIST, true)
+        navController.previousBackStackEntry?.savedStateHandle?.set(ComplaintsFragment.RELOAD_COMPLAINTS_LIST, true)
     }
 
     private fun showSnackBar(message: String) {
@@ -124,7 +126,7 @@ class ComplaintStatusFragment : BaseFragment() {
                 }
             }
             descriptionTV.setVisibilityAndText(response.comments)
-            complaintIdTV.text = args.complaintId
+            complaintIdTV.text = args.complaintId.toString()
             response.trackingInfo?.let {
                 complaintStatusAdapter.setData(it.states)
             }
@@ -141,7 +143,7 @@ class ComplaintStatusFragment : BaseFragment() {
             //Setting up the top app bar title
             includedToolbar.toolbarTitle.text = resources.getString(R.string.complaint_status)
             includedToolbar.leftIcon.setOnClickListener {
-                findNavController().navigateUp()
+                navController.navigateUp()
             }
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -151,9 +153,10 @@ class ComplaintStatusFragment : BaseFragment() {
                 complaintStatusViewModel.imageListData.value?.let { images ->
                     if (images.isNotEmpty()) {
                         val action = ComplaintStatusFragmentDirections.actionComplaintStatusToImagePreview(
-                            images.toTypedArray()
+                            images.toTypedArray(),
+                            getScreenName()
                         )
-                        findNavController().navigate(action)
+                        navController.navigate(action)
                     }
                 }
             }
@@ -169,8 +172,8 @@ class ComplaintStatusFragment : BaseFragment() {
     }
 
     private fun showComplaintStatusUpdateDialog() {
-        val action = ComplaintStatusFragmentDirections.actionComplaintStatusFragmentToComplaintStatusUpdateDialogFragment()
-        findNavController().navigate(action)
+        val action = ComplaintStatusFragmentDirections.actionComplaintStatusFragmentToComplaintStatusUpdateDialogFragment(getScreenName())
+        navController.navigate(action)
     }
 
     private fun handleAdminResponse(response: ComplaintStatus) {

@@ -22,6 +22,7 @@ interface SharedPreferenceKeys {
             const val USER_LOGGED_IN = "USER_LOGGED_IN"
             const val ROLE = "ROLE"
             const val FCM_TOKEN = "FCM_TOKEN"
+            const val FCM_TOKE_UPDATED = "FCM_TOKE_UPDATED"
         }
     }
 

@@ -48,4 +48,8 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
     inline var fcmToken: String?
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, null)
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, value)
+
+    inline var fcmTokenUpdated: Boolean
+        get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKE_UPDATED, false)
+        set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKE_UPDATED, value)
 }

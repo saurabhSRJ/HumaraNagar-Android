@@ -8,7 +8,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'kotlin-parcelize'
-    id 'androidx.navigation.safeargs'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 /**
  * The android block is where you configure all your Android-specific build options.
@@ -34,7 +34,6 @@ android {
         vectorDrawables.useSupportLibrary = true
         resConfigs 'en', 'hi'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "BASE_URL", "\"https://base_url/\""
     }
 
     buildTypes {
@@ -48,6 +47,7 @@ android {
             minifyEnabled false
             shrinkResources false
             crunchPngs false
+            buildConfigField "String", "BASE_URL", "\"https://corded-cinema-385603.du.r.appspot.com\""
         }
     }
     compileOptions {

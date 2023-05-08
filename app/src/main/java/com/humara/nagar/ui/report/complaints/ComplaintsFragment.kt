@@ -5,31 +5,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ComplaintsAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentComplaintsBinding
+import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.report.model.ComplaintDetails
 
 class ComplaintsFragment : BaseFragment() {
     companion object {
         const val RELOAD_COMPLAINTS_LIST = "reload_list"
+        const val IS_ADMIN = "is_admin"
     }
 
     private var _binding: FragmentComplaintsBinding? = null
     private val complaintsViewModel by viewModels<ComplaintsViewModel> {
         ViewModelFactory()
     }
+    private val navController: NavController by lazy { findNavController() }
     private val complaintsAdapter: ComplaintsAdapter by lazy {
-        ComplaintsAdapter(getUserPreference().isAdminUser) {
+        ComplaintsAdapter(getUserPreference().isAdminUser) { complaintId ->
             //Handle on click (Pass complain_id: String)
-            val action = ComplaintsFragmentDirections.actionComplaintsToComplaintStatus(it)
-            findNavController().navigate(action)
+            val action = ComplaintsFragmentDirections.actionComplaintsToComplaintStatus(complaintId, getScreenName())
+            navController.navigate(action)
         }
     }
     // This property is only valid between onCreateView and onDestroyView.
@@ -42,11 +45,9 @@ class ComplaintsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModelObservers()
-        initView()
-        findNavController().currentBackStackEntry?.savedStateHandle?.run {
+        navController.previousBackStackEntry?.savedStateHandle?.set(IS_ADMIN, getUserPreference().isAdminUser)
+        navController.currentBackStackEntry?.savedStateHandle?.run {
             getLiveData<Boolean>(RELOAD_COMPLAINTS_LIST).observe(viewLifecycleOwner) { shouldReload ->
-                Logger.debugLog("reload data: $shouldReload")
                 if (shouldReload) {
                     complaintsViewModel.getAllComplaints()
                     // To handle a result only once, you must call remove() on the SavedStateHandle to clear the result.
@@ -55,12 +56,14 @@ class ComplaintsFragment : BaseFragment() {
                 }
             }
         }
+        initViewModelObservers()
+        initView()
     }
 
     private fun initViewModelObservers() {
         complaintsViewModel.run {
             observeProgress(this, false)
-            observerException(this)
+            observeException(this)
             allComplaintLiveData.observe(viewLifecycleOwner) {
                 val list = it.complaints
                 if (list.isEmpty()) {
@@ -81,7 +84,7 @@ class ComplaintsFragment : BaseFragment() {
     }
 
     private fun showNoComplaintsView() {
-       binding.clNoComplaints.visibility = View.VISIBLE
+        binding.clNoComplaints.visibility = View.VISIBLE
     }
 
     private fun initView() {
@@ -93,7 +96,7 @@ class ComplaintsFragment : BaseFragment() {
                 visibility = View.VISIBLE
             }
             includedToolbar.leftIcon.setOnClickListener {
-                findNavController().navigateUp()
+                navController.navigateUp()
             }
             complaintsRCV.apply {
                 layoutManager = LinearLayoutManager(requireContext())

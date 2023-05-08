@@ -14,6 +14,9 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.os.bundleOf
+import androidx.navigation.NavDeepLinkBuilder
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.constants.NotificationConstants
@@ -79,12 +82,15 @@ object NotificationUtils {
     }
 
     private fun getNotificationPendingIntent(context: Context, notificationId: Int, extras: Bundle): PendingIntent {
-        val notificationIntent = Intent(context, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            putExtras(extras)
-            putExtra(IntentKeyConstants.SOURCE, NotificationConstants.NOTIFICATION)
+        extras.apply {
+            putString(IntentKeyConstants.SOURCE, "Notification-$notificationId")
         }
-        return context.getActivityPendingIntent(notificationId, notificationIntent)
+        return NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.mobile_navigation)
+            .setDestination(R.id.navigation_home)
+            .setArguments(extras)
+            .setComponentName(MainActivity::class.java)
+            .createPendingIntent()
     }
 
     private fun createOnDismissedIntent(notificationId: Int, extra: Bundle, context: Context): PendingIntent {

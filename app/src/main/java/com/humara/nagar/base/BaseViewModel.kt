@@ -4,15 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.humara.nagar.NagarApp
-import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.network.NetworkResponse
-import com.humara.nagar.network.onError
 import com.humara.nagar.network.onException
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.utils.SingleLiveEvent
-import java.net.HttpURLConnection
 
 /**
  * Base ViewModel for other view models. Provides some common functionality for error handling and api response processing
@@ -46,11 +43,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     ): NetworkResponse<T> {
         if (updateProgress) progressLiveData.postValue(true)
         val response = call.invoke()
-        response.onError {
-            if (it.responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                getApplication<NagarApp>().showUnAuthorizedAPICallForceLogoutScreen(getApplication(), AnalyticsData.EventName.UNAUTHORIZED_ACCESS)
-            }
-        }.onException {
+        response.onException {
             exceptionLiveData.postValue(it)
         }
         progressLiveData.postValue(false)

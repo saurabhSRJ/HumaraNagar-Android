@@ -13,7 +13,7 @@ object Logger {
 
     fun debugLog(msg: String) {
         if (BuildConfig.DEBUG) {
-            Log.d("Log", msg)
+            Log.d("NagarApp", msg)
         }
     }
 

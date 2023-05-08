@@ -2,10 +2,11 @@ package com.humara.nagar.fcm
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.humara.nagar.NagarApp
+import com.humara.nagar.Logger
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.utils.NotificationUtils
+import com.humara.nagar.utils.getUserSharedPreferences
 import org.json.JSONObject
 
 class PushNotificationMessagingService : FirebaseMessagingService() {
@@ -19,8 +20,8 @@ class PushNotificationMessagingService : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        FcmTokenUploadRepository(applicationContext as NagarApp).resetExistingTokenIfNotSameAsNew(token)
-        // send the token to your server
+        Logger.debugLog("New Token: $token")
+        applicationContext.getUserSharedPreferences().fcmTokenUpdated = true
     }
 
     companion object {
