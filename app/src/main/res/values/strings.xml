@@ -123,6 +123,7 @@
     <string name="complaint_acknowledgment_sent">Complaint acknowledgement sent</string>
     <string name="complaint_resolved">Complaint resolved</string>
     <string name="no_complaints_message">Nothing to manage yet!\nStart by creating a new complaint</string>
+    <string name="unauthorized_access">Unauthorized access</string>
 
     <!--List for category spinner: ReportFragment-->
     <string-array name="category_list">

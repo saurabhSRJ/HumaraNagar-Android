@@ -45,7 +45,7 @@ class SignupOrLoginFragment : BaseFragment() {
     private fun initViewModelObservers() {
         onBoardingViewModel.run {
             observeProgress(this, false)
-            observeErrorAndException(this)
+            observeErrorAndException(this, errorAction = {}, dismissAction = {})
             invalidMobileNumberLiveData.observe(viewLifecycleOwner) {
                 binding.tvMobileNumberError.isVisible = it
             }

@@ -52,7 +52,8 @@ class RetrofitService private constructor(val application: Context) {
             )
             .addCallAdapterFactory(NetworkResponseCallAdapterFactory.create())
             .client(getHttpClient())
-            .baseUrl("https://run.mocky.io/v3/")
+//            .baseUrl("https://run.mocky.io/v3/")
+            .baseUrl(BuildConfig.BASE_URL)
             .build()
         return retrofitInstance
     }

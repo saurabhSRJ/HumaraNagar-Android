@@ -53,7 +53,7 @@ class ProfileCreationFragment : BaseFragment() {
         }
         onBoardingViewModel.run {
             observeProgress(this, false)
-            observeErrorAndException(this)
+            observeErrorAndException(this, errorAction = {}, dismissAction = {})
         }
     }
 

@@ -2,7 +2,6 @@ package com.humara.nagar.ui.report
 
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.location.Address
@@ -20,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +34,7 @@ import com.humara.nagar.permissions.PermissionFragment
 import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.StatusData
+import com.humara.nagar.ui.report.complaints.ComplaintsFragment
 import com.humara.nagar.utils.*
 import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.Balloon
@@ -45,13 +46,14 @@ import java.util.*
 
 class ReportFragment : PermissionFragment() {
     private var _binding: FragmentReportBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
     private val reportViewModel by viewModels<ReportViewModel> {
         ViewModelFactory()
     }
     private lateinit var currentPhotoPath: String
     private lateinit var imagePreviewAdapter: ImagePreviewAdapter
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val navController: NavController by lazy { findNavController() }
 
     companion object {
         const val TAG = "ReportFragment"
@@ -77,12 +79,15 @@ class ReportFragment : PermissionFragment() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        //if user is admin navigate to all complaints screen and make that start destination
-        if (getUserPreference().isAdminUser) {
-            val navOptions = NavOptions.Builder().setPopUpTo(R.id.reportFragment, true).build()
-            findNavController().navigate(ReportFragmentDirections.actionReportToComplaints(), navOptions = navOptions)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val currentBackStackEntry = navController.getBackStackEntry(R.id.reportFragment)
+        //Handle back button navigation for admin users
+        currentBackStackEntry.savedStateHandle.getLiveData<Boolean>(ComplaintsFragment.IS_ADMIN).observe(currentBackStackEntry) { admin ->
+            if (admin) {
+                val navOptions = NavOptions.Builder().setPopUpTo(R.id.navigation_home, inclusive = false).build()
+                navController.navigate(R.id.navigation_home, null, navOptions = navOptions)
+            }
         }
     }
 
@@ -96,6 +101,10 @@ class ReportFragment : PermissionFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //if user is admin navigate to all complaints screen
+        if (getUserPreference().isAdminUser) {
+            openComplaintsScreen()
+        }
         initViewModelObservers()
         initView()
         initHistoryTooltip()
@@ -104,7 +113,7 @@ class ReportFragment : PermissionFragment() {
     private fun initViewModelObservers() {
         reportViewModel.run {
             observeProgress(this, false)
-            observerException(this)
+            observeException(this)
             submitButtonStateData.observe(viewLifecycleOwner) { isEnabled ->
                 binding.btnSubmit.isEnabled = isEnabled
             }
@@ -123,8 +132,8 @@ class ReportFragment : PermissionFragment() {
     }
 
     private fun openComplaintsScreen() {
-        val action = ReportFragmentDirections.actionReportToComplaints()
-        findNavController().navigate(action)
+        val action = ReportFragmentDirections.actionReportToComplaints(getScreenName())
+        navController.navigate(action)
     }
 
     private fun showComplaintSuccessDialog() {
@@ -160,7 +169,7 @@ class ReportFragment : PermissionFragment() {
             //Setting up the top app bar title
             includedToolbar.apply {
                 leftIcon.setOnClickListener {
-                    findNavController().navigateUp()
+                    navController.navigateUp()
                 }
                 toolbarTitle.text = resources.getString(R.string.reportIssueTitle)
                 rightIconTv.text = resources.getString(R.string.history)
@@ -224,7 +233,7 @@ class ReportFragment : PermissionFragment() {
 
     private fun initHistoryTooltip() {
         val historyToolTipCounter = getUserPreference().historyToolTipCounter
-        if (historyToolTipCounter < 3) {
+        if (getUserPreference().isAdminUser.not() && historyToolTipCounter < 3) {
             val balloon = Balloon.Builder(requireContext())
                 .setWidth(BalloonSizeSpec.WRAP)
                 .setHeight(BalloonSizeSpec.WRAP)

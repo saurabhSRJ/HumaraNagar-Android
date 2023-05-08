@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.humara.nagar.Logger
 import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.base.BaseViewModel
-import com.humara.nagar.fcm.FcmTokenUploadRepository
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.User
@@ -17,10 +16,10 @@ import com.humara.nagar.ui.signup.signup_or_login.model.SendOtpRequest
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.UserDataValidator
 import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
 
 class OnBoardingViewModel(application: Application) : BaseViewModel(application) {
     private val repository = OnBoardingRepository(application)
-    private val fcmTokenUploadRepository = FcmTokenUploadRepository(application)
     private val _isUserUnderAnExistingRegistrationProcessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val isUserUnderAnExistingRegistrationProcessLiveData: LiveData<Boolean> = _isUserUnderAnExistingRegistrationProcessLiveData
     private val _invalidMobileNumberLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
@@ -52,7 +51,6 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     }
 
     fun verifyOtp(otp: String) = viewModelScope.launch {
-        //TODO: Add invalid otp logic
         val request = LoginRequest(getUserPreference().passCode, getUserPreference().mobileNumber, otp)
         val response = processCoroutine({ repository.verifyOtpAndLogin(request) })
         response.onSuccess { loginResponse ->
@@ -61,15 +59,23 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
             getUserPreference().refreshToken = loginResponse.refreshToken
             _profileCreationRequiredLiveData.postValue(loginResponse.isNewUser)
         }.onError {
-//        _invalidOtpLiveData.postValue(null)
+            if (it.responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
+                _invalidOtpLiveData.postValue(null)
+            } else {
+                errorLiveData.postValue(it)
+            }
         }
     }
 
     fun resendOtp() = viewModelScope.launch {
-        //TODO: Add different resend otp API
         val response = processCoroutine({ repository.sendOtp(SendOtpRequest(getUserPreference().mobileNumber)) })
         response.onSuccess {
-            _successfulOtpResendLiveData.postValue(true)
+            if (it.passcode.isNullOrEmpty()) {
+                errorLiveData.postValue(null)
+            } else {
+                getUserPreference().passCode = it.passcode
+                _successfulOtpResendLiveData.postValue(true)
+            }
         }.onError {
             errorLiveData.postValue(it)
         }
@@ -80,7 +86,8 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         val response = processCoroutine({ repository.signup(request) })
         response.onSuccess {
             getUserPreference().userProfile = user
-            Logger.debugLog("Saved Profile", user.toString())
+            Logger.debugLog("Saved Profile: $user")
+            getUserPreference().isUserLoggedIn = true
             _successfulUserSignupLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)
@@ -94,12 +101,12 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     private fun validateUserAndSendOtp(mobileNumber: String) = viewModelScope.launch {
         val response = processCoroutine({ repository.sendOtp(SendOtpRequest(mobileNumber)) })
         response.onSuccess {
-            if (it.isEligibleToLogin) {
-                getUserPreference().mobileNumber = mobileNumber
-                it.passcode?.let { getUserPreference().passCode = it }
-                _successfulUserCheckLiveData.postValue(true)
-            } else {
+            if (it.passcode.isNullOrEmpty()) {
                 _successfulUserCheckLiveData.postValue(false)
+            } else {
+                getUserPreference().mobileNumber = mobileNumber
+                getUserPreference().passCode = it.passcode
+                _successfulUserCheckLiveData.postValue(true)
             }
         }.onError {
             errorLiveData.postValue(it)
@@ -107,8 +114,6 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     }
 
     fun onSuccessfulAppConfigFetched() {
-        getUserPreference().isUserLoggedIn = true
-        fcmTokenUploadRepository.fetchFcmTokenAndResetIfRequired()
         AnalyticsTracker.onUserOnBoard(getApplication())
         _showHomeScreenLiveData.value = true
     }
