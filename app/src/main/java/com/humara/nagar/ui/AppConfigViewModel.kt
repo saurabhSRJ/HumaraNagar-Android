@@ -24,9 +24,10 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     val logoutLiveData: LiveData<Boolean> = _logoutLiveData
 
     fun getAppConfig() = viewModelScope.launch {
-        val response = processCoroutine({ repository.getAppConfig(AppConfigRequest(getUserPreference().mobileNumber)) })
+        val response = processCoroutine({ repository.getAppConfig(AppConfigRequest(getUserPreference().userId)) })
         response.onSuccess {
             getUserPreference().role = it.role
+            getUserPreference().wardId = it.wardId
             _appConfigLiveData.postValue(it)
         }.onError {
             errorLiveData.postValue(it)

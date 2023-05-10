@@ -70,7 +70,7 @@ class OnBoardingActivity : BaseActivity() {
                 }
             }
             successfulUserSignupLiveData.observe(this@OnBoardingActivity) {
-                fetchAppConfig()
+                onUserOnBoard()
             }
             showHomeScreenLiveData.observe(this@OnBoardingActivity) {
                 showHomeScreen()
@@ -81,7 +81,7 @@ class OnBoardingActivity : BaseActivity() {
             observeProgress(this, false)
             observeErrorAndException(this)
             appConfigLiveData.observe(this@OnBoardingActivity) {
-                onBoardingViewModel.onSuccessfulAppConfigFetched()
+                onBoardingViewModel.onUserOnBoard()
             }
         }
     }

@@ -52,8 +52,7 @@ class FormSpinnerWithHeader @JvmOverloads constructor(context: Context, attrs: A
         binding.tvRequiredAsterisk.isVisible = text.isNullOrEmpty()
     }
 
-    fun setOptions(optionsArrayId: Int) {
-        val options = context.resources.getStringArray(optionsArrayId)
+    fun setOptions(options: Array<String>) {
         val adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, options)
         binding.spinnerTV.run {
             setAdapter(adapter)

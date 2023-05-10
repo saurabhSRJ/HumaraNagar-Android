@@ -183,13 +183,13 @@ class ReportFragment : PermissionFragment() {
             }
             //Settings up list for spinners
             inputCategory.apply {
-                setOptions(R.array.category_list)
+                setOptions(resources.getStringArray(R.array.category_list))
                 setUserInputListener {
                     reportViewModel.setCategory(it)
                 }
             }
             inputLocality.apply {
-                setOptions(R.array.locality_list)
+                setOptions(resources.getStringArray(R.array.locality_list))
                 setUserInputListener {
                     reportViewModel.setLocality(it)
                 }

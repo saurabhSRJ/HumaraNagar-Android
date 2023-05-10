@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_report"
-    app:startDestination="@id/reportFragment">
+    app:startDestination="@+id/reportFragment">
 
     <fragment
         android:id="@+id/reportFragment"
@@ -23,8 +23,8 @@
         tools:layout="@layout/fragment_complaints">
         <argument
             android:name="source"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
         <action
             android:id="@+id/action_complaints_to_complaint_status"
             app:destination="@id/complaintStatusFragment"
@@ -39,12 +39,12 @@
         tools:layout="@layout/fragment_complaint_status">
         <argument
             android:name="complaint_id"
-            app:argType="string"
-            android:defaultValue="0"/>
+            android:defaultValue="0"
+            app:argType="string" />
         <argument
             android:name="source"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
         <action
             android:id="@+id/action_complaint_status_to_image_preview"
             app:destination="@id/imagePreviewFragment"
@@ -62,8 +62,8 @@
         tools:layout="@layout/fragment_full_image_preview">
         <argument
             android:name="source"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
         <argument
             android:name="imagesList"
             app:argType="string[]" />
@@ -74,7 +74,7 @@
         tools:layout="@layout/fragment_complaint_status_update">
         <argument
             android:name="source"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
     </dialog>
 </navigation>

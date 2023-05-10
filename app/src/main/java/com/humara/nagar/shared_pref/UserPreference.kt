@@ -19,6 +19,9 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, User::class.java)
         set(value) = putObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, value)
 
+    inline val userId: Long
+        get() = userProfile?.userId ?: 0
+
     inline var historyToolTipCounter: Int
         get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, 0)
         set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, value)
@@ -31,8 +34,8 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.PASSCODE, "") ?: ""
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.PASSCODE, value)
 
-    inline var token: String
-        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.TOKEN, "") ?: ""
+    inline var token: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.TOKEN, null)
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.TOKEN, value)
 
     inline var refreshToken: String
@@ -44,6 +47,10 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
 
     val isAdminUser: Boolean = role == Role.ADMIN.role
+
+    inline var wardId: Long
+        get() = getLong(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, 0)
+        set(value) = putLong(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, value)
 
     inline var fcmToken: String?
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, null)

@@ -54,12 +54,15 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         val request = LoginRequest(getUserPreference().passCode, getUserPreference().mobileNumber, otp)
         val response = processCoroutine({ repository.verifyOtpAndLogin(request) })
         response.onSuccess { loginResponse ->
-            getUserPreference().userProfile = User(userId = loginResponse.userId, mobileNumber = getUserPreference().mobileNumber)
-            getUserPreference().token = loginResponse.token
-            getUserPreference().refreshToken = loginResponse.refreshToken
+            with(getUserPreference()) {
+                userProfile = User(userId = loginResponse.userId, mobileNumber = getUserPreference().mobileNumber)
+                token = loginResponse.token
+                refreshToken = loginResponse.refreshToken
+                isUserLoggedIn = true
+            }
             _profileCreationRequiredLiveData.postValue(loginResponse.isNewUser)
         }.onError {
-            if (it.responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
+            if (it.responseCode == HttpURLConnection.HTTP_BAD_REQUEST) {
                 _invalidOtpLiveData.postValue(null)
             } else {
                 errorLiveData.postValue(it)
@@ -87,7 +90,6 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         response.onSuccess {
             getUserPreference().userProfile = user
             Logger.debugLog("Saved Profile: $user")
-            getUserPreference().isUserLoggedIn = true
             _successfulUserSignupLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)
@@ -113,7 +115,7 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         }
     }
 
-    fun onSuccessfulAppConfigFetched() {
+    fun onUserOnBoard() {
         AnalyticsTracker.onUserOnBoard(getApplication())
         _showHomeScreenLiveData.value = true
     }
