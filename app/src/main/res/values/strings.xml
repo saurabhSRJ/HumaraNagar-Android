@@ -34,7 +34,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
-    <string name="dob_invalid_message">Please enter a valid Date of Birth</string>
+    <string name="dob_invalid_message">You must be 18 years or older</string>
     <string name="otp_sent_to_s">OTP sent to %s</string>
     <string name="humara_nagar">Humara Nagar</string>
     <string name="some_error_occoured">Please try again later after some time.</string>

@@ -19,7 +19,7 @@ interface OnBoardingService {
 //    @POST("d6eb47a5-1f0c-43b1-abc2-dac497262fc1")
     suspend fun verifyOtpAndLogin(@Body request: LoginRequest): NetworkResponse<LoginResponse>
 
-    //    @POST(NetworkConstants.NetworkAPIConstants.SIGNUP)
-    @POST("d314af8e-f0f5-47fa-9ce3-7f90aaa03f66")
+    @POST(NetworkConstants.NetworkAPIConstants.SIGNUP)
+//    @POST("d314af8e-f0f5-47fa-9ce3-7f90aaa03f66")
     suspend fun signup(@Body request: ProfileCreationRequest): NetworkResponse<Any>
 }

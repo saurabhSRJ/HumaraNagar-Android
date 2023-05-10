@@ -41,7 +41,7 @@ class MainActivity : BaseActivity() {
         fun startActivity(context: Context, source: String) {
             val intent = Intent(context, MainActivity::class.java).apply {
                 putExtra(IntentKeyConstants.SOURCE, source)
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             context.startActivity(intent)
         }

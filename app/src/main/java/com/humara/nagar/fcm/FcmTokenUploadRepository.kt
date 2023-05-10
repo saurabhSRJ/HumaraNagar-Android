@@ -30,6 +30,6 @@ class FcmTokenUploadRepository(application: Application) : BaseRepository(applic
     }
 
     suspend fun updateFcmTokenToServer(newToken: String): NetworkResponse<StatusResponse> {
-        return apiService.updateFcmTokenToServer(FcmTokenRequest(application.getUserSharedPreferences().userProfile?.userId ?: 0, newToken))
+        return apiService.updateFcmTokenToServer(FcmTokenRequest(application.getUserSharedPreferences().userId, newToken))
     }
 }

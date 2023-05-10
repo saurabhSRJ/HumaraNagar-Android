@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentProfileCreationBinding
@@ -40,6 +41,8 @@ class ProfileCreationFragment : BaseFragment() {
 
     private fun initViewModelObservers() {
         profileCreationViewModel.run {
+            observeProgress(this, false)
+            observeErrorAndException(this, errorAction = { getParentActivity<BaseActivity>()?.onBackPressed() }, dismissAction = { getParentActivity<BaseActivity>()?.onBackPressed() })
             getDateOfBirth().observe(viewLifecycleOwner) { dob ->
                 binding.inputDob.setInput(dob)
                 binding.inputLocality.requestFocus()
@@ -50,6 +53,11 @@ class ProfileCreationFragment : BaseFragment() {
             getSubmitButtonState().observe(viewLifecycleOwner) { isEnabled ->
                 binding.btnSubmit.isEnabled = isEnabled
             }
+            userLocalitiesLiveData.observe(viewLifecycleOwner) {
+                Logger.debugLog("Localities: $it")
+                binding.inputLocality.setOptions(it.toTypedArray())
+            }
+            getAppConfigAndUserReferenceData()
         }
         onBoardingViewModel.run {
             observeProgress(this, false)
@@ -75,7 +83,6 @@ class ProfileCreationFragment : BaseFragment() {
             inputLocality.setUserInputListener {
                 profileCreationViewModel.setLocality(it)
             }
-            inputLocality.setImeOptionType(EditorInfo.IME_ACTION_DONE)
             btnSubmit.setNonDuplicateClickListener {
                 hideKeyboard()
                 onBoardingViewModel.updateSavedUserDetailsAndSignup(profileCreationViewModel.getUserObjectWithCollectedData())

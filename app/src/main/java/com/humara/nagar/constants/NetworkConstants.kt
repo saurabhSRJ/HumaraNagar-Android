@@ -6,6 +6,7 @@ interface NetworkConstants {
             const val ACCEPT_LANGUAGE = "Accept-Language"
             const val APP_VERSION = "App-Version"
             const val ANDROID_VERSION = "Android-Version"
+            const val AUTHORIZATION = "Authorization"
         }
     }
 
@@ -17,6 +18,7 @@ interface NetworkConstants {
             const val CONFIG = "/config"
             const val LOGOUT = "/logout"
             const val COMPLAINT = "/complaint"
+            const val REF_DATA = "/ref-data"
         }
     }
 
