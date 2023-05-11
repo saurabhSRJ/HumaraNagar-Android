@@ -16,7 +16,7 @@ import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.constants.IntentKeyConstants
-import com.humara.nagar.network.ApiError
+import com.humara.nagar.network.retrofit.UnauthorizedException
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
@@ -87,16 +87,6 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    protected open fun obServeErrorAndException(
-        apiError: ApiError,
-        viewModel: BaseViewModel,
-        errorAction: () -> Unit = { findNavController().navigateUp() },
-        dismissAction: () -> Unit = { findNavController().navigateUp() }
-    ) {
-        showErrorDialog(null, apiError.message, errorAction = errorAction, dismissAction = dismissAction)
-        observeException(viewModel, errorAction, dismissAction)
-    }
-
     protected open fun observeErrorAndException(
         viewModel: BaseViewModel,
         errorAction: () -> Unit = { findNavController().navigateUp() },
@@ -114,10 +104,16 @@ abstract class BaseFragment : Fragment() {
         dismissAction: () -> Unit = { findNavController().navigateUp() }
     ) {
         viewModel.exceptionLiveData.observe(this) { exception ->
-            if (exception is IOException) {
-                showNoInternetDialog(errorAction = errorAction, dismissAction = dismissAction)
-            } else {
-                showErrorDialog(errorAction = errorAction, dismissAction = dismissAction)
+            when (exception) {
+                is IOException -> {
+                    showNoInternetDialog(errorAction = errorAction, dismissAction = dismissAction)
+                }
+                is UnauthorizedException -> {
+                    getParentActivity<BaseActivity>()?.blockUnauthorizedAccess()
+                }
+                else -> {
+                    showErrorDialog(errorAction = errorAction, dismissAction = dismissAction)
+                }
             }
         }
     }

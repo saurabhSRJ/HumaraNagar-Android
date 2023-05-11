@@ -15,16 +15,23 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.MOBILE_NUMBER, "") ?: ""
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.MOBILE_NUMBER, value)
 
+    inline var userId: Long
+        get() = getLong(SharedPreferenceKeys.UserPreferenceKeys.USER_ID, 0L)
+        set(value) = putLong(SharedPreferenceKeys.UserPreferenceKeys.USER_ID, value)
+
+    inline var role: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, null)
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
+
+    val isAdminUser: Boolean = role == Role.ADMIN.role
+
+    inline var ward: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.WARD, null)
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.WARD, value)
+
     inline var userProfile: User?
         get() = getObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, User::class.java)
         set(value) = putObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, value)
-
-    inline val userId: Long
-        get() = userProfile?.userId ?: 0
-
-    inline var historyToolTipCounter: Int
-        get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, 0)
-        set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, value)
 
     inline var isUserLoggedIn: Boolean
         get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, false)
@@ -42,16 +49,6 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.REFRESH_TOKEN, "") ?: ""
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.REFRESH_TOKEN, value)
 
-    inline var role: String?
-        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, null)
-        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
-
-    val isAdminUser: Boolean = role == Role.ADMIN.role
-
-    inline var wardId: Long
-        get() = getLong(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, 0)
-        set(value) = putLong(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, value)
-
     inline var fcmToken: String?
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, null)
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKEN, value)
@@ -59,4 +56,8 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
     inline var fcmTokenUpdated: Boolean
         get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKE_UPDATED, false)
         set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.FCM_TOKE_UPDATED, value)
+
+    inline var historyToolTipCounter: Int
+        get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, 0)
+        set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.HISTORY_TOOLTIP_COUNTER, value)
 }

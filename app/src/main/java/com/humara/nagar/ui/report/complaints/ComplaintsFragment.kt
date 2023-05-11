@@ -14,7 +14,6 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentComplaintsBinding
-import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.report.model.ComplaintDetails
 
 class ComplaintsFragment : BaseFragment() {

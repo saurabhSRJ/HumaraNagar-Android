@@ -19,6 +19,9 @@ interface NetworkConstants {
             const val LOGOUT = "/logout"
             const val COMPLAINT = "/complaint"
             const val REF_DATA = "/ref-data"
+            const val TOKEN = "/token"
+            const val PRIVACY_POLICY_URL = "https://humaranagar.in"
+            const val TERMS_CONDITION_URL = "https://humaranagar.in"
         }
     }
 

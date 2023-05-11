@@ -85,7 +85,7 @@ class ProfileCreationFragment : BaseFragment() {
             }
             btnSubmit.setNonDuplicateClickListener {
                 hideKeyboard()
-                onBoardingViewModel.updateSavedUserDetailsAndSignup(profileCreationViewModel.getUserObjectWithCollectedData())
+                onBoardingViewModel.updateSavedUserDetailsAndSignup(profileCreationViewModel.getProfileCreationObjectWithCollectedData())
             }
         }
     }

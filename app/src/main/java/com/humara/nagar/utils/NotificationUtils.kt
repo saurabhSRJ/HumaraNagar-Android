@@ -14,9 +14,7 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.constants.NotificationConstants

@@ -38,8 +38,7 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     val showHomeScreenLiveData: LiveData<Boolean> = _showHomeScreenLiveData
 
     fun checkIfUserIsUnderOngoingRegistrationProcess() {
-        val savedUserProfile = getUserPreference().userProfile
-        _isUserUnderAnExistingRegistrationProcessLiveData.value = savedUserProfile != null
+        _isUserUnderAnExistingRegistrationProcessLiveData.value = getUserPreference().userId != 0L
     }
 
     fun handleMobileNumberInput(mobileNumber: String) {
@@ -54,11 +53,16 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         val request = LoginRequest(getUserPreference().passCode, getUserPreference().mobileNumber, otp)
         val response = processCoroutine({ repository.verifyOtpAndLogin(request) })
         response.onSuccess { loginResponse ->
-            with(getUserPreference()) {
-                userProfile = User(userId = loginResponse.userId, mobileNumber = getUserPreference().mobileNumber)
+            getUserPreference().run {
                 token = loginResponse.token
                 refreshToken = loginResponse.refreshToken
-                isUserLoggedIn = true
+                userId = loginResponse.userId
+                loginResponse.userInfo?.let { user ->
+                    val userInfo = User(user.userId, user.getFullName(), getUserPreference().mobileNumber, user.fatherOrSpouseName, user.gender, user.locality)
+                    isUserLoggedIn = true
+                    userProfile = userInfo
+                    Logger.debugLog("Saved Profile: $userInfo")
+                }
             }
             _profileCreationRequiredLiveData.postValue(loginResponse.isNewUser)
         }.onError {
@@ -84,12 +88,14 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         }
     }
 
-    fun updateSavedUserDetailsAndSignup(user: User) = viewModelScope.launch {
-        val request = ProfileCreationRequest(user.userId, user.name, user.fatherOrSpouseName, user.dateOfBirth, user.gender, user.locality)
+    fun updateSavedUserDetailsAndSignup(request: ProfileCreationRequest) = viewModelScope.launch {
         val response = processCoroutine({ repository.signup(request) })
         response.onSuccess {
-            getUserPreference().userProfile = user
-            Logger.debugLog("Saved Profile: $user")
+            // TODO: try to sync this from backend response instead of using the app request body. Similar to login api
+            val createdUser = User(request.userId, request.name, getUserPreference().mobileNumber, request.fatherOrSpouseName, request.gender, request.locality)
+            getUserPreference().userProfile = createdUser
+            getUserPreference().isUserLoggedIn = true
+            Logger.debugLog("Saved Profile: $createdUser")
             _successfulUserSignupLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)

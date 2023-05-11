@@ -10,6 +10,7 @@ import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.HttpURLConnection
 
 class NetworkResponseCall<T>(
     private val proxy: Call<T>
@@ -27,7 +28,13 @@ class NetworkResponseCall<T>(
                 } else {
                     callback.onResponse(
                         this@NetworkResponseCall,
-                        Response.success(NetworkResponse.Error(ApiError(responseCode = code, message = getErrorMessage(response))))
+                        Response.success(
+                            if (code == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                                NetworkResponse.Exception(UnauthorizedException("Unauthorized Access. Please login again"))
+                            } else {
+                                NetworkResponse.Error(ApiError(responseCode = code, message = getErrorMessage(response)))
+                            }
+                        )
                     )
                 }
             }

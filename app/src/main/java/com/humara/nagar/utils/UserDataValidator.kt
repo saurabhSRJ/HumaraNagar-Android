@@ -1,5 +1,6 @@
 package com.humara.nagar.utils
 
+import com.humara.nagar.constants.Constants
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -19,7 +20,7 @@ class UserDataValidator {
             val dateOfBirth = LocalDate.parse(dob, formatter)
             val currentDate = LocalDate.now()
             val age = Period.between(dateOfBirth, currentDate).years
-            return age >= 18
+            return age >= Constants.MIN_AGE_REQUIREMENT
         }
     }
 }

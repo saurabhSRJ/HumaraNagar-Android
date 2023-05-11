@@ -350,7 +350,7 @@ class ReportFragment : PermissionFragment() {
                 // Logic to handle location object.
                 var addresses: List<Address>? = null
                 try {
-                    val geocoder = Geocoder(requireContext(), Locale("en", "IN"))
+                    val geocoder = Geocoder(requireContext(), Locale(getAppPreference().appLanguage, "IN"))
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         geocoder.getFromLocation(location.latitude, location.longitude, 1) {
                             addresses = it

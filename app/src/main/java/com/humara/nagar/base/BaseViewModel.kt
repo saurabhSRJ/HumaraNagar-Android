@@ -27,7 +27,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     val errorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
 
     /**
-     * LiveData to handle exceptions like no internet connection etc
+     * LiveData to handle exceptions like no internet connection, unauthorized exception etc
      */
     val exceptionLiveData: SingleLiveEvent<Throwable> by lazy { SingleLiveEvent() }
 

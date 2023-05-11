@@ -80,6 +80,7 @@ class RetrofitService private constructor(val application: Context) {
                 val request = requestBuilder.build()
                 chain.proceed(request)
             }
+            .authenticator(AccessTokenAuthenticator(userPreference, this))
             .addInterceptor(getLoggingInterceptor())
             .readTimeout(120, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)

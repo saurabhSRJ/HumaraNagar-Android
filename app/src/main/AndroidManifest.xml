@@ -78,6 +78,9 @@
             android:name="com.humara.nagar.ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".ui.common.WebViewActivity"
+            android:screenOrientation="portrait" />
     </application>
 
     <queries>
@@ -85,6 +88,5 @@
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
     </queries>
-
 
 </manifest>

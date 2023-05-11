@@ -12,23 +12,15 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.humara.nagar.Logger
 import com.humara.nagar.R
-import com.humara.nagar.SplashActivity
 import com.humara.nagar.analytics.AnalyticsData
-import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.databinding.ActivityMainBinding
 import com.humara.nagar.fluid_resize.FluidContentResizer
 import com.humara.nagar.permissions.PermissionHandler
-import com.humara.nagar.ui.common.GenericAlertDialog
-import com.humara.nagar.utils.NotificationUtils
 import com.humara.nagar.utils.PermissionUtils
-import com.humara.nagar.utils.getAppSharedPreferences
-import com.humara.nagar.utils.getUserSharedPreferences
-import org.json.JSONObject
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -54,17 +46,9 @@ class MainActivity : BaseActivity() {
         if (getUserPreference().isUserLoggedIn.not()) {
             blockUnauthorizedAccess()
         }
-        initViewModelObservers()
         setUpBottomNavigation()
         checkAndRequestNotificationPermission()
         FluidContentResizer.listen(this)
-    }
-
-    private fun initViewModelObservers() {
-        appConfigViewModel.logoutLiveData.observe(this) {
-            observeProgress(appConfigViewModel, false)
-            SplashActivity.start(this)
-        }
     }
 
     private fun setUpBottomNavigation() {
@@ -105,21 +89,6 @@ class MainActivity : BaseActivity() {
      */
     private fun setUpPushNotificationToken() {
         appConfigViewModel.fetchFcmTokenAndUpdateToServerIfRequired()
-    }
-
-    private fun blockUnauthorizedAccess() {
-        Logger.debugLog("Unauthorized access")
-        GenericAlertDialog.show(this, getString(R.string.unauthorized_access), getString(R.string.session_expired_message), false, getString(R.string.logout)) {
-            logout(getScreenName())
-        }
-    }
-
-    fun logout(source: String) {
-        AnalyticsTracker.sendEvent(AnalyticsData.EventName.LOGOUT, JSONObject().put(AnalyticsData.Parameters.SOURCE, source))
-        NotificationUtils.clearAllNotification(this)
-        getUserSharedPreferences().clearAll()
-        getAppSharedPreferences().logOut(false)
-        appConfigViewModel.logout()
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.MAIN_ACTIVITY

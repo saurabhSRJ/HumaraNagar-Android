@@ -10,7 +10,6 @@ interface AnalyticsData {
             const val SIGNUP_OR_LOGIN_FRAGMENT = "SIGNUP_OR_LOGIN_FRAGMENT"
             const val OTP_VERIFICATION_FRAGMENT = "OTP_VERIFICATION_FRAGMENT"
             const val PROFILE_CREATION_FRAGMENT = "PROFILE_CREATION_FRAGMENT"
-            const val FORCE_LOGOUT_SCREEN = "FORCE_LOGOUT_SCREEN"
             const val MAIN_ACTIVITY = "MAIN_ACTIVITY"
             const val HOME_FRAGMENT = "HOME_FRAGMENT"
             const val REPORT_FRAGMENT = "REPORT_FRAGMENT"
@@ -20,12 +19,12 @@ interface AnalyticsData {
             const val COMPLAINTS_FRAGMENT = "COMPLAINTS_FRAGMENT"
             const val COMPLAINTS_STATUS_FRAGMENT = "COMPLAINTS_STATUS_FRAGMENT"
             const val IMAGE_PREVIEW_FRAGMENT = "IMAGE_PREVIEW_FRAGMENT"
+            const val WEB_VIEW_ACTIVITY = "WEB_VIEW_ACTIVITY"
         }
     }
 
     interface EventName {
         companion object {
-            const val UNAUTHORIZED_ACCESS = "UNAUTHORIZED_ACCESS"
             const val LOGOUT = "LOGOUT"
             const val NOTIFICATION_RECEIVED = "NOTIFICATION_RECEIVED"
             const val NOTIFICATION_DISMISSED = "NOTIFICATION_DISMISSED"

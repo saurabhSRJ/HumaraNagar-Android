@@ -15,8 +15,10 @@ import com.humara.nagar.adapter.WelcomeBannerAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
+import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.databinding.FragmentSignupOrLoginBinding
 import com.humara.nagar.ui.common.ViewPagerSwitcher
+import com.humara.nagar.ui.common.WebViewActivity
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.signup_or_login.model.WelcomeBannerModel
 
@@ -31,11 +33,7 @@ class SignupOrLoginFragment : BaseFragment() {
         const val TAG = "SignupOrLoginFragment"
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSignupOrLoginBinding.inflate(inflater, container, false)
         initView()
         initViewModelObservers()
@@ -87,7 +85,17 @@ class SignupOrLoginFragment : BaseFragment() {
             btnContinue.setOnClickListener {
                 hideKeyboardAndHandlePhoneNumberInput()
             }
+            tvTerms.setOnClickListener {
+                openWebView(getString(R.string.terms_amp_conditions), NetworkConstants.NetworkAPIConstants.TERMS_CONDITION_URL)
+            }
+            tvPrivacyPolicy.setOnClickListener {
+                openWebView(getString(R.string.privacy_policy), NetworkConstants.NetworkAPIConstants.PRIVACY_POLICY_URL)
+            }
         }
+    }
+
+    private fun openWebView(title: String, url: String) {
+        WebViewActivity.startActivity(requireActivity(), getScreenName(), url, title)
     }
 
     private fun hideKeyboardAndHandlePhoneNumberInput() {

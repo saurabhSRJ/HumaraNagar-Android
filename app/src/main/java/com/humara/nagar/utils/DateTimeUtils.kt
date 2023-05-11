@@ -17,9 +17,7 @@ object DateTimeUtils {
         val originalFormatter = DateTimeFormatter.ofPattern(originalFormat)
         val targetFormatter = DateTimeFormatter.ofPattern(targetFormat)
         return try {
-            // Parse the original date string
             val date = LocalDate.parse(dateString, originalFormatter)
-            // Format the parsed date to the target format
             date.format(targetFormatter)
         } catch (e: DateTimeParseException) {
             e.printStackTrace()
@@ -27,4 +25,18 @@ object DateTimeUtils {
         }
     }
 
+    /**
+     * Retrieves a date that is earlier than the current date by the specified number of years.
+     *
+     * @param yearsToSubtract The number of years to subtract from the current date.
+     * @return A Triple containing the year, month, and day of the earlier date.
+     */
+    fun getEarlierDate(yearsToSubtract: Long): Triple<Int, Int, Int> {
+        val currentDate = LocalDate.now()
+        val earlierDate = currentDate.minusYears(yearsToSubtract)
+        val year = earlierDate.year
+        val month = earlierDate.monthValue
+        val day = earlierDate.dayOfMonth
+        return Triple(year, month, day)
+    }
 }

@@ -27,7 +27,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         val response = processCoroutine({ repository.getAppConfig(AppConfigRequest(getUserPreference().userId)) })
         response.onSuccess {
             getUserPreference().role = it.role
-            getUserPreference().wardId = it.wardId
+            getUserPreference().ward = it.ward
             _appConfigLiveData.postValue(it)
         }.onError {
             errorLiveData.postValue(it)
@@ -49,7 +49,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         val storedToken = getUserPreference().fcmToken
         val isTokenUpdated = getUserPreference().fcmTokenUpdated
         val newToken = fetchTokenTask.await().result
-        Logger.debugLog("fcm toke: $newToken")
+        Logger.debugLog("fcm token: $newToken")
         if (isTokenUpdated && storedToken != newToken) {
             val response = processCoroutine({ fcmRepository.updateFcmTokenToServer(newToken) })
             response.onSuccess {

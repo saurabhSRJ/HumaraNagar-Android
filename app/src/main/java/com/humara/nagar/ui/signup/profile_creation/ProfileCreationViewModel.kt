@@ -11,8 +11,8 @@ import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.AppConfigRepository
 import com.humara.nagar.ui.signup.model.AppConfigRequest
 import com.humara.nagar.ui.signup.model.Gender
-import com.humara.nagar.ui.signup.model.User
 import com.humara.nagar.ui.signup.model.UserReferenceDataRequest
+import com.humara.nagar.ui.signup.profile_creation.model.ProfileCreationRequest
 import com.humara.nagar.utils.DateTimeUtils
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.UserDataValidator
@@ -40,14 +40,16 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
         val userRefDataDeferred = async { appConfigRepository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) }
         val appConfigResult = appConfigDeferred.await()
         val userRefDataResult = userRefDataDeferred.await()
+        var wardId = 0L
         appConfigResult.onSuccess {
             getUserPreference().role = it.role
-            getUserPreference().wardId = it.wardId
+            getUserPreference().ward = it.ward
+            wardId = it.wardId
         }.onError {
             errorLiveData.postValue(it)
         }
         userRefDataResult.onSuccess {
-            val filteredLocalities = it.localities.filter { locality -> locality.wardId == getUserPreference().wardId }.map { it.name }
+            val filteredLocalities = it.localities.filter { locality -> locality.wardId == wardId }.map { it.name }
             _userLocalitiesLiveData.postValue(filteredLocalities)
         }.onError {
             errorLiveData.postValue(it)
@@ -92,15 +94,15 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
 
     private fun getGender(): String = savedStateHandle[GENDER_KEY] ?: Gender.MALE.name
 
-    fun getUserObjectWithCollectedData(): User {
-        val user: User = getUserPreference().userProfile!!.apply {
-            name = getUserName()!!
-            fatherOrSpouseName = getParentName()!!
-            dateOfBirth = DateTimeUtils.convertDateFormat(getDateOfBirth().value.toString(), "dd-MM-yyyy", "yyyy-MM-dd")
+    fun getProfileCreationObjectWithCollectedData(): ProfileCreationRequest {
+        return ProfileCreationRequest(
+            userId = getUserPreference().userId,
+            name = getUserName()!!,
+            fatherOrSpouseName = getParentName()!!,
+            dateOfBirth = DateTimeUtils.convertDateFormat(getDateOfBirth().value.toString(), "dd-MM-yyyy", "yyyy-MM-dd"),
+            gender = getGender(),
             locality = getLocality()!!
-            gender = getGender()
-        }
-        return user
+        )
     }
 
     private fun updateSubmitButtonState() {

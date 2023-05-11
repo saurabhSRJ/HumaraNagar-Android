@@ -6,22 +6,27 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.humara.nagar.Logger
 import com.humara.nagar.R
+import com.humara.nagar.SplashActivity
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.constants.IntentKeyConstants
-import com.humara.nagar.network.ApiError
+import com.humara.nagar.network.retrofit.UnauthorizedException
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
+import com.humara.nagar.ui.AppConfigViewModel
+import com.humara.nagar.ui.common.GenericAlertDialog
 import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
 import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.utils.LocaleManager
+import com.humara.nagar.utils.NotificationUtils
 import com.humara.nagar.utils.getAppSharedPreferences
 import com.humara.nagar.utils.getUserSharedPreferences
 import org.json.JSONException
@@ -34,6 +39,9 @@ import java.io.IOException
  */
 abstract class BaseActivity : AppCompatActivity() {
     private lateinit var progressDialogue: Dialog
+    private val appConfigViewModel: AppConfigViewModel by viewModels {
+        ViewModelFactory()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +52,14 @@ abstract class BaseActivity : AppCompatActivity() {
                 appendCommonParams(null).apply {
                     put(AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW)
                 })
+        }
+        initViewModelObservers()
+    }
+
+    private fun initViewModelObservers() {
+        appConfigViewModel.logoutLiveData.observe(this) {
+            SplashActivity.start(this)
+            finish()
         }
     }
 
@@ -89,30 +105,39 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    protected open fun observeErrorAndException(apiError: ApiError, viewModel: BaseViewModel) {
-        showErrorDialog(null, apiError.message)
-        observerException(viewModel)
-    }
-
-    protected open fun observeErrorAndException(viewModel: BaseViewModel) {
+    protected open fun observeErrorAndException(
+        viewModel: BaseViewModel,
+        errorAction: () -> Unit = { },
+        dismissAction: () -> Unit = { }
+    ) {
         viewModel.errorLiveData.observe(this) {
-            showErrorDialog(null, it.message)
+            showErrorDialog(null, it.message, errorAction = errorAction, dismissAction = dismissAction)
         }
         observerException(viewModel)
     }
 
-    protected open fun observerException(viewModel: BaseViewModel) {
+    protected open fun observerException(
+        viewModel: BaseViewModel,
+        errorAction: () -> Unit = { },
+        dismissAction: () -> Unit = { }
+    ) {
         viewModel.exceptionLiveData.observe(this) { exception ->
-            if (exception is IOException) {
-                showNoInternetDialog()
-            } else {
-                showErrorDialog()
+            when (exception) {
+                is IOException -> {
+                    showNoInternetDialog(errorAction = errorAction, dismissAction = dismissAction)
+                }
+                is UnauthorizedException -> {
+                    blockUnauthorizedAccess()
+                }
+                else -> {
+                    showErrorDialog(errorAction = errorAction, dismissAction = dismissAction)
+                }
             }
         }
     }
 
-    private fun showNoInternetDialog() {
-        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
+    private fun showNoInternetDialog(errorAction: () -> Unit = { }, dismissAction: () -> Unit = { }) {
+        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message), errorAction = errorAction, dismissAction = dismissAction)
     }
 
     open fun showErrorDialog(
@@ -143,6 +168,21 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    open fun blockUnauthorizedAccess() {
+        Logger.debugLog("Unauthorized access")
+        GenericAlertDialog.show(this, getString(R.string.unauthorized_access), getString(R.string.session_expired_message), false, getString(R.string.logout)) {
+            logout(getScreenName())
+        }
+    }
+
+    private fun logout(source: String) {
+        AnalyticsTracker.sendEvent(AnalyticsData.EventName.LOGOUT, JSONObject().put(AnalyticsData.Parameters.SOURCE, source))
+        NotificationUtils.clearAllNotification(this)
+        getUserSharedPreferences().clearAll()
+        getAppSharedPreferences().logOut(false)
+        appConfigViewModel.logout()
     }
 
     protected fun showProgress(isDismissible: Boolean) {
