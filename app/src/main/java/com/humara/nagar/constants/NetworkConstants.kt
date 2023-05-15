@@ -30,4 +30,17 @@ interface NetworkConstants {
             const val ID = "id"
         }
     }
+
+    interface NetworkFormDataConstants {
+        companion object {
+            const val USER_ID = "user_id"
+            const val LOCATION = "location"
+            const val LOCALITY = "locality"
+            const val CATEGORY = "category"
+            const val COMMENTS = "comments"
+            const val IMAGE = "image"
+            const val LATITUDE = "location_latitude"
+            const val LONGITUDE = "location_longitude"
+        }
+    }
 }

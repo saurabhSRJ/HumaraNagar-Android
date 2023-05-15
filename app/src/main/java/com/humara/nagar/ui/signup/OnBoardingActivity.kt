@@ -80,14 +80,14 @@ class OnBoardingActivity : BaseActivity() {
         appConfigViewModel.run {
             observeProgress(this, false)
             observeErrorAndException(this)
-            appConfigLiveData.observe(this@OnBoardingActivity) {
+            appConfigSuccessLiveData.observe(this@OnBoardingActivity) {
                 onBoardingViewModel.onUserOnBoard()
             }
         }
     }
 
     private fun fetchAppConfig() {
-        appConfigViewModel.getAppConfig()
+        appConfigViewModel.getAppConfigAndUserReferenceData()
     }
 
     private fun showHomeScreen() {

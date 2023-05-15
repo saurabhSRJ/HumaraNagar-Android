@@ -34,8 +34,8 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         installSplashScreen()
+        super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -48,7 +48,7 @@ class SplashActivity : BaseActivity() {
     private fun initViewModelObservers() {
         appConfigViewModel.run {
             observeErrorAndException(this)
-            appConfigLiveData.observe(this@SplashActivity) {
+            appConfigSuccessLiveData.observe(this@SplashActivity) {
                 MainActivity.startActivity(this@SplashActivity, getScreenName())
                 finish()
             }
@@ -57,7 +57,7 @@ class SplashActivity : BaseActivity() {
 
     private fun initConfig() {
         if (getUserPreference().isUserLoggedIn) {
-            appConfigViewModel.getAppConfig()
+            appConfigViewModel.getAppConfigAndUserReferenceData()
         } else {
             Handler(Looper.getMainLooper()).postDelayed({
                 OnBoardingActivity.startActivity(this, getScreenName())

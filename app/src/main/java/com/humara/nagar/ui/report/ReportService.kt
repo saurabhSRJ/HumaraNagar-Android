@@ -3,14 +3,20 @@ package com.humara.nagar.ui.report
 import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.network.NetworkResponse
 import com.humara.nagar.ui.report.model.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Query
 
 interface ReportService {
+    @Multipart
     @POST(NetworkConstants.NetworkAPIConstants.COMPLAINT)
-    suspend fun postComplaint(@Body request: PostComplaintRequest): NetworkResponse<PostComplaintResponse>
+    suspend fun postComplaint(@PartMap partMap: MutableMap<String, RequestBody>, @Part image: ArrayList<MultipartBody.Part>): NetworkResponse<PostComplaintResponse>
 
     @GET("191cff7a-1b9e-4745-8abc-f9b3373d50c3")
     suspend fun getAllComplaints(): NetworkResponse<AllComplaintsResponse>

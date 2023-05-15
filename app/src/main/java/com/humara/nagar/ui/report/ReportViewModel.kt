@@ -12,10 +12,6 @@ import com.humara.nagar.ui.report.model.PostComplaintRequest
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 
 class ReportViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
     companion object {
@@ -25,6 +21,8 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
         private const val COMMENT_KEY = "comment"
         private const val IMAGES_KEY = "images"
         private const val SUBMIT_BUTTON_KEY = "submit"
+        private const val LATITUDE = "latitude"
+        private const val LONGITUDE = "longitude"
     }
 
     private val repository = ReportRepository(application)
@@ -32,6 +30,8 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
     private val categoryData: LiveData<String> = savedStateHandle.getLiveData(CATEGORY_KEY)
     private val localityData: LiveData<String> = savedStateHandle.getLiveData(LOCALITY_KEY)
     private val locationData: LiveData<String> = savedStateHandle.getLiveData(LOCATION_KEY)
+    private val latitudeData: LiveData<Double> = savedStateHandle.getLiveData(LATITUDE)
+    private val longitudeData: LiveData<Double> = savedStateHandle.getLiveData(LONGITUDE)
     private val commentData: LiveData<String> = savedStateHandle.getLiveData(COMMENT_KEY)
     val imagesData: LiveData<List<Uri>> = savedStateHandle.getLiveData(IMAGES_KEY, mutableListOf())
     val submitButtonStateData: LiveData<Boolean> = savedStateHandle.getLiveData(SUBMIT_BUTTON_KEY, false)
@@ -44,7 +44,7 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
 
     fun postComplaint() = viewModelScope.launch {
         val complaintsRequest = getComplaintObjectWithCollectedData()
-        val response = processCoroutine({ repository.postComplaint(complaintsRequest) })
+        val response = processCoroutine({ repository.postComplaint(complaintsRequest, imageUris) })
         response.onSuccess {
             _postComplaintStatusLiveData.postValue(true)
         }.onError {
@@ -65,6 +65,11 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
     fun setLocation(location: String) {
         savedStateHandle[LOCATION_KEY] = location
         updateSubmitButtonState()
+    }
+
+    fun setLocationCoordinates(latitude: Double, longitude: Double) {
+        savedStateHandle[LATITUDE] = latitude
+        savedStateHandle[LONGITUDE] = longitude
     }
 
     fun setComment(comment: String) {
@@ -96,20 +101,8 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
     }
 
     private fun getComplaintObjectWithCollectedData(): PostComplaintRequest {
-        return PostComplaintRequest(category = categoryData.value!!, locality = localityData.value!!, phone_number = getUserPreference().mobileNumber,
-            location = StringUtils.replaceWhitespaces(locationData.value!!.trim()), comments = StringUtils.replaceWhitespaces(commentData.value!!.trim()), images = getImageMultipart())
-    }
-
-    private fun getImageMultipart(): ArrayList<MultipartBody.Part> {
-        val imageParts = ArrayList<MultipartBody.Part>()
-        for (filePath in imageUris) {
-            val file = filePath.path?.let { File(it) }
-            val requestBody = file?.asRequestBody("image/*".toMediaTypeOrNull())
-            val imagePart = requestBody?.let { MultipartBody.Part.createFormData("image", file.name, it) }
-            if (imagePart != null) {
-                imageParts.add(imagePart)
-            }
-        }
-        return imageParts
+        return PostComplaintRequest(category = categoryData.value!!, locality = localityData.value!!, user_id = getUserPreference().userId,
+            location = StringUtils.replaceWhitespaces(locationData.value!!.trim()), comments = StringUtils.replaceWhitespaces(commentData.value!!.trim()),
+            location_latitude = latitudeData.value, location_longitude = longitudeData.value)
     }
 }

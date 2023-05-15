@@ -12,23 +12,41 @@ import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.AppConfigRequest
 import com.humara.nagar.ui.signup.model.AppConfigResponse
 import com.humara.nagar.ui.signup.model.LogoutRequest
+import com.humara.nagar.ui.signup.model.UserReferenceDataRequest
+import com.humara.nagar.utils.SingleLiveEvent
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class AppConfigViewModel(application: Application) : BaseViewModel(application) {
     private val repository = AppConfigRepository(application)
     private val fcmRepository = FcmTokenUploadRepository(application)
-    private val _appConfigLiveData: MutableLiveData<AppConfigResponse> by lazy { MutableLiveData() }
-    val appConfigLiveData: LiveData<AppConfigResponse> = _appConfigLiveData
+    private val _appConfigSuccessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val appConfigSuccessLiveData: LiveData<Boolean> = _appConfigSuccessLiveData
+    private val _userLocalitiesLiveData: MutableLiveData<List<String>> by lazy { SingleLiveEvent() }
+    val userLocalitiesLiveData: LiveData<List<String>> = _userLocalitiesLiveData
+    private val _complaintCategoriesLiveData: MutableLiveData<List<String>> by lazy { SingleLiveEvent() }
+    val complaintCategoriesLiveData: LiveData<List<String>> = _complaintCategoriesLiveData
     private val _logoutLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val logoutLiveData: LiveData<Boolean> = _logoutLiveData
 
-    fun getAppConfig() = viewModelScope.launch {
-        val response = processCoroutine({ repository.getAppConfig(AppConfigRequest(getUserPreference().userId)) })
-        response.onSuccess {
+    fun getAppConfigAndUserReferenceData() = viewModelScope.launch {
+        val appConfigDeferred = async { repository.getAppConfig(AppConfigRequest(getUserPreference().userId)) }
+        val userRefDataDeferred = async { repository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) }
+        val appConfigResult = appConfigDeferred.await()
+        val userRefDataResult = userRefDataDeferred.await()
+        var wardId = 0L
+        appConfigResult.onSuccess {
             getUserPreference().role = it.role
             getUserPreference().ward = it.ward
-            _appConfigLiveData.postValue(it)
+            wardId = it.wardId
+        }.onError {
+            errorLiveData.postValue(it)
+        }
+        userRefDataResult.onSuccess {
+            val filteredLocalities = it.localities.filter { locality -> locality.wardId == wardId }.map { it.name }
+            _userLocalitiesLiveData.postValue(filteredLocalities)
+            _complaintCategoriesLiveData.postValue(it.categories.map { category -> category.name })
+            _appConfigSuccessLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)
         }

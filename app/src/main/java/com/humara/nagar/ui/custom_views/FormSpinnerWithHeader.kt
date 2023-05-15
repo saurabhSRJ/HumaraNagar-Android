@@ -73,6 +73,7 @@ class FormSpinnerWithHeader @JvmOverloads constructor(context: Context, attrs: A
                 if (isRestoredView) {
                     isRestoredView = false
                     tvRequiredAsterisk.isVisible = it.toString().trim().isEmpty()
+                    tvError.visibility = View.GONE
                 } else {
                     tvRequiredAsterisk.visibility = View.VISIBLE
                     tvError.visibility = View.VISIBLE

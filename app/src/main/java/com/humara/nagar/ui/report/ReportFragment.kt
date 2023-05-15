@@ -9,7 +9,6 @@ import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -32,6 +32,7 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentReportBinding
 import com.humara.nagar.permissions.PermissionFragment
 import com.humara.nagar.permissions.PermissionHandler
+import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.ui.report.complaints.ComplaintsFragment
@@ -40,6 +41,7 @@ import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
 import com.skydoves.balloon.BalloonSizeSpec
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -49,6 +51,9 @@ class ReportFragment : PermissionFragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     private val reportViewModel by viewModels<ReportViewModel> {
+        ViewModelFactory()
+    }
+    private val appConfigViewModel by viewModels<AppConfigViewModel> {
         ViewModelFactory()
     }
     private lateinit var currentPhotoPath: String
@@ -111,6 +116,17 @@ class ReportFragment : PermissionFragment() {
     }
 
     private fun initViewModelObservers() {
+        appConfigViewModel.run {
+            observeProgress(this, false)
+            observeErrorAndException(this)
+            userLocalitiesLiveData.observe(viewLifecycleOwner) {
+                binding.inputLocality.setOptions(it.toTypedArray())
+            }
+            complaintCategoriesLiveData.observe(viewLifecycleOwner) {
+                binding.inputCategory.setOptions(it.toTypedArray())
+            }
+            getAppConfigAndUserReferenceData()
+        }
         reportViewModel.run {
             observeProgress(this, false)
             observeException(this)
@@ -181,18 +197,11 @@ class ReportFragment : PermissionFragment() {
                     openComplaintsScreen()
                 }
             }
-            //Settings up list for spinners
-            inputCategory.apply {
-                setOptions(resources.getStringArray(R.array.category_list))
-                setUserInputListener {
-                    reportViewModel.setCategory(it)
-                }
+            inputCategory.setUserInputListener {
+                reportViewModel.setCategory(it)
             }
-            inputLocality.apply {
-                setOptions(resources.getStringArray(R.array.locality_list))
-                setUserInputListener {
-                    reportViewModel.setLocality(it)
-                }
+            inputLocality.setUserInputListener {
+                reportViewModel.setLocality(it)
             }
             inputLocation.apply {
                 switchToMultiLined(2, svForm)
@@ -323,20 +332,12 @@ class ReportFragment : PermissionFragment() {
     }
 
     private fun clickPicture() {
-        val imageFile = createImageFile()
+        val imageFile = StorageUtils.createImageFile(requireContext())
+        currentPhotoPath = imageFile.absolutePath
         val imageUri = FileProvider.getUriForFile(requireContext(), resources.getString(R.string.provider_name), imageFile)
         val intent: Intent = IntentUtils.getCameraIntent(requireContext(), imageUri)
         if (IntentUtils.hasIntent(requireContext(), intent)) {
             takeCameraLauncher.launch(intent)
-        }
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile("JPEG_${reportViewModel.imageUris.size + 1}", ".jpg", storageDir).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
         }
     }
 
@@ -358,6 +359,7 @@ class ReportFragment : PermissionFragment() {
                     } else {
                         addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                     }
+                    reportViewModel.setLocationCoordinates(location.latitude, location.longitude)
                 } catch (ioException: IOException) {
                     Logger.logException(TAG, ioException, Logger.LogLevel.ERROR, true)
                 } catch (illegalArgumentException: IllegalArgumentException) {
@@ -388,11 +390,11 @@ class ReportFragment : PermissionFragment() {
             for (i in 0 until count) {
                 val imageUri = selectedImages.getItemAt(i).uri
                 imageUri?.let { uri ->
-                    reportViewModel.addImages(listOf(uri))
+                    compressImage(uri)
                 }
             }
         } ?: data?.data?.let {
-            reportViewModel.addImages(listOf(it))
+            compressImage(it)
         } ?: kotlin.run {
             context?.showToast(getString(R.string.no_image_selected), true)
         }
@@ -401,8 +403,16 @@ class ReportFragment : PermissionFragment() {
     private fun onImageCapture() {
         if (this::currentPhotoPath.isInitialized && currentPhotoPath.isNotEmpty()) {
             val imageUri = Uri.fromFile(File(currentPhotoPath))
-            Logger.debugLog(TAG, imageUri.toString())
-            reportViewModel.addImages(listOf(imageUri))
+            compressImage(imageUri)
+        }
+    }
+
+    private fun compressImage(uri: Uri) {
+        lifecycleScope.launch {
+            reportViewModel.progressLiveData.postValue(true)
+            val compressedUri = StorageUtils.compressImageFile(requireContext(), uri)
+            reportViewModel.addImages(listOf(compressedUri))
+            reportViewModel.progressLiveData.postValue(false)
         }
     }
 

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
  *  * @constructor
  * @param application Application context
  * */
-class RetrofitService private constructor(val application: Context) {
+class RetrofitService private constructor(val application: Application) {
     lateinit var retrofitInstance: Retrofit
     private var okHttpClient: OkHttpClient? = null
     private val userPreference = application.getUserSharedPreferences()
