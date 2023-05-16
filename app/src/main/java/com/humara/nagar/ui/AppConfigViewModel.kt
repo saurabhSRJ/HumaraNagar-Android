@@ -10,7 +10,6 @@ import com.humara.nagar.fcm.FcmTokenUploadRepository
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.AppConfigRequest
-import com.humara.nagar.ui.signup.model.AppConfigResponse
 import com.humara.nagar.ui.signup.model.LogoutRequest
 import com.humara.nagar.ui.signup.model.UserReferenceDataRequest
 import com.humara.nagar.utils.SingleLiveEvent
@@ -34,22 +33,30 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         val userRefDataDeferred = async { repository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) }
         val appConfigResult = appConfigDeferred.await()
         val userRefDataResult = userRefDataDeferred.await()
-        var wardId = 0L
         appConfigResult.onSuccess {
             getUserPreference().role = it.role
             getUserPreference().ward = it.ward
-            wardId = it.wardId
+            getUserPreference().wardId = it.wardId
         }.onError {
             errorLiveData.postValue(it)
         }
         userRefDataResult.onSuccess {
-            val filteredLocalities = it.localities.filter { locality -> locality.wardId == wardId }.map { it.name }
-            _userLocalitiesLiveData.postValue(filteredLocalities)
-            _complaintCategoriesLiveData.postValue(it.categories.map { category -> category.name })
+            repository.insertCategories(it.categories)
+            repository.insertLocalities(it.localities)
             _appConfigSuccessLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)
         }
+    }
+
+    fun getUserLocalities() = viewModelScope.launch {
+        val localities = repository.getUserLocalities(getUserPreference().wardId)
+        _userLocalitiesLiveData.postValue(localities.map { it.name })
+    }
+
+    fun getComplaintCategories() = viewModelScope.launch {
+        val categories = repository.getComplaintCategories()
+        _complaintCategoriesLiveData.postValue(categories.map { it.name })
     }
 
     fun logout() = viewModelScope.launch {
@@ -73,6 +80,8 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
             response.onSuccess {
                 getUserPreference().fcmToken = newToken
                 getUserPreference().fcmTokenUpdated = false
+            }.onError {
+                //NA
             }
         }
     }

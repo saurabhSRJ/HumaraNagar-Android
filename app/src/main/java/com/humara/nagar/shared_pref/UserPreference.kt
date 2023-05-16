@@ -29,6 +29,10 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.WARD, null)
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.WARD, value)
 
+    inline var wardId: Int
+        get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, 0)
+        set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, value)
+
     inline var userProfile: User?
         get() = getObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, User::class.java)
         set(value) = putObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, value)

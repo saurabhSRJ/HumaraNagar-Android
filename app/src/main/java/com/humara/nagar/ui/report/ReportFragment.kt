@@ -117,15 +117,14 @@ class ReportFragment : PermissionFragment() {
 
     private fun initViewModelObservers() {
         appConfigViewModel.run {
-            observeProgress(this, false)
-            observeErrorAndException(this)
             userLocalitiesLiveData.observe(viewLifecycleOwner) {
                 binding.inputLocality.setOptions(it.toTypedArray())
             }
             complaintCategoriesLiveData.observe(viewLifecycleOwner) {
                 binding.inputCategory.setOptions(it.toTypedArray())
             }
-            getAppConfigAndUserReferenceData()
+            getComplaintCategories()
+            getUserLocalities()
         }
         reportViewModel.run {
             observeProgress(this, false)

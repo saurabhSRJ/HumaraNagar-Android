@@ -25,6 +25,7 @@ interface SharedPreferenceKeys {
             const val FCM_TOKEN = "FCM_TOKEN"
             const val FCM_TOKE_UPDATED = "FCM_TOKE_UPDATED"
             const val WARD = "WARD"
+            const val WARD_ID = "WARD_ID"
         }
     }
 

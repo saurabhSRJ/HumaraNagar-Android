@@ -5,13 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import com.humara.nagar.Logger
+import androidx.fragment.app.viewModels
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentProfileCreationBinding
+import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.common.DatePickerDialogFragment
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.model.Gender
@@ -27,6 +28,9 @@ class ProfileCreationFragment : BaseFragment() {
     private val profileCreationViewModel by activityViewModels<ProfileCreationViewModel> {
         ViewModelFactory()
     }
+    private val appConfigViewModel by viewModels<AppConfigViewModel> {
+        ViewModelFactory()
+    }
 
     companion object {
         const val TAG = "ProfileCreationFragment"
@@ -40,6 +44,17 @@ class ProfileCreationFragment : BaseFragment() {
     }
 
     private fun initViewModelObservers() {
+        appConfigViewModel.run {
+            observeProgress(this, false)
+            observeErrorAndException(this)
+            userLocalitiesLiveData.observe(viewLifecycleOwner) {
+                binding.inputLocality.setOptions(it.toTypedArray())
+            }
+            appConfigSuccessLiveData.observe(viewLifecycleOwner) {
+                getUserLocalities()
+            }
+            getAppConfigAndUserReferenceData()
+        }
         profileCreationViewModel.run {
             observeProgress(this, false)
             observeErrorAndException(this, errorAction = { getParentActivity<BaseActivity>()?.onBackPressed() }, dismissAction = { getParentActivity<BaseActivity>()?.onBackPressed() })
@@ -53,11 +68,6 @@ class ProfileCreationFragment : BaseFragment() {
             getSubmitButtonState().observe(viewLifecycleOwner) { isEnabled ->
                 binding.btnSubmit.isEnabled = isEnabled
             }
-            userLocalitiesLiveData.observe(viewLifecycleOwner) {
-                Logger.debugLog("Localities: $it")
-                binding.inputLocality.setOptions(it.toTypedArray())
-            }
-            getAppConfigAndUserReferenceData()
         }
         onBoardingViewModel.run {
             observeProgress(this, false)

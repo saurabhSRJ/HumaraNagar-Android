@@ -9,6 +9,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-kapt'
 }
 /**
  * The android block is where you configure all your Android-specific build options.
@@ -67,7 +68,6 @@ android {
 dependencies {
     // Dependency on local binaries
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //Do not update this till compiledSdkVersion is updated to 33
     implementation 'androidx.core:core-ktx:1.10.0'
     //splash screen
     implementation 'androidx.core:core-splashscreen:1.0.1'
@@ -75,8 +75,8 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.5.7"
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
     implementation 'androidx.annotation:annotation:1.6.0'
@@ -85,7 +85,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
+    //Glide
     implementation 'com.github.bumptech.glide:glide:4.14.2'
+    //Room Database
+    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     // OTP pin view
     implementation 'io.github.chaosleung:pinview:1.4.4'
     //security-crypto for encrypted shared preference
@@ -102,6 +106,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
     //ToolTip -> Balloon
     implementation "com.github.skydoves:balloon:1.5.2"
 }

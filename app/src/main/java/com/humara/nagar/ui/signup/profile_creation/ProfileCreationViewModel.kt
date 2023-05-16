@@ -4,20 +4,12 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import com.humara.nagar.base.BaseViewModel
-import com.humara.nagar.network.onError
-import com.humara.nagar.network.onSuccess
-import com.humara.nagar.ui.AppConfigRepository
-import com.humara.nagar.ui.signup.model.AppConfigRequest
 import com.humara.nagar.ui.signup.model.Gender
-import com.humara.nagar.ui.signup.model.UserReferenceDataRequest
 import com.humara.nagar.ui.signup.profile_creation.model.ProfileCreationRequest
 import com.humara.nagar.utils.DateTimeUtils
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.UserDataValidator
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class ProfileCreationViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
     companion object {
@@ -31,30 +23,6 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
 
     private val _invalidDateOfBirthLiveData: MutableLiveData<Boolean> by lazy { SingleLiveEvent() }
     val invalidDateOfBirthLiveData: LiveData<Boolean> = _invalidDateOfBirthLiveData
-    private val _userLocalitiesLiveData: MutableLiveData<List<String>> by lazy { SingleLiveEvent() }
-    val userLocalitiesLiveData: LiveData<List<String>> = _userLocalitiesLiveData
-    private val appConfigRepository = AppConfigRepository(application)
-
-    fun getAppConfigAndUserReferenceData() = viewModelScope.launch {
-        val appConfigDeferred = async { appConfigRepository.getAppConfig(AppConfigRequest(getUserPreference().userId)) }
-        val userRefDataDeferred = async { appConfigRepository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) }
-        val appConfigResult = appConfigDeferred.await()
-        val userRefDataResult = userRefDataDeferred.await()
-        var wardId = 0L
-        appConfigResult.onSuccess {
-            getUserPreference().role = it.role
-            getUserPreference().ward = it.ward
-            wardId = it.wardId
-        }.onError {
-            errorLiveData.postValue(it)
-        }
-        userRefDataResult.onSuccess {
-            val filteredLocalities = it.localities.filter { locality -> locality.wardId == wardId }.map { it.name }
-            _userLocalitiesLiveData.postValue(filteredLocalities)
-        }.onError {
-            errorLiveData.postValue(it)
-        }
-    }
 
     fun setDateOfBirth(dob: String) {
         if (UserDataValidator.isValidDateOfBirth(dob)) {
