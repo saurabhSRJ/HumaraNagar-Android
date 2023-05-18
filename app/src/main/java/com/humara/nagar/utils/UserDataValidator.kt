@@ -1,7 +1,9 @@
 package com.humara.nagar.utils
 
-import java.text.SimpleDateFormat
-import java.util.*
+import com.humara.nagar.constants.Constants
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 import java.util.regex.Pattern
 
 class UserDataValidator {
@@ -14,9 +16,11 @@ class UserDataValidator {
         }
 
         fun isValidDateOfBirth(dob: String): Boolean {
-            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
-            val strDate = dateFormat.parse(dob)
-            return strDate?.before(Date()) ?: false
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val dateOfBirth = LocalDate.parse(dob, formatter)
+            val currentDate = LocalDate.now()
+            val age = Period.between(dateOfBirth, currentDate).years
+            return age >= Constants.MIN_AGE_REQUIREMENT
         }
     }
 }

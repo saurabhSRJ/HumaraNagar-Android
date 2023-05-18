@@ -1,4 +1,4 @@
-package com.humara.nagar.ui.signup.signup_or_login
+package com.humara.nagar.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

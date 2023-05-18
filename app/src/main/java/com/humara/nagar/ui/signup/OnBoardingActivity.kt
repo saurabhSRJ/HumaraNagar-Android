@@ -12,13 +12,19 @@ import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.databinding.ActivitiyOnboardingBinding
+import com.humara.nagar.fluid_resize.FluidContentResizer
+import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.otp_verification.OtpVerificationFragment
+import com.humara.nagar.ui.signup.pending_approval.PendingApprovalFragment
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationFragment
 import com.humara.nagar.ui.signup.signup_or_login.SignupOrLoginFragment
 
 class OnBoardingActivity : BaseActivity() {
     private val onBoardingViewModel by viewModels<OnBoardingViewModel> {
+        ViewModelFactory()
+    }
+    private val appConfigViewModel by viewModels<AppConfigViewModel> {
         ViewModelFactory()
     }
     private lateinit var binding: ActivitiyOnboardingBinding
@@ -37,6 +43,7 @@ class OnBoardingActivity : BaseActivity() {
         binding = ActivitiyOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViewModelObservers()
+        FluidContentResizer.listen(this)
     }
 
     private fun initViewModelObservers() {
@@ -48,17 +55,39 @@ class OnBoardingActivity : BaseActivity() {
                     showSignupOrLoginFragment(false)
                 }
             }
-            successfulUserCheckLiveData.observe(this@OnBoardingActivity) {
-                showOtpFragment()
+            successfulUserCheckLiveData.observe(this@OnBoardingActivity) { isEligibleToLogin ->
+                if (isEligibleToLogin) {
+                    showOtpFragment()
+                } else {
+                    showPendingApprovalFragment()
+                }
             }
-            profileCreationRequiredLiveData.observe(this@OnBoardingActivity) {
-                showProfileCreationFragment()
+            profileCreationRequiredLiveData.observe(this@OnBoardingActivity) { isNewUser ->
+                if (isNewUser) {
+                    showProfileCreationFragment()
+                } else {
+                    fetchAppConfig()
+                }
             }
-            successfulUserLoginLiveData.observe(this@OnBoardingActivity) {
+            successfulUserSignupLiveData.observe(this@OnBoardingActivity) {
+                onUserOnBoard()
+            }
+            showHomeScreenLiveData.observe(this@OnBoardingActivity) {
                 showHomeScreen()
             }
             checkIfUserIsUnderOngoingRegistrationProcess()
         }
+        appConfigViewModel.run {
+            observeProgress(this, false)
+            observeErrorAndException(this)
+            appConfigSuccessLiveData.observe(this@OnBoardingActivity) {
+                onBoardingViewModel.onUserOnBoard()
+            }
+        }
+    }
+
+    private fun fetchAppConfig() {
+        appConfigViewModel.getAppConfigAndUserReferenceData()
     }
 
     private fun showHomeScreen() {
@@ -84,9 +113,19 @@ class OnBoardingActivity : BaseActivity() {
         )
     }
 
+    private fun showPendingApprovalFragment() {
+        showFragment(
+            PendingApprovalFragment(),
+            shouldShowEntryAndExitAnimations = true,
+            shouldShowReverseEntryAnimation = false,
+            PendingApprovalFragment.TAG
+        )
+    }
+
     private fun showProfileCreationFragment() {
         showFragment(
-            ProfileCreationFragment(),
+            // We want to restore the ProfileCreationFragment instance so that user's input is not lost. If no instance is available then creating a new instance
+            supportFragmentManager.findFragmentByTag(ProfileCreationFragment.TAG) ?: ProfileCreationFragment(),
             shouldShowEntryAndExitAnimations = true,
             shouldShowReverseEntryAnimation = false,
             tag = ProfileCreationFragment.TAG
@@ -98,12 +137,14 @@ class OnBoardingActivity : BaseActivity() {
         shouldShowEntryAndExitAnimations: Boolean,
         shouldShowReverseEntryAnimation: Boolean,
         tag: String?
-    ) = supportFragmentManager.commit(true) {
-        if (shouldShowEntryAndExitAnimations) setCustomAnimations(
-            if (shouldShowReverseEntryAnimation) R.anim.slide_in_from_left else R.anim.slide_in_from_right,
-            R.anim.slide_out_to_left
-        )
-        replace(binding.container.id, fragmentToShow, tag)
+    ) {
+        supportFragmentManager.commit {
+            if (shouldShowEntryAndExitAnimations) setCustomAnimations(
+                if (shouldShowReverseEntryAnimation) R.anim.slide_in_from_left else R.anim.slide_in_from_right,
+                if (shouldShowReverseEntryAnimation) R.anim.slide_out_to_right else R.anim.slide_out_to_left
+            )
+            replace(R.id.container, fragmentToShow, tag)
+        }
     }
 
     override fun onBackPressed() {

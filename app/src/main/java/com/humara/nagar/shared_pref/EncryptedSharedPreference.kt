@@ -3,14 +3,13 @@ package com.humara.nagar.shared_pref
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import android.util.Log
 import androidx.collection.LruCache
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.humara.nagar.constants.Constants
-import com.humara.nagar.utils.put
 import com.google.gson.Gson
 import com.humara.nagar.Logger
+import com.humara.nagar.constants.Constants
+import com.humara.nagar.utils.put
 
 open class EncryptedSharedPreference(
     context: Context,

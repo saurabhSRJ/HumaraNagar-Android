@@ -3,23 +3,19 @@ package com.humara.nagar.base
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.humara.nagar.NagarApp
-import com.humara.nagar.analytics.AnalyticsData
-import com.humara.nagar.network.*
+import com.humara.nagar.network.ApiError
+import com.humara.nagar.network.NetworkResponse
+import com.humara.nagar.network.onException
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.utils.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.HttpURLConnection
 
 /**
  * Base ViewModel for other view models. Provides some common functionality for error handling and api response processing
  * NOTE: Always call observerErrorAndException() function from the base activity/fragment for error handling to work
  */
-open class BaseViewModel(application: Application) :
-    AndroidViewModel(application) {
+open class BaseViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * LiveData to show progress in activity/fragment
      */
@@ -31,7 +27,7 @@ open class BaseViewModel(application: Application) :
     val errorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
 
     /**
-     * LiveData to handle exceptions like no internet connection etc
+     * LiveData to handle exceptions like no internet connection, unauthorized exception etc
      */
     val exceptionLiveData: SingleLiveEvent<Throwable> by lazy { SingleLiveEvent() }
 
@@ -47,11 +43,7 @@ open class BaseViewModel(application: Application) :
     ): NetworkResponse<T> {
         if (updateProgress) progressLiveData.postValue(true)
         val response = call.invoke()
-        response.onError {
-            if (it.responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                getApplication<NagarApp>().showUnAuthorizedAPICallForceLogoutScreen(getApplication(), AnalyticsData.EventName.UNAUTHORIZED_ACCESS)
-            }
-        }.onException {
+        response.onException {
             exceptionLiveData.postValue(it)
         }
         progressLiveData.postValue(false)
@@ -62,13 +54,11 @@ open class BaseViewModel(application: Application) :
      * Return User preference data(i.e user profile) being set and used throughout the app.
      * @return [UserPreference]
      */
-    protected fun getUserPreference(): UserPreference =
-        (getApplication() as NagarApp).userSharedPreference
+    protected fun getUserPreference(): UserPreference = getApplication<NagarApp>().userSharedPreference
 
     /**
      * Return App preference being set and used throughout the app.
      * @return [AppPreference]
      */
-    protected fun getAppPreference(): AppPreference =
-        (getApplication() as NagarApp).appSharedPreference
+    protected fun getAppPreference(): AppPreference = getApplication<NagarApp>().appSharedPreference
 }

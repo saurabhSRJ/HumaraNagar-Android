@@ -17,11 +17,14 @@
     <color name="light_blue_EEF4FF">#EEF4FF</color>
     <color name="red_asterisk_D31717">#D31717</color>
     <color name="splash_screen_background">#F4F6FC</color>
-    <color name="card_color">#F1F1F1</color>
-
+    <color name="grey_F1F1F1">#F1F1F1</color>
+    <color name="grey_E4E4E4">#E4E4E4</color>
+    <color name="black_with_opacity_70">#B3000000</color>
+    <color name="rating_star_gold_bg">#FFCB02</color>
     <!--Stroke Button Colors-->
     <color name="stroke_red">#CF0A0A</color>
     <color name="stroke_yellow">#FF9E0D</color>
     <color name="stroke_green">#439916</color>
+    <color name="chip_selected_color">#DEE9FE</color>
 
 </resources>

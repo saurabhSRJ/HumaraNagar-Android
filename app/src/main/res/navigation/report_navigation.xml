@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_report"
+    app:startDestination="@+id/reportFragment">
+
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.humara.nagar.ui.report.ReportFragment"
+        tools:layout="@layout/fragment_report">
+        <action
+            android:id="@+id/action_report_to_complaints"
+            app:destination="@id/complaintsFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/complaintsFragment"
+        android:name="com.humara.nagar.ui.report.complaints.ComplaintsFragment"
+        tools:layout="@layout/fragment_complaints">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_complaints_to_complaint_status"
+            app:destination="@id/complaintStatusFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/complaintStatusFragment"
+        android:name="com.humara.nagar.ui.report.complaint_status.ComplaintStatusFragment"
+        tools:layout="@layout/fragment_complaint_status">
+        <argument
+            android:name="complaint_id"
+            android:defaultValue="0"
+            app:argType="string" />
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_complaint_status_to_image_preview"
+            app:destination="@id/imagePreviewFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_complaintStatusFragment_to_complaintStatusUpdateDialogFragment"
+            app:destination="@id/complaintStatusUpdateDialogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imagePreviewFragment"
+        android:name="com.humara.nagar.ui.common.FullImagePreviewFragment"
+        tools:layout="@layout/fragment_full_image_preview">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="imagesList"
+            app:argType="string[]" />
+    </fragment>
+    <dialog
+        android:id="@+id/complaintStatusUpdateDialogFragment"
+        android:name="com.humara.nagar.ui.report.complaint_status.ComplaintStatusUpdateDialogFragment"
+        tools:layout="@layout/fragment_complaint_status_update">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+    </dialog>
+</navigation>

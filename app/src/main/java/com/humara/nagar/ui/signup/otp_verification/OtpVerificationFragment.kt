@@ -2,7 +2,6 @@ package com.humara.nagar.ui.signup.otp_verification
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,14 +19,14 @@ import com.humara.nagar.constants.Constants
 import com.humara.nagar.databinding.FragmentOtpVerificationBinding
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.utils.*
+import com.humara.nagar.utils.StringUtils.setStringWithColor
+import com.humara.nagar.utils.StringUtils.setStringWithColors
 
 class OtpVerificationFragment : BaseFragment() {
     private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
         ViewModelFactory()
     }
     private lateinit var binding: FragmentOtpVerificationBinding
-
-    private var mobileNumber: String = ""
     private lateinit var countDownTimer: CountDownTimer
 
     companion object {
@@ -40,7 +39,6 @@ class OtpVerificationFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentOtpVerificationBinding.inflate(inflater, container, false)
-        mobileNumber = getUserPreference().mobileNumber
         initViewModelObservers()
         initView()
         initializeTimer()
@@ -50,7 +48,7 @@ class OtpVerificationFragment : BaseFragment() {
     private fun initViewModelObservers() {
         onBoardingViewModel.run {
             observeProgress(this, false)
-            observeErrorAndException(this)
+            observeErrorAndException(this, errorAction = {}, dismissAction = {})
             invalidOtpLiveData.observe(viewLifecycleOwner) { message ->
                 binding.tvOtpErrorMessage.setStringWithColor(
                     message ?: getString(R.string.incorrect_otp_message),
@@ -58,7 +56,7 @@ class OtpVerificationFragment : BaseFragment() {
                 )
             }
             successfulOtpResendLiveData.observe(viewLifecycleOwner) {
-                requireContext().showToast(getString(R.string.otp_sent_to_s, mobileNumber))
+                requireContext().showToast(getString(R.string.otp_sent_to_s, getUserPreference().mobileNumber))
                 setResendOtpTimerView(false)
             }
         }
@@ -82,7 +80,7 @@ class OtpVerificationFragment : BaseFragment() {
             btnContinue.setOnClickListener { hideKeyboardAndVerifyOtp() }
             tvOtpSentTo.setStringWithColors(
                 getString(R.string.otp_sent_to).plus(" "),
-                Utils.getMobileNumberWithCountryCode(mobileNumber),
+                Utils.getMobileNumberWithCountryCode(getUserPreference().mobileNumber),
                 ContextCompat.getColor(requireContext(), R.color.grey_828282),
                 ContextCompat.getColor(requireContext(), R.color.dark_grey_333333)
             )

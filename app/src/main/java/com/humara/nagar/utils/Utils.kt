@@ -1,60 +1,61 @@
 package com.humara.nagar.utils
 
-import android.content.Context
-import android.location.Address
-import android.location.Geocoder
-import android.location.LocationManager
+import android.content.res.Resources
+import android.os.Bundle
 import com.humara.nagar.constants.Constants
-import java.util.*
 
 /**
  * Utils class
  */
 class Utils {
     companion object {
-
         fun getMobileNumberWithCountryCode(mobileNumber: String): String {
             return Constants.COUNTRY_CODE.plus(" $mobileNumber")
         }
 
-        fun getLongitudeAndLatitude(context: Context): List<Double> {
-            val locationManager =
-                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val lastKnownLocation =
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (lastKnownLocation != null) {
-                val longitude = lastKnownLocation.longitude
-                val latitude = lastKnownLocation.latitude
-                return listOf(longitude, latitude)
+        fun convertMapToBundle(map: Map<String, String>): Bundle {
+            val bundle = Bundle()
+            for ((key, value) in map) {
+                bundle.putString(key, value)
             }
-            return emptyList()
+            return bundle
         }
 
-        fun getAddressFromLongAndLat(
-            context: Context,
-        ): List<Address> {
+        /**
+         * Returns Android screen width
+         */
+        fun getScreenWidth(): Int {
+            return Resources.getSystem().displayMetrics.widthPixels
+        }
 
-            val longitudeAndLatitude = getLongitudeAndLatitude(context)
-            if (longitudeAndLatitude.isNotEmpty()) {
+        /**
+         * Returns Android screen height excluding the navigation bar
+         */
+        fun getScreenHeight(): Int {
+            return Resources.getSystem().displayMetrics.heightPixels
+        }
 
-                val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(
-                    longitudeAndLatitude[1],
-                    longitudeAndLatitude[0],
-                    1
-                )
-
-                if (addresses.isNotEmpty()) {
-                    return addresses
+        /**
+         * @param input The input string to find the largest possible prefix substring from.
+         * @param maxLength The maximum length that the substring should not exceed.
+         * @param separator character to be used as separator
+         * @return the largest substring that starts from the first character of the input string and has a maximum length of
+         * [maxLength], or an empty string if the input string is empty or if there are no words that fit within the maximum length
+         */
+        fun findLargestPrefixSubstring(input: String, maxLength: Int, separator: String): String {
+            val words = input.split(separator)
+            val resultBuilder = StringBuilder()
+            var currLength = 0
+            // Concatenate the words into a separator-separated string until the maximum length is reached
+            for (word in words) {
+                if (currLength + word.length <= maxLength) {
+                    resultBuilder.append(word).append(separator)
+                    currLength += word.length + separator.length
+                } else {
+                    break
                 }
             }
-            return emptyList()
-        }
-
-        fun formatImageString(imageTitle: String): String {
-            return imageTitle
-                .substring(0, 10) + ".." + imageTitle
-                .substring(imageTitle.length - 3)
+            return resultBuilder.toString().dropLast(separator.length)
         }
     }
 }

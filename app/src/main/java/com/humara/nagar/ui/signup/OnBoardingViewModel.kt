@@ -5,70 +5,100 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.humara.nagar.Logger
+import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.base.BaseViewModel
-import com.humara.nagar.network.BaseRepository
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.User
+import com.humara.nagar.ui.signup.otp_verification.model.LoginRequest
+import com.humara.nagar.ui.signup.profile_creation.model.ProfileCreationRequest
+import com.humara.nagar.ui.signup.signup_or_login.model.SendOtpRequest
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.UserDataValidator
 import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
 
 class OnBoardingViewModel(application: Application) : BaseViewModel(application) {
+    private val repository = OnBoardingRepository(application)
     private val _isUserUnderAnExistingRegistrationProcessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val isUserUnderAnExistingRegistrationProcessLiveData: LiveData<Boolean> = _isUserUnderAnExistingRegistrationProcessLiveData
     private val _invalidMobileNumberLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val invalidMobileNumberLiveData: LiveData<Boolean> = _invalidMobileNumberLiveData
-    private val _successfulUserCheckLiveData: MutableLiveData<User> by lazy { MutableLiveData() }
-    val successfulUserCheckLiveData: LiveData<User> = _successfulUserCheckLiveData
+    private val _successfulUserCheckLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val successfulUserCheckLiveData: LiveData<Boolean> = _successfulUserCheckLiveData
     private val _successfulOtpResendLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
     val successfulOtpResendLiveData: LiveData<Boolean> = _successfulOtpResendLiveData
     private val _invalidOtpLiveData: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
     val invalidOtpLiveData: LiveData<String> = _invalidOtpLiveData
     private val _profileCreationRequiredLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val profileCreationRequiredLiveData: LiveData<Boolean> = _profileCreationRequiredLiveData
-    private val _successfulUserLoginLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
-    val successfulUserLoginLiveData: LiveData<Boolean> = _successfulUserLoginLiveData
-    private val repository = BaseRepository(application)
+    private val _successfulUserSignupLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val successfulUserSignupLiveData: LiveData<Boolean> = _successfulUserSignupLiveData
+    private val _showHomeScreenLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val showHomeScreenLiveData: LiveData<Boolean> = _showHomeScreenLiveData
 
     fun checkIfUserIsUnderOngoingRegistrationProcess() {
-        val savedUserProfile = getUserPreference().userProfile
-        val isUserUnderAnExistingRegistrationProcess = savedUserProfile != null && savedUserProfile.name.isEmpty()
-        _isUserUnderAnExistingRegistrationProcessLiveData.value = false
-//        _isUserUnderAnExistingRegistrationProcessLiveData.value = isUserUnderAnExistingRegistrationProcess
+        _isUserUnderAnExistingRegistrationProcessLiveData.value = getUserPreference().userId != 0L
     }
 
     fun handleMobileNumberInput(mobileNumber: String) {
         if (UserDataValidator.isValidMobileNumber(mobileNumber)) {
-            validateUser(mobileNumber)
+            validateUserAndSendOtp(mobileNumber)
         } else {
             setInvalidMobileNumberLiveData(true)
         }
     }
 
     fun verifyOtp(otp: String) = viewModelScope.launch {
-        //TODO: Add verifyOTP API
-        _profileCreationRequiredLiveData.postValue(true)
-//        _invalidOtpLiveData.postValue(null)
+        val request = LoginRequest(getUserPreference().passCode, getUserPreference().mobileNumber, otp)
+        val response = processCoroutine({ repository.verifyOtpAndLogin(request) })
+        response.onSuccess { loginResponse ->
+            getUserPreference().run {
+                token = loginResponse.token
+                refreshToken = loginResponse.refreshToken
+                userId = loginResponse.userId
+                loginResponse.userInfo?.let { user ->
+                    val userInfo = User(user.userId, user.getFullName(), getUserPreference().mobileNumber, user.fatherOrSpouseName, user.gender, user.locality)
+                    isUserLoggedIn = true
+                    userProfile = userInfo
+                    Logger.debugLog("Saved Profile: $userInfo")
+                }
+            }
+            _profileCreationRequiredLiveData.postValue(loginResponse.isNewUser)
+        }.onError {
+            if (it.responseCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+                _invalidOtpLiveData.postValue(null)
+            } else {
+                errorLiveData.postValue(it)
+            }
+        }
     }
 
     fun resendOtp() = viewModelScope.launch {
-        //TODO: Add resendOtp API
-        val response = processCoroutine({ repository.getUsers() })
+        val response = processCoroutine({ repository.sendOtp(SendOtpRequest(getUserPreference().mobileNumber)) })
         response.onSuccess {
-            _successfulOtpResendLiveData.postValue(true)
+            if (it.passcode.isNullOrEmpty()) {
+                errorLiveData.postValue(null)
+            } else {
+                getUserPreference().passCode = it.passcode
+                _successfulOtpResendLiveData.postValue(true)
+            }
         }.onError {
             errorLiveData.postValue(it)
         }
     }
 
-    fun updateUserDetails(user: User) = viewModelScope.launch {
-        //TODO: Add profileCreation and config API
-        val response = processCoroutine({ repository.getUsers() })
+    fun updateSavedUserDetailsAndSignup(request: ProfileCreationRequest) = viewModelScope.launch {
+        val response = processCoroutine({ repository.signup(request) })
         response.onSuccess {
-            getUserPreference().userProfile = user
-            Logger.debugLog("Saved Profile", user.toString())
-            _successfulUserLoginLiveData.postValue(true)
+            // TODO: try to sync this from backend response instead of using the app request body. Similar to login api
+            val createdUser = User(request.userId, request.name, getUserPreference().mobileNumber, request.fatherOrSpouseName, request.gender, request.locality)
+            getUserPreference().userProfile = createdUser
+            getUserPreference().isUserLoggedIn = true
+            Logger.debugLog("Saved Profile: $createdUser")
+            _successfulUserSignupLiveData.postValue(true)
+        }.onError {
+            errorLiveData.postValue(it)
         }
     }
 
@@ -76,11 +106,23 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
         _invalidMobileNumberLiveData.postValue(isInvalid)
     }
 
-    private fun validateUser(mobileNumber: String) {
-        //TODO: Add verifyUser API
-        val userProfile = User(mobileNumber = mobileNumber)
-        getUserPreference().userProfile = userProfile
-        getUserPreference().mobileNumber = mobileNumber
-        _successfulUserCheckLiveData.postValue(userProfile)
+    private fun validateUserAndSendOtp(mobileNumber: String) = viewModelScope.launch {
+        val response = processCoroutine({ repository.sendOtp(SendOtpRequest(mobileNumber)) })
+        response.onSuccess {
+            if (it.passcode.isNullOrEmpty()) {
+                _successfulUserCheckLiveData.postValue(false)
+            } else {
+                getUserPreference().mobileNumber = mobileNumber
+                getUserPreference().passCode = it.passcode
+                _successfulUserCheckLiveData.postValue(true)
+            }
+        }.onError {
+            errorLiveData.postValue(it)
+        }
+    }
+
+    fun onUserOnBoard() {
+        AnalyticsTracker.onUserOnBoard(getApplication())
+        _showHomeScreenLiveData.value = true
     }
 }

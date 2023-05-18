@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name="com.humara.nagar.NagarApp"
@@ -22,11 +24,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
         android:theme="@style/ActivityTheme"
-        tools:targetApi="32">
+        tools:targetApi="s">
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -39,6 +39,22 @@
                 android:resource="@xml/provider_paths"
                 tools:replace="android:resource" />
         </provider>
+
+        <service
+            android:name=".fcm.PushNotificationMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".fcm.NotificationDismissReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.nagar.notifications.DISMISS_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name="com.humara.nagar.SplashActivity"
@@ -58,12 +74,13 @@
             android:name="com.humara.nagar.ui.signup.OnBoardingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
-        <!-- TODO: make this activity singleTop -->
         <activity
             android:name="com.humara.nagar.ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
-        <activity android:name=".ui.ForceLogoutActivity" />
+        <activity
+            android:name=".ui.common.WebViewActivity"
+            android:screenOrientation="portrait" />
     </application>
 
     <queries>
@@ -71,6 +88,5 @@
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
     </queries>
-
 
 </manifest>

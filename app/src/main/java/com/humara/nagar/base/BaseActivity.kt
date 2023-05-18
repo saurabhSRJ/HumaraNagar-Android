@@ -2,23 +2,35 @@ package com.humara.nagar.base
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.viewModels
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
-import com.humara.nagar.NagarApp
+import com.humara.nagar.Logger
 import com.humara.nagar.R
-import com.humara.nagar.network.ApiError
+import com.humara.nagar.SplashActivity
+import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.analytics.AnalyticsTracker
+import com.humara.nagar.constants.IntentKeyConstants
+import com.humara.nagar.network.retrofit.UnauthorizedException
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
+import com.humara.nagar.ui.AppConfigViewModel
+import com.humara.nagar.ui.common.GenericAlertDialog
+import com.humara.nagar.ui.common.GenericStatusDialog
 import com.humara.nagar.ui.common.RelativeLayoutProgressDialog
+import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.utils.LocaleManager
+import com.humara.nagar.utils.NotificationUtils
+import com.humara.nagar.utils.getAppSharedPreferences
+import com.humara.nagar.utils.getUserSharedPreferences
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
 
 /**
@@ -27,11 +39,45 @@ import java.io.IOException
  */
 abstract class BaseActivity : AppCompatActivity() {
     private lateinit var progressDialogue: Dialog
+    private val appConfigViewModel: AppConfigViewModel by viewModels {
+        ViewModelFactory()
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        changeStatusBarColor(Color.TRANSPARENT)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
+        if (shouldLogScreenView()) {
+            AnalyticsTracker.sendEvent(
+                getScreenName(),
+                appendCommonParams(null).apply {
+                    put(AnalyticsData.Parameters.EVENT_TYPE, AnalyticsData.EventType.SCREEN_VIEW)
+                })
+        }
+        initViewModelObservers()
+    }
+
+    private fun initViewModelObservers() {
+        appConfigViewModel.logoutLiveData.observe(this) {
+            SplashActivity.start(this)
+            finish()
+        }
+    }
+
+    open fun appendCommonParams(properties: JSONObject? = null): JSONObject {
+        val params = properties ?: JSONObject()
+
+        return params.apply {
+            try {
+                intent?.getStringExtra(IntentKeyConstants.SOURCE)?.let {
+                    put(AnalyticsData.Parameters.SOURCE, it)
+                }
+                put(AnalyticsData.Parameters.PAGE_TYPE, getScreenName())
+                put(AnalyticsData.Parameters.LANGUAGE_CODE, getAppPreference().appLanguage)
+                put(AnalyticsData.Parameters.IS_ADMIN, getUserPreference().isAdminUser)
+            } catch (e: JSONException) {
+                Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
+            }
+        }
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -59,48 +105,85 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    protected open fun obServeErrorAndException(apiError: ApiError, viewModel: BaseViewModel) {
-        showErrorDialog(null, apiError.message)
-        observerException(viewModel)
-    }
-
-    protected open fun observeErrorAndException(viewModel: BaseViewModel) {
+    protected open fun observeErrorAndException(
+        viewModel: BaseViewModel,
+        errorAction: () -> Unit = { },
+        dismissAction: () -> Unit = { }
+    ) {
         viewModel.errorLiveData.observe(this) {
-            showErrorDialog(null, it.message)
+            showErrorDialog(null, it.message, errorAction = errorAction, dismissAction = dismissAction)
         }
         observerException(viewModel)
     }
 
-    protected open fun observerException(viewModel: BaseViewModel) {
+    protected open fun observerException(
+        viewModel: BaseViewModel,
+        errorAction: () -> Unit = { },
+        dismissAction: () -> Unit = { }
+    ) {
         viewModel.exceptionLiveData.observe(this) { exception ->
-            if (exception is IOException) {
-                showNoInternetDialog()
-            } else {
-                showErrorDialog()
+            Logger.debugLog("Exception caught: $exception")
+            when (exception) {
+                is IOException -> {
+                    showNoInternetDialog(errorAction = errorAction, dismissAction = dismissAction)
+                }
+                is UnauthorizedException -> {
+                    blockUnauthorizedAccess()
+                }
+                else -> {
+                    showErrorDialog(errorAction = errorAction, dismissAction = dismissAction)
+                }
             }
         }
     }
 
-    private fun showNoInternetDialog() {
-        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message))
+    private fun showNoInternetDialog(errorAction: () -> Unit = { }, dismissAction: () -> Unit = { }) {
+        showErrorDialog(getString(R.string.no_internet), getString(R.string.no_internet_message), errorAction = errorAction, dismissAction = dismissAction)
     }
 
-    fun showErrorDialog(
-        header: String? = null,
-        message: String? = null,
+    open fun showErrorDialog(
+        title: String? = null,
+        subtitle: String? = null,
+        ctaText: String? = null,
+        @DrawableRes icon: Int? = null,
+        errorAction: () -> Unit = {},
+        dismissAction: () -> Unit = {},
     ) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(if (header.isNullOrEmpty()) getString(R.string.error) else header)
-        builder.setMessage(if (message.isNullOrEmpty()) getString(R.string.some_error_occoured) else message)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
-            dialogInterface.dismiss()
+        GenericStatusDialog.show(
+            supportFragmentManager,
+            StatusData(
+                GenericStatusDialog.State.ERROR,
+                if (title.isNullOrEmpty()) getString(R.string.error) else title,
+                if (subtitle.isNullOrEmpty()) getString(R.string.some_error_occoured) else subtitle,
+                ctaText,
+                icon
+            ),
+            object : GenericStatusDialog.StatusDialogClickListener {
+                override fun ctaClickListener() {
+                    errorAction.invoke()
+                }
+
+                override fun dismissClickListener() {
+                    super.dismissClickListener()
+                    dismissAction.invoke()
+                }
+            }
+        )
+    }
+
+    open fun blockUnauthorizedAccess() {
+        Logger.debugLog("Unauthorized access")
+        GenericAlertDialog.show(this, getString(R.string.unauthorized_access), getString(R.string.session_expired_message), false, getString(R.string.logout)) {
+            logout(getScreenName())
         }
-        builder.setOnDismissListener {
-            finish()
-        }
-        builder.setCancelable(false)
-        val dialog = builder.create()
-        dialog.show()
+    }
+
+    private fun logout(source: String) {
+        AnalyticsTracker.sendEvent(AnalyticsData.EventName.LOGOUT, JSONObject().put(AnalyticsData.Parameters.SOURCE, source))
+        NotificationUtils.clearAllNotification(this)
+        getUserSharedPreferences().clearAll()
+        getAppSharedPreferences().logOut(false)
+        appConfigViewModel.logout()
     }
 
     protected fun showProgress(isDismissible: Boolean) {
@@ -116,7 +199,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun hideProgress() {
         if (this::progressDialogue.isInitialized && progressDialogue.isShowing) {
-            progressDialogue.hide()
+            progressDialogue.dismiss()
         }
     }
 
@@ -143,19 +226,21 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun getScreenName(): String
 
+    fun shouldLogScreenView(): Boolean = true
+
     /**
      * Return App preference being set and used throughout the app
      * @return [AppPreference]
      */
-    fun getAppPreference(): AppPreference {
-        return (application as NagarApp).appSharedPreference
-    }
+    fun getAppPreference(): AppPreference = application.getAppSharedPreferences()
 
     /**
      * Return User preference data(i.e user profile) being set and used throughout the app.
      * @return [UserPreference]
      */
-    fun getUserPreference(): UserPreference {
-        return (application as NagarApp).userSharedPreference
+    fun getUserPreference(): UserPreference = application.getUserSharedPreferences()
+
+    fun getSource(): String {
+        return intent?.getStringExtra(IntentKeyConstants.SOURCE) ?: getScreenName()
     }
 }

@@ -28,6 +28,20 @@
             app:layout_constraintStart_toEndOf="@id/tv_header"
             app:layout_constraintTop_toTopOf="@id/tv_header" />
 
+        <TextView
+            android:id="@+id/tv_error"
+            style="@style/OpenSansSemiBold14sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/invalid_input"
+            android:textColor="@color/red_asterisk_D31717"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_required_asterisk"
+            app:layout_constraintTop_toTopOf="@id/tv_header"
+            tools:visibility="visible" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_box"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
@@ -49,9 +63,10 @@
                 style="@style/OpenSansRegular14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
+                android:completionThreshold="0"
+                android:inputType="text"
                 android:paddingTop="10dp"
-                android:textColor="@color/black" />
+                android:textColor="@color/dark_grey_333333" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
