@@ -71,6 +71,11 @@
         <item name="android:fontFamily">@font/open_sans_bold</item>
     </style>
 
+    <style name="OpenSansBold18sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+    </style>
+
     <style name="OpenSansBold20sp" parent="@android:style/Widget.TextView">
         <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/open_sans_bold</item>
@@ -79,6 +84,15 @@
     <!-- Button Styles -->
     <style name="primary_blue_button" parent="@style/Widget.Material3.Button.ElevatedButton">
         <item name="android:backgroundTint">@color/primary_blue_button_background_selector</item>
+        <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">16dp</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="rippleColor">@color/white</item>
+    </style>
+
+    <style name="negative_red_button" parent="@style/Widget.Material3.Button.ElevatedButton">
+        <item name="android:backgroundTint">@color/negative_red_button_background_selector</item>
         <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:padding">16dp</item>
@@ -96,9 +110,48 @@
         <item name="rippleColor">@color/grey_AEAEAE</item>
     </style>
 
+    <style name="StrokeButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
+        <item name="android:padding">16dp</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/black_with_opacity_70</item>
+        <item name="android:textColor">@color/black_with_opacity_70</item>
+        <item name="rippleColor">@color/grey_AEAEAE</item>
+    </style>
+
+    <style name="ComplaintStateButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textAppearance">@style/OpenSansSemiBold12sp</item>
+        <item name="android:padding">2dp</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
     <style name="TextButtonStyle" parent="Widget.Material3.Button.TextButton">
         <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
         <item name="backgroundTint">@color/white</item>
         <item name="rippleColor">@color/grey_AEAEAE</item>
     </style>
+
+    <style name="FilterChipStyle" parent="Base.Widget.MaterialComponents.Chip">
+        <item name="android:checkable">true</item>
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="chipStrokeColor">@color/chip_stroke_color</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">4dp</item>
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="textEndPadding">30dp</item>
+        <item name="textStartPadding">32dp</item>
+    </style>
+
+    <style name="RatingBarGold" parent="Theme.MaterialComponents">
+        <item name="android:progressTint">@color/rating_star_gold_bg</item>
+        <item name="android:progressBackgroundTint">@color/grey_E4E4E4</item>
+        <item name="android:secondaryProgressTint">@android:color/transparent</item>
+    </style>
+
 </resources>

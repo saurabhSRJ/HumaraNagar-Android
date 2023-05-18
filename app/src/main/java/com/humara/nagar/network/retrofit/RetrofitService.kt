@@ -3,12 +3,14 @@ package com.humara.nagar.network.retrofit
 import android.app.Application
 import android.content.Context
 import android.os.Build
-import com.humara.nagar.NagarApp
+import com.google.gson.GsonBuilder
+import com.humara.nagar.BuildConfig
+import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.constants.NetworkConstants.NetworkHeaderConstants.Companion.ACCEPT_LANGUAGE
 import com.humara.nagar.constants.NetworkConstants.NetworkHeaderConstants.Companion.ANDROID_VERSION
 import com.humara.nagar.constants.NetworkConstants.NetworkHeaderConstants.Companion.APP_VERSION
-import com.google.gson.GsonBuilder
-import com.humara.nagar.BuildConfig
+import com.humara.nagar.utils.getAppSharedPreferences
+import com.humara.nagar.utils.getUserSharedPreferences
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,8 +26,8 @@ import java.util.concurrent.TimeUnit
 class RetrofitService private constructor(val application: Application) {
     lateinit var retrofitInstance: Retrofit
     private var okHttpClient: OkHttpClient? = null
-    private val userPreference = (application as NagarApp).userSharedPreference
-    private val appPreference = (application as NagarApp).appSharedPreference
+    private val userPreference = application.getUserSharedPreferences()
+    private val appPreference = application.getAppSharedPreferences()
 
     init {
         createRetrofit()
@@ -39,8 +41,8 @@ class RetrofitService private constructor(val application: Application) {
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: RetrofitService(context.applicationContext as Application)
                     .also {
-                    INSTANCE = it
-                }
+                        INSTANCE = it
+                    }
             }
     }
 
@@ -53,7 +55,8 @@ class RetrofitService private constructor(val application: Application) {
             )
             .addCallAdapterFactory(NetworkResponseCallAdapterFactory.create())
             .client(getHttpClient())
-            .baseUrl("https://run.mocky.io/v3/")
+//            .baseUrl("https://run.mocky.io/v3/")
+            .baseUrl(BuildConfig.BASE_URL)
             .build()
         return retrofitInstance
     }
@@ -63,20 +66,21 @@ class RetrofitService private constructor(val application: Application) {
             return it
         }
         val okHttpClientBuilder = OkHttpClient.Builder()
-        okHttpClientBuilder.addInterceptor { chain ->
-            val original = chain.request()
-            val requestBuilder = original.newBuilder().method(original.method, original.body)
-            //TODO: Add auth token to the header
-//            val authToken = Utils.getAuthHeader(userPreference.getString(Constants.TOKEN_STRING, null))
-//            authToken?.let {
-//                requestBuilder.addHeader(NetworkConstants.NetworkHeaderConstants.AUTH_HEADER, it)
-//            }
-            requestBuilder.addHeader(ACCEPT_LANGUAGE, appPreference.appLanguage)
-            requestBuilder.addHeader(APP_VERSION, BuildConfig.VERSION_CODE.toString())
-            requestBuilder.addHeader(ANDROID_VERSION, Build.VERSION.SDK_INT.toString())
-            val request = requestBuilder.build()
-            chain.proceed(request)
-        }
+        okHttpClientBuilder
+            .addInterceptor { chain ->
+                val original = chain.request()
+                val requestBuilder = original.newBuilder().method(original.method, original.body)
+                val authToken = userPreference.token
+                authToken?.let {
+                    requestBuilder.addHeader(NetworkConstants.NetworkHeaderConstants.AUTHORIZATION, "Bearer $authToken")
+                }
+                requestBuilder.addHeader(ACCEPT_LANGUAGE, appPreference.appLanguage)
+                requestBuilder.addHeader(APP_VERSION, BuildConfig.VERSION_CODE.toString())
+                requestBuilder.addHeader(ANDROID_VERSION, Build.VERSION.SDK_INT.toString())
+                val request = requestBuilder.build()
+                chain.proceed(request)
+            }
+            .authenticator(AccessTokenAuthenticator(userPreference, this))
             .addInterceptor(getLoggingInterceptor())
             .readTimeout(120, TimeUnit.SECONDS)
             .retryOnConnectionFailure(false)

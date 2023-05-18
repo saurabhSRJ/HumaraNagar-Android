@@ -1,22 +1,23 @@
 package com.humara.nagar
 
 import android.util.Log
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 object Logger {
 
-    fun debugLog(tag: String?, msg: String?) {
+    fun debugLog(tag: String?, msg: String) {
         if (BuildConfig.DEBUG) {
-            Log.d(tag, msg!!)
+            Log.d(tag, msg)
         }
     }
 
-    fun debugLog(msg: String?) {
+    fun debugLog(msg: String) {
         if (BuildConfig.DEBUG) {
-            Log.d("Log", msg!!)
+            Log.d("NagarApp", msg)
         }
     }
 
-    fun logException(tag: String, exception: Exception, logLevel: LogLevel, logToCrashlytics : Boolean = false) {
+    fun logException(tag: String, exception: Exception, logLevel: LogLevel, logToCrashlytics: Boolean = false) {
         when (logLevel) {
             LogLevel.DEBUG -> Log.d(tag, null, exception)
             LogLevel.ERROR -> Log.e(tag, null, exception)
@@ -25,11 +26,15 @@ object Logger {
             LogLevel.WARN -> Log.w(tag, null, exception)
         }
         if (logToCrashlytics) {
-            //TODO: send log to crashlytics like Firebase
+            FirebaseCrashlytics.getInstance().recordException(exception)
         }
     }
 
     enum class LogLevel {
-        DEBUG, ERROR, INFO, VERBOSE, WARN
+        DEBUG,
+        ERROR,
+        INFO,
+        VERBOSE,
+        WARN
     }
 }

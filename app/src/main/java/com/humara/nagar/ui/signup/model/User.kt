@@ -1,13 +1,14 @@
 package com.humara.nagar.ui.signup.model
 
-import com.google.gson.annotations.SerializedName
-
+/**
+ * Data class representing saved user profile in shared preference after user has successfully logged-in or signed-up.
+ * Note: userId, mobileNumber, ward and role of the user is directly available in user preference. No need to fetch user profile for these values.
+ */
 data class User(
-    @SerializedName("user_id") val userId: Long,
-    @SerializedName("name") var name: String = "",
-    @SerializedName("mobile_number") val mobileNumber: String,
-    @SerializedName("father_or_spouse_name") var fatherOrSpouseName: String = "",
-    @SerializedName("date_of_birth") var dateOfBirth: String = "",
-    @SerializedName("gender") var gender: String = "",
-    @SerializedName("locality") var locality: String = ""
+    val userId: Long,
+    val name: String,
+    val mobileNumber: String,
+    val fatherOrSpouseName: String,
+    val gender: String,
+    val locality: String
 )

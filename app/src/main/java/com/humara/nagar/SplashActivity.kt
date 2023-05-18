@@ -2,6 +2,7 @@ package com.humara.nagar
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,6 +15,7 @@ import com.humara.nagar.databinding.ActivitySplashScreenBinding
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.OnBoardingActivity
+import com.humara.nagar.utils.NotificationUtils
 
 class SplashActivity : BaseActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
@@ -32,10 +34,13 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         installSplashScreen()
+        super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationUtils.setupDefaultNotificationChannel(this)
+        }
         initViewModelObservers()
         initConfig()
     }
@@ -43,7 +48,7 @@ class SplashActivity : BaseActivity() {
     private fun initViewModelObservers() {
         appConfigViewModel.run {
             observeErrorAndException(this)
-            appConfigLiveData.observe(this@SplashActivity) {
+            appConfigSuccessLiveData.observe(this@SplashActivity) {
                 MainActivity.startActivity(this@SplashActivity, getScreenName())
                 finish()
             }
@@ -52,7 +57,7 @@ class SplashActivity : BaseActivity() {
 
     private fun initConfig() {
         if (getUserPreference().isUserLoggedIn) {
-            appConfigViewModel.getAppConfig()
+            appConfigViewModel.getAppConfigAndUserReferenceData()
         } else {
             Handler(Looper.getMainLooper()).postDelayed({
                 OnBoardingActivity.startActivity(this, getScreenName())

@@ -1,10 +1,11 @@
 package com.humara.nagar
 
 import android.app.Application
-import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
-import com.humara.nagar.ui.ForceLogoutActivity
 
 class NagarApp : Application() {
     companion object {
@@ -21,6 +22,8 @@ class NagarApp : Application() {
         super.onCreate()
         appSharedPreference = initializeAppPreference()
         userSharedPreference = initializeUserPreference()
+        initFirebaseCrashlyticsProps()
+        AnalyticsTracker.getInstance()
     }
 
     private fun initializeAppPreference(): AppPreference {
@@ -31,14 +34,13 @@ class NagarApp : Application() {
         return UserPreference(this)
     }
 
-    fun logout() {
-        Logger.debugLog("Saurabh", "Logout")
-        userSharedPreference.clearAll()
-        appSharedPreference.logOut(false)
-        SplashActivity.start(this)
-    }
-
-    fun showUnAuthorizedAPICallForceLogoutScreen(context: Context, source: String) {
-        ForceLogoutActivity.startForceLogoutActivity(context, source)
+    private fun initFirebaseCrashlyticsProps() {
+        userSharedPreference.userProfile?.let { user ->
+            FirebaseCrashlytics.getInstance().apply {
+                setCustomKey(AnalyticsData.Parameters.USER_NAME, user.name)
+                setUserId(user.userId.toString())
+                setCustomKey(AnalyticsData.Parameters.MOBILE_NUMBER, user.mobileNumber)
+            }
+        }
     }
 }

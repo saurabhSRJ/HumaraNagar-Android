@@ -7,15 +7,14 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.os.LocaleList
-import com.humara.nagar.NagarApp
 import java.util.*
 
 object LocaleManager {
     fun getWrapper(context: Context): ContextWrapper {
-        val language = (context.applicationContext as NagarApp).appSharedPreference.appLanguage
+        val language = context.getAppSharedPreferences().appLanguage
         val localeContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             updateResources(context, language)
-        }  else {
+        } else {
             updateResourcesLegacy(context, language)
         }
         return ContextWrapper(localeContext)

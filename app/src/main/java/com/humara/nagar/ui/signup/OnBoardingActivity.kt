@@ -12,6 +12,7 @@ import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.databinding.ActivitiyOnboardingBinding
+import com.humara.nagar.fluid_resize.FluidContentResizer
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.otp_verification.OtpVerificationFragment
@@ -42,6 +43,7 @@ class OnBoardingActivity : BaseActivity() {
         binding = ActivitiyOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViewModelObservers()
+        FluidContentResizer.listen(this)
     }
 
     private fun initViewModelObservers() {
@@ -64,22 +66,28 @@ class OnBoardingActivity : BaseActivity() {
                 if (isNewUser) {
                     showProfileCreationFragment()
                 } else {
-                    appConfigViewModel.getAppConfig()
+                    fetchAppConfig()
                 }
             }
             successfulUserSignupLiveData.observe(this@OnBoardingActivity) {
-                appConfigViewModel.getAppConfig()
+                onUserOnBoard()
+            }
+            showHomeScreenLiveData.observe(this@OnBoardingActivity) {
+                showHomeScreen()
             }
             checkIfUserIsUnderOngoingRegistrationProcess()
         }
         appConfigViewModel.run {
             observeProgress(this, false)
             observeErrorAndException(this)
-            appConfigLiveData.observe(this@OnBoardingActivity) {
-                getUserPreference().isUserLoggedIn = true
-                showHomeScreen()
+            appConfigSuccessLiveData.observe(this@OnBoardingActivity) {
+                onBoardingViewModel.onUserOnBoard()
             }
         }
+    }
+
+    private fun fetchAppConfig() {
+        appConfigViewModel.getAppConfigAndUserReferenceData()
     }
 
     private fun showHomeScreen() {
@@ -116,7 +124,8 @@ class OnBoardingActivity : BaseActivity() {
 
     private fun showProfileCreationFragment() {
         showFragment(
-            ProfileCreationFragment(),
+            // We want to restore the ProfileCreationFragment instance so that user's input is not lost. If no instance is available then creating a new instance
+            supportFragmentManager.findFragmentByTag(ProfileCreationFragment.TAG) ?: ProfileCreationFragment(),
             shouldShowEntryAndExitAnimations = true,
             shouldShowReverseEntryAnimation = false,
             tag = ProfileCreationFragment.TAG
@@ -128,12 +137,14 @@ class OnBoardingActivity : BaseActivity() {
         shouldShowEntryAndExitAnimations: Boolean,
         shouldShowReverseEntryAnimation: Boolean,
         tag: String?
-    ) = supportFragmentManager.commit(true) {
-        if (shouldShowEntryAndExitAnimations) setCustomAnimations(
-            if (shouldShowReverseEntryAnimation) R.anim.slide_in_from_left else R.anim.slide_in_from_right,
-            R.anim.slide_out_to_left
-        )
-        replace(binding.container.id, fragmentToShow, tag)
+    ) {
+        supportFragmentManager.commit {
+            if (shouldShowEntryAndExitAnimations) setCustomAnimations(
+                if (shouldShowReverseEntryAnimation) R.anim.slide_in_from_left else R.anim.slide_in_from_right,
+                if (shouldShowReverseEntryAnimation) R.anim.slide_out_to_right else R.anim.slide_out_to_left
+            )
+            replace(R.id.container, fragmentToShow, tag)
+        }
     }
 
     override fun onBackPressed() {

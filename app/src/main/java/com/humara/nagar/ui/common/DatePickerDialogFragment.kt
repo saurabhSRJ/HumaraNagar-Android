@@ -10,8 +10,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.humara.nagar.base.ViewModelFactory
+import com.humara.nagar.constants.Constants
 import com.humara.nagar.databinding.DialogDatePickerBinding
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationViewModel
+import com.humara.nagar.utils.DateTimeUtils
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DatePickerDialogFragment : DialogFragment() {
     private lateinit var binding: DialogDatePickerBinding
@@ -45,11 +49,14 @@ class DatePickerDialogFragment : DialogFragment() {
 
     private fun initView() {
         binding.run {
+            val startingDate = DateTimeUtils.getEarlierDate(Constants.MIN_AGE_REQUIREMENT)
+            datePickerAction.init(startingDate.first, startingDate.second - 1, startingDate.third, null)
             tvOk.setOnClickListener {
                 val day = datePickerAction.dayOfMonth
                 val month = datePickerAction.month + 1
                 val year = datePickerAction.year
-                profileCreationViewModel.setDateOfBirth("$day-$month-$year")
+                val dob = LocalDate.of(year, month, day).format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                profileCreationViewModel.setDateOfBirth(dob)
                 dismiss()
             }
         }
