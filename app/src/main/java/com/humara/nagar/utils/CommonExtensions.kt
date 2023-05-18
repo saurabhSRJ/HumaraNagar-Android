@@ -7,9 +7,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -44,39 +41,6 @@ fun View.setNonDuplicateClickListener(listener: View.OnClickListener?) {
 fun View.requestFocusAndShowKeyboard(inputMethodManager: InputMethodManager) {
     this.requestFocus()
     inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-}
-
-fun TextView.setStringWithColors(
-    text1: String,
-    text2: String,
-    color1: Int,
-    color2: Int
-) {
-    val spannable = SpannableString(text1 + text2)
-    spannable.setSpan(
-        ForegroundColorSpan(color1),
-        0,
-        text1.length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-    spannable.setSpan(
-        ForegroundColorSpan(color2),
-        text1.length,
-        text2.length + text1.length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-    text = spannable
-}
-
-fun TextView.setStringWithColor(text: String, color: Int) {
-    val spannable = SpannableString(text)
-    spannable.setSpan(
-        ForegroundColorSpan(color),
-        0,
-        text.length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-    this.text = spannable
 }
 
 /**

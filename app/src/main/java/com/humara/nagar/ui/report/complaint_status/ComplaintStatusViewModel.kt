@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.humara.nagar.Logger
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.network.onError
@@ -17,7 +18,6 @@ import kotlinx.coroutines.launch
 
 class ComplaintStatusViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
     companion object {
-        private const val IMAGES_KEY = "images"
         private const val RATING_KEY = "rating"
         //Note: savedStateHandle can provide the navigation fragment arguments. Key should be same as mentioned in the navigation action
         private const val COMPLAINT_ID = "complaint_id"
@@ -45,7 +45,6 @@ class ComplaintStatusViewModel(application: Application, private val savedStateH
     private val _finishComplaintErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
     val finishComplaintErrorLiveData: LiveData<ApiError> = _finishComplaintErrorLiveData
 
-    val imageListData: LiveData<List<String>> = savedStateHandle.getLiveData(IMAGES_KEY, mutableListOf())
     private val complaintId: String = savedStateHandle[COMPLAINT_ID]!! //null safety is ensured by safe args
     val ratingData: LiveData<Int> = savedStateHandle.getLiveData(RATING_KEY, 0)
     val rating: Int get() = ratingData.value ?: 0
@@ -59,7 +58,6 @@ class ComplaintStatusViewModel(application: Application, private val savedStateH
         val response = processCoroutine({ repository.getComplaintStatus(id) })
         response.onSuccess {
             _complaintStatusLiveData.postValue(it)
-            savedStateHandle[IMAGES_KEY] = it.images
             updateRatingData(it.rating)
             state = it.currentState
         }.onError {

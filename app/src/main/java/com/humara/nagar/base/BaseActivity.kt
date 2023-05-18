@@ -122,6 +122,7 @@ abstract class BaseActivity : AppCompatActivity() {
         dismissAction: () -> Unit = { }
     ) {
         viewModel.exceptionLiveData.observe(this) { exception ->
+            Logger.debugLog("Exception caught: $exception")
             when (exception) {
                 is IOException -> {
                     showNoInternetDialog(errorAction = errorAction, dismissAction = dismissAction)

@@ -104,6 +104,7 @@ abstract class BaseFragment : Fragment() {
         dismissAction: () -> Unit = { findNavController().navigateUp() }
     ) {
         viewModel.exceptionLiveData.observe(this) { exception ->
+            Logger.debugLog("Exception caught: $exception")
             when (exception) {
                 is IOException -> {
                     showNoInternetDialog(errorAction = errorAction, dismissAction = dismissAction)

@@ -5,37 +5,28 @@ import com.humara.nagar.network.NetworkResponse
 import com.humara.nagar.ui.report.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.PartMap
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ReportService {
     @Multipart
     @POST(NetworkConstants.NetworkAPIConstants.COMPLAINT)
     suspend fun postComplaint(@PartMap partMap: MutableMap<String, RequestBody>, @Part image: ArrayList<MultipartBody.Part>): NetworkResponse<PostComplaintResponse>
 
-    @GET("191cff7a-1b9e-4745-8abc-f9b3373d50c3")
+    @GET(NetworkConstants.NetworkAPIConstants.COMPLAINT)
     suspend fun getAllComplaints(): NetworkResponse<AllComplaintsResponse>
 
-    //    @GET("4eaa4106-f2e8-4ffb-871e-a758d622152a") //Sent Status
-//    @GET("934f8fcd-7ae7-465b-a017-f0a37e4c7399") // progress
-//    @GET("bf0edf89-2c5b-4346-bc4f-0e6f450d9a0d") // resolved with rating
-    @GET("cc9537ae-048b-4ca8-8967-69dc95fc29c0") // resolved without rating
-    suspend fun getComplaintStatus(@Query(NetworkConstants.NetworkQueryConstants.ID) id: String): NetworkResponse<ComplaintStatus>
+    @GET(NetworkConstants.NetworkAPIConstants.COMPLAINT_DETAILS)
+    suspend fun getComplaintStatus(@Path(NetworkConstants.NetworkQueryConstants.ID) id: String): NetworkResponse<ComplaintStatus>
 
-    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
-    suspend fun acknowledgeComplaint(@Query(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body comment: UpdateComplaintRequest): NetworkResponse<StatusResponse>
+    @POST(NetworkConstants.NetworkAPIConstants.ACKNOWLEDGE_COMPLAINT)
+    suspend fun acknowledgeComplaint(@Path(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body comment: UpdateComplaintRequest): NetworkResponse<StatusResponse>
 
-    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
-    suspend fun finishComplaint(@Query(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body comment: UpdateComplaintRequest): NetworkResponse<StatusResponse>
+    @POST(NetworkConstants.NetworkAPIConstants.FINISH_COMPLAINT)
+    suspend fun finishComplaint(@Path(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body comment: UpdateComplaintRequest): NetworkResponse<StatusResponse>
 
-    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
-    suspend fun withdrawComplaint(@Query(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body comment: UpdateComplaintRequest): NetworkResponse<StatusResponse>
+    @POST(NetworkConstants.NetworkAPIConstants.WITHDRAW_COMPLAINT)
+    suspend fun withdrawComplaint(@Path(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body comment: UpdateComplaintRequest): NetworkResponse<StatusResponse>
 
-    @POST("191a7744-3474-4b20-9884-5e81a3b791db")
-    suspend fun rateComplaintService(@Query(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body rating: RateComplaintServiceRequest): NetworkResponse<StatusResponse>
+    @POST(NetworkConstants.NetworkAPIConstants.RATE_COMPLAINT)
+    suspend fun rateComplaintService(@Path(NetworkConstants.NetworkQueryConstants.ID) id: String, @Body rating: RateComplaintServiceRequest): NetworkResponse<StatusResponse>
 }

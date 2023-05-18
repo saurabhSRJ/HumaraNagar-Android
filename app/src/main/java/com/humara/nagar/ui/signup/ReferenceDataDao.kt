@@ -9,10 +9,10 @@ import com.humara.nagar.ui.signup.model.LocalityDetails
 
 @Dao
 interface ReferenceDataDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocalities(localities: List<LocalityDetails>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategories(categories: List<CategoryDetails>)
 
     @Query("SELECT * FROM localities WHERE ward_id = :wardId")

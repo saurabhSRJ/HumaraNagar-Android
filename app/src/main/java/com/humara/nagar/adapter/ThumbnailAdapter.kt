@@ -1,13 +1,16 @@
 package com.humara.nagar.adapter
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ThumbnailLayoutItemBinding
+import com.humara.nagar.utils.GlideUtil
 
 class ThumbnailAdapter(val context: Context, val onThumbnailClick: (String) -> Unit) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
     private val imageList = mutableListOf<String>()
@@ -19,8 +22,9 @@ class ThumbnailAdapter(val context: Context, val onThumbnailClick: (String) -> U
     }
 
     fun addImages(images: List<String>) {
+        imageList.clear()
         imageList.addAll(images)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(0, images.size)
     }
 
     inner class ViewHolder(val binding: ThumbnailLayoutItemBinding) :
@@ -39,8 +43,11 @@ class ThumbnailAdapter(val context: Context, val onThumbnailClick: (String) -> U
         val currentImageUrl = imageList[position]
         holder.binding.apply {
             Glide.with(context)
-                .load(Uri.parse(currentImageUrl))
-                .placeholder(R.drawable.default_drawable)
+                .load(GlideUtil.getUrlWithHeaders(currentImageUrl, context))
+                .placeholder(R.drawable.ic_image_placeholder)
+                .error(R.drawable.ic_image_placeholder)
+                .transform(CenterCrop(), RoundedCorners(12))
+                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(thumbnailIV)
             thumbnailRL.setOnClickListener {
                 onThumbnailClick(currentImageUrl)

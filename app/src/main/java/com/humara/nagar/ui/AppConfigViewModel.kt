@@ -33,19 +33,26 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         val userRefDataDeferred = async { repository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) }
         val appConfigResult = appConfigDeferred.await()
         val userRefDataResult = userRefDataDeferred.await()
+        var success = false
         appConfigResult.onSuccess {
             getUserPreference().role = it.role
             getUserPreference().ward = it.ward
             getUserPreference().wardId = it.wardId
+            success = true
         }.onError {
+            success = false
             errorLiveData.postValue(it)
         }
         userRefDataResult.onSuccess {
             repository.insertCategories(it.categories)
             repository.insertLocalities(it.localities)
-            _appConfigSuccessLiveData.postValue(true)
+            success = true
         }.onError {
+            success = false
             errorLiveData.postValue(it)
+        }
+        if (success) {
+            _appConfigSuccessLiveData.postValue(true)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.humara.nagar.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -8,12 +9,13 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.R
 import com.humara.nagar.databinding.StepperItemBinding
-import com.humara.nagar.ui.report.model.States
+import com.humara.nagar.ui.report.model.TrackingInfo
+import com.humara.nagar.utils.StringUtils.setStringWithTypeface
 
 class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewHolder>() {
-    private val stepperList = mutableListOf<States>()
+    private val stepperList = mutableListOf<TrackingInfo>()
 
-    fun setData(steps: List<States>) {
+    fun setData(steps: List<TrackingInfo>) {
         stepperList.clear()
         stepperList.addAll(steps)
         notifyItemRangeInserted(0, stepperList.size)
@@ -30,13 +32,27 @@ class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewH
     }
 
     inner class ViewHolder(val binding: StepperItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: States) {
+        fun bind(item: TrackingInfo) {
             binding.run {
                 textTV.text = item.stateText
-                subTextTV.text = item.stateSubtext
+                subTextTV.text = item.initialDate
                 setUIBasedOnState(binding, item.isFinished)
-                //hide vertical line for last item
-                barView.isVisible = adapterPosition < (stepperList.size - 1)
+                item.stateComment?.let {
+                    commentTv.setStringWithTypeface(0, it.indexOf(":"), it, ResourcesCompat.getFont(root.context, R.font.open_sans_semibold))
+                }
+                updateDateTv.text = item.updateDate
+                if (adapterPosition < stepperList.size - 1 && stepperList[adapterPosition + 1].isFinished)
+                    barView.setImageResource(R.drawable.solid_complete_bar)
+                else
+                    barView.setImageResource(R.drawable.stepper_dotted_bar)
+                //handle ui  for last item
+                if (adapterPosition == stepperList.size -1) {
+                    barView.visibility = View.GONE
+                    updateDateTv.visibility = View.GONE
+                } else {
+                    barView.visibility = View.VISIBLE
+                    updateDateTv.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -47,10 +63,6 @@ class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewH
                 textTV.setTextColor(color)
                 textTV.typeface = typeFace
                 checkIV.setImageResource(if (isFinished) R.drawable.stepper_complete else R.drawable.stepper_incomplete)
-                if (adapterPosition < stepperList.size - 1 && stepperList[adapterPosition + 1].isFinished)
-                    barView.setBackgroundResource(R.drawable.solid_complete_bar)
-                else
-                    barView.setBackgroundResource(R.drawable.stepper_dotted_bar)
             }
         }
     }

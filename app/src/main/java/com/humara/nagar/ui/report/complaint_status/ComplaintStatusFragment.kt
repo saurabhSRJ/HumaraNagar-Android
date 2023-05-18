@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat.getColorStateList
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -11,6 +12,10 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ComplaintStatusAdapter
@@ -126,9 +131,39 @@ class ComplaintStatusFragment : BaseFragment() {
                 }
             }
             descriptionTV.setVisibilityAndText(response.comments)
-            complaintIdTV.text = args.complaintId.toString()
-            response.trackingInfo?.let {
-                complaintStatusAdapter.setData(it.states)
+            complaintIdTV.text = args.complaintId
+            complaintStatusAdapter.setData(response.trackingInfo)
+            val images = StringUtils.convertToList(response.images)
+            if (images.isNotEmpty()) {
+                Glide.with(this@ComplaintStatusFragment)
+                    .load(GlideUtil.getUrlWithHeaders(images[0], root.context))
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .error(R.drawable.ic_image_placeholder)
+                    .transform(CenterCrop(), RoundedCorners(12))
+                    .transition(DrawableTransitionOptions.withCrossFade(1000))
+                    .into(imageView)
+                val shakeAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.wobble)
+                imageContainer.startAnimation(shakeAnimation)
+                imageView.setNonDuplicateClickListener {
+                    showImagePreviewFragment(images)
+                }
+            } else {
+                imageView.setImageResource(R.drawable.ic_image_placeholder)
+            }
+            callComplaintInitiatorCard.setNonDuplicateClickListener {
+                response.phoneNumber?.let { number ->
+                    context?.startActivity(IntentUtils.getCallIntent(number))
+                }
+            }
+            if (response.latitude != null && response.longitude != null) {
+                val mapIntent = IntentUtils.getGoogleMapIntent(response.latitude.toDouble(), response.longitude.toDouble())
+                if (IntentUtils.hasIntent(requireContext(), mapIntent)) {
+                    locationTV.setNonDuplicateClickListener {
+                        context?.startActivity(mapIntent)
+                    }
+                }
+            } else {
+                context?.showToast(getString(R.string.map_location_not_available_message))
             }
             if (getUserPreference().isAdminUser) {
                 handleAdminResponse(response)
@@ -136,6 +171,14 @@ class ComplaintStatusFragment : BaseFragment() {
                 handleUserResponse(response)
             }
         }
+    }
+
+    private fun showImagePreviewFragment(images: List<String>) {
+        val action = ComplaintStatusFragmentDirections.actionComplaintStatusToImagePreview(
+            images.toTypedArray(),
+            getScreenName()
+        )
+        navController.navigate(action)
     }
 
     private fun initView() {
@@ -149,24 +192,8 @@ class ComplaintStatusFragment : BaseFragment() {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = complaintStatusAdapter
             }
-            imageView.setOnClickListener {
-                complaintStatusViewModel.imageListData.value?.let { images ->
-                    if (images.isNotEmpty()) {
-                        val action = ComplaintStatusFragmentDirections.actionComplaintStatusToImagePreview(
-                            images.toTypedArray(),
-                            getScreenName()
-                        )
-                        navController.navigate(action)
-                    }
-                }
-            }
             buttonCTA.setOnClickListener {
                 showComplaintStatusUpdateDialog()
-            }
-            callComplaintInitiatorCard.setNonDuplicateClickListener {
-                complaintStatusViewModel.complaintStatusLiveData.value?.phoneNumber?.let { number ->
-                    context?.startActivity(IntentUtils.getCallIntent(number))
-                }
             }
         }
     }

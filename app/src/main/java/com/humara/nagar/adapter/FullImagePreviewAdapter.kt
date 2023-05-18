@@ -1,12 +1,16 @@
 package com.humara.nagar.adapter
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.humara.nagar.R
 import com.humara.nagar.databinding.FullImagePreviewLayoutItemBinding
+import com.humara.nagar.utils.GlideUtil
 
 class FullImagePreviewAdapter(val context: Context) : RecyclerView.Adapter<FullImagePreviewAdapter.ViewHolder>() {
     private val imagesList = mutableListOf<String>()
@@ -26,20 +30,12 @@ class FullImagePreviewAdapter(val context: Context) : RecyclerView.Adapter<FullI
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val image = imagesList[position]
         Glide.with(context)
-            .load(Uri.parse(image))
+            .load(GlideUtil.getUrlWithHeaders(image, context))
+            .placeholder(R.drawable.ic_image_placeholder)
+            .error(R.drawable.ic_image_placeholder)
+            .transition(DrawableTransitionOptions.withCrossFade(1000))
+            .centerCrop()
             .into(holder.binding.previewIV)
-//        holder.binding.saveImageTV.setOnClickListener {
-//            Utils.saveMediaToStorage(
-//                (holder.binding.previewIV.drawable as BitmapDrawable).bitmap,
-//                context
-//            ).also { status ->
-//                if (status) {
-//                    Toast.makeText(context, context.resources.getString(R.string.saved), Toast.LENGTH_SHORT).show()
-//                } else {
-//                    Toast.makeText(context, context.resources.getString(R.string.failed), Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }
     }
 
     override fun getItemCount() = imagesList.size

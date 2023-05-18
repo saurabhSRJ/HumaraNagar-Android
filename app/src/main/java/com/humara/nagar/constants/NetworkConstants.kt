@@ -20,6 +20,11 @@ interface NetworkConstants {
             const val COMPLAINT = "/complaint"
             const val REF_DATA = "/ref-data"
             const val TOKEN = "/token"
+            const val COMPLAINT_DETAILS = "/complaint/{id}"
+            const val ACKNOWLEDGE_COMPLAINT = "/complaint/acknowledge/{id}"
+            const val FINISH_COMPLAINT = "/complaint/finish/{id}"
+            const val WITHDRAW_COMPLAINT = " /complaint/withdraw/{id}"
+            const val RATE_COMPLAINT = "/complaint/rate/{id}"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in"
             const val TERMS_CONDITION_URL = "https://humaranagar.in"
         }

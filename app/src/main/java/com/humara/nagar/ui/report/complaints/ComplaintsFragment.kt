@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ComplaintsAdapter
 import com.humara.nagar.analytics.AnalyticsData

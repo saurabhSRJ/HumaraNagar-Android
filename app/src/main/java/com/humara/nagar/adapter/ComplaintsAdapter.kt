@@ -7,12 +7,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.button.MaterialButton
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ComplaintsItemsLayoutBinding
 import com.humara.nagar.ui.report.model.ComplaintDetails
 import com.humara.nagar.utils.ComplaintsUtils.ComplaintState
-import com.humara.nagar.utils.ComplaintsUtils.StateDrawable
+import com.humara.nagar.utils.GlideUtil
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.setVisibilityAndText
 
@@ -51,21 +55,17 @@ class ComplaintsAdapter(val isUserAdmin: Boolean, val listener: (String) -> Unit
             binding.run {
                 ctaButton.text = ComplaintState.getCtaText(item.state, root.context, isUserAdmin, item.isRatingPresent())
                 setComplaintStateUI(stateBtn, item.state)
-                //TODO: change this hardcoded handling
-                imageView.apply {
-                    when (complaint.category) {
-                        StateDrawable.DRAINAGE_SYSTEM.categoryName -> {
-                            setImageResource(StateDrawable.getDrawable(StateDrawable.DRAINAGE_SYSTEM))
-                        }
-                        StateDrawable.ROAD_MAINTENANCE.categoryName -> {
-                            setImageResource(StateDrawable.getDrawable(StateDrawable.ROAD_MAINTENANCE))
-                        }
-                        StateDrawable.WATER_SUPPLY.categoryName -> {
-                            setImageResource(StateDrawable.getDrawable(StateDrawable.WATER_SUPPLY))
-                        }
-                        StateDrawable.GARBAGE_COLLECTION.categoryName -> {
-                            setImageResource(StateDrawable.getDrawable(StateDrawable.GARBAGE_COLLECTION))
-                        }
+                item.getImageList().let { list ->
+                    if (list.isNotEmpty()) {
+                        Glide.with(root.context)
+                            .load(GlideUtil.getUrlWithHeaders(list[0], root.context))
+                            .placeholder(R.drawable.ic_image_placeholder)
+                            .error(R.drawable.ic_image_placeholder)
+                            .transform(CenterCrop(), RoundedCorners(12))
+                            .transition(DrawableTransitionOptions.withCrossFade(1000))
+                            .into(imageView)
+                    } else {
+                        imageView.setImageResource(R.drawable.ic_image_placeholder)
                     }
                 }
                 categoryTV.setVisibilityAndText(complaint.category)

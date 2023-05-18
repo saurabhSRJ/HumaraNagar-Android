@@ -27,10 +27,10 @@
             android:id="@+id/nsvMain"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="gone"
             android:fillViewport="true"
-            app:layout_constraintTop_toBottomOf="@+id/divider1"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/cl_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/divider1"
             tools:visibility="visible">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,15 +89,23 @@
 
                     </androidx.cardview.widget.CardView>
 
-                    <ImageView
-                        android:id="@+id/imageView"
+                    <RelativeLayout
+                        android:id="@+id/imageContainer"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_marginTop="16dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/garbage_disposal"
+                        android:background="@drawable/selected_drawable"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/localityTV" />
+                        app:layout_constraintTop_toBottomOf="@+id/localityTV">
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:padding="4dp"
+                            tools:src="@drawable/ic_image_placeholder" />
+
+                    </RelativeLayout>
 
                     <TextView
                         android:id="@+id/descriptionTV"
@@ -108,10 +116,10 @@
                         android:ellipsize="end"
                         android:maxLines="6"
                         android:textColor="@color/grey_4F4F4F"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageContainer"
                         app:layout_constraintEnd_toEndOf="@+id/cardTickedID"
-                        app:layout_constraintStart_toEndOf="@+id/imageView"
-                        app:layout_constraintTop_toTopOf="@+id/imageView"
+                        app:layout_constraintStart_toEndOf="@+id/imageContainer"
+                        app:layout_constraintTop_toTopOf="@+id/imageContainer"
                         tools:text="Garbage is lying on the road for last three days. Please send some one to clear this asap Garbage is lying on the road for last three days. Please send some one to clear this asap" />
 
                     <TextView
@@ -119,15 +127,16 @@
                         style="@style/OpenSansSemiBold14sp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="14dp"
                         android:drawablePadding="8dp"
                         android:ellipsize="end"
                         android:maxLines="2"
+                        android:paddingVertical="2dp"
                         android:textColor="@color/black_with_opacity_70"
                         app:drawableStartCompat="@drawable/ic_location_on"
                         app:layout_constraintEnd_toEndOf="@+id/descriptionTV"
-                        app:layout_constraintStart_toStartOf="@+id/imageView"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView"
+                        app:layout_constraintStart_toStartOf="@+id/imageContainer"
+                        app:layout_constraintTop_toBottomOf="@+id/imageContainer"
                         tools:text="Opposite Jain Glass house" />
 
                     <androidx.constraintlayout.widget.Group
@@ -257,19 +266,19 @@
 
             <RatingBar
                 android:id="@+id/ratingBar"
-                android:theme="@style/RatingBarGold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:numStars="5"
-                android:stepSize="1"
-                android:visibility="gone"
                 android:scaleX="1"
                 android:scaleY="1"
+                android:stepSize="1"
+                android:theme="@style/RatingBarGold"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:rating="3"/>
+                tools:rating="3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

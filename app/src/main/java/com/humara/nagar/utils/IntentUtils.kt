@@ -79,6 +79,22 @@ object IntentUtils {
         return intent
     }
 
+    /**
+     * This method constructs an Intent that can be used to launch the Google Maps app and display
+     * the location specified by the latitude and longitude coordinates. The location is marked with
+     * a label "Complaint Location" on the map.
+     * For more information, please refer to the (https://developers.google.com/maps/documentation/urls/android-intents)
+     */
+    fun getGoogleMapIntent(latitude: Double, longitude: Double): Intent {
+        val uri = Uri.parse("geo:0,0?q=$latitude,$longitude(Complaint+Location)")
+        val mapIntent = Intent().apply {
+            action = Intent.ACTION_VIEW
+            data = uri
+            setPackage("com.google.android.apps.maps")
+        }
+        return mapIntent
+    }
+
     private fun grantWritePermission(context: Context, intent: Intent, uri: Uri) {
         val resInfoList = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         for (resolveInfo in resInfoList) {

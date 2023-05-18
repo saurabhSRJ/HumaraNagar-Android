@@ -19,6 +19,8 @@ import com.humara.nagar.constants.Constants
 import com.humara.nagar.databinding.FragmentOtpVerificationBinding
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.utils.*
+import com.humara.nagar.utils.StringUtils.setStringWithColor
+import com.humara.nagar.utils.StringUtils.setStringWithColors
 
 class OtpVerificationFragment : BaseFragment() {
     private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {

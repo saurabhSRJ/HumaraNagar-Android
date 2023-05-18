@@ -7,51 +7,83 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
+        <ImageView
+            android:id="@+id/checkIV"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/stepper_incomplete" />
 
-            <ImageView
-                android:id="@+id/checkIV"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                tools:src="@drawable/stepper_incomplete" />
-
-            <View
-                android:id="@+id/barView"
-                android:layout_width="2dp"
-                android:layout_height="40dp"
-                tools:background="@drawable/stepper_dotted_bar" />
-
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/barView"
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/checkIV"
+            app:layout_constraintStart_toStartOf="@id/checkIV"
+            app:layout_constraintTop_toBottomOf="@id/checkIV"
+            tools:src="@drawable/stepper_dotted_bar" />
 
         <TextView
             android:id="@+id/textTV"
             style="@style/OpenSansSemiBold14sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toEndOf="@+id/checkIV"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Complaint sent to admin"
             tools:textColor="@color/grey_4F4F4F" />
 
         <TextView
             android:id="@+id/subTextTV"
-            style="@style/OpenSansRegular12sp"
+            style="@style/OpenSansRegular10sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textColor="@color/grey_828282"
+            app:layout_constraintTop_toTopOf="@id/textTV"
             app:layout_constraintBottom_toBottomOf="@+id/textTV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textTV"
             tools:text="Subtext goes here" />
+
+        <TextView
+            android:id="@+id/commentTv"
+            style="@style/OpenSansRegular12sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/grey_4F4F4F"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textTV"
+            app:layout_constraintTop_toBottomOf="@id/textTV"
+            tools:text="Ravi Mishra : Aapke road ki jald hi maramat karayi jayegi. Maine ek banda bhej diya hai" />
+
+        <TextView
+            android:id="@+id/updateDateTv"
+            style="@style/OpenSansRegular10sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:textColor="@color/grey_828282"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textTV"
+            app:layout_constraintTop_toBottomOf="@id/commentTv"
+            tools:text="on Sat, 23 Oct" />
+
+        <View
+            android:id="@+id/paddingView"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textTV"
+            app:layout_constraintTop_toBottomOf="@id/updateDateTv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -74,7 +74,7 @@
     <string name="inprogress">In Progress</string>
     <string name="resolved">Resolved</string>
     <string name="resolvedOn">Resolved on</string>
-    <string name="resolutionExpectedBy">Resolution expected by</string>
+    <string name="resolutionExpectedBy">Resolution by</string>
     <string name="update">Update</string>
 
     <string name="ward_no_exampe">E12</string>
@@ -124,4 +124,5 @@
     <string name="complaint_resolved">Complaint resolved</string>
     <string name="no_complaints_message">Nothing to manage yet!\nStart by creating a new complaint</string>
     <string name="unauthorized_access">Unauthorized access</string>
+    <string name="map_location_not_available_message">Exact location not available. Please call the resident</string>
 </resources>
