@@ -11,8 +11,10 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.AppConfigRequest
 import com.humara.nagar.ui.signup.model.LogoutRequest
+import com.humara.nagar.ui.signup.model.Role
 import com.humara.nagar.ui.signup.model.UserReferenceDataRequest
 import com.humara.nagar.utils.SingleLiveEvent
+import com.humara.nagar.utils.getUserSharedPreferences
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -38,6 +40,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
             getUserPreference().role = it.role
             getUserPreference().ward = it.ward
             getUserPreference().wardId = it.wardId
+            getUserPreference().isAdminUser = it.role == Role.ADMIN.role
             success = true
         }.onError {
             success = false
@@ -51,6 +54,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
             success = false
             errorLiveData.postValue(it)
         }
+        Logger.debugLog("User role: ${getUserPreference().role}. isAdmin: ${getUserPreference().isAdminUser}")
         if (success) {
             _appConfigSuccessLiveData.postValue(true)
         }
@@ -67,12 +71,13 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     }
 
     fun logout() = viewModelScope.launch {
-        val response = processCoroutine({ repository.logout(LogoutRequest(getUserPreference().mobileNumber, getUserPreference().refreshToken)) })
+        Logger.debugLog("refresh token: ${getUserPreference().refreshToken}")
+        val response = processCoroutine({ repository.logout(LogoutRequest(getUserPreference().userId, getUserPreference().refreshToken)) })
         //Logging out user in any case for now.
         response.onSuccess {
             _logoutLiveData.postValue(true)
         }.onError {
-            _logoutLiveData.postValue(true)
+            errorLiveData.postValue(it)
         }
     }
 

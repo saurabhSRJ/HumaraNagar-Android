@@ -27,6 +27,7 @@ interface NetworkConstants {
             const val RATE_COMPLAINT = "/complaint/rate/{id}"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in"
             const val TERMS_CONDITION_URL = "https://humaranagar.in"
+            const val ABOUT_US_URL = "https://humaranagar.in"
         }
     }
 
@@ -46,21 +47,6 @@ interface NetworkConstants {
             const val IMAGE = "image"
             const val LATITUDE = "location_latitude"
             const val LONGITUDE = "location_longitude"
-        }
-    }
-
-    interface NetworkAPIConstants {
-        companion object {
-            const val OTP = "/otp"
-            const val LOGIN = "/login"
-            const val SIGNUP = "/signup"
-            const val CONFIG = "/config"
-        }
-    }
-
-    interface NetworkQueryConstants {
-        companion object {
-
         }
     }
 }

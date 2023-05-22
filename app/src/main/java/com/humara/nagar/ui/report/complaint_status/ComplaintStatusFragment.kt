@@ -210,6 +210,8 @@ class ComplaintStatusFragment : BaseFragment() {
                     visibility = View.VISIBLE
                     setIsIndicator(true)
                 }
+                rateThisServiceTV.visibility = View.VISIBLE
+                rateThisServiceTV.text = if (complaintStatusViewModel.rating > 0) getString(R.string.rating_for_this_service) else getString(R.string.no_rating_received)
             } else {
                 buttonCTA.visibility = View.VISIBLE
                 if (response.currentState == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState) {

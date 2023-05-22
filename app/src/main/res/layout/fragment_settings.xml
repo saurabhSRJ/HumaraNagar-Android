@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_blue_EEF4FF"
+        tools:context="com.humara.nagar.ui.settings.SettingsFragment">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivProfilePhoto"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="40dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_user_image_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <TextView
+            android:id="@+id/tvName"
+            style="@style/OpenSansSemiBold16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="8dp"
+            android:maxLines="1"
+            android:textColor="@color/black_with_opacity_70"
+            app:layout_constraintEnd_toEndOf="@id/ivProfilePhoto"
+            app:layout_constraintStart_toStartOf="@id/ivProfilePhoto"
+            app:layout_constraintTop_toBottomOf="@id/ivProfilePhoto"
+            tools:text="User name goes here" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/rect_background_grey_f1f1f1_bg_4dp"
+            android:backgroundTint="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/tvName">
+
+            <include
+                android:id="@+id/languageItem"
+                layout="@layout/settings_item_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/aboutUsItem"
+                layout="@layout/settings_item_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/languageItem" />
+
+            <include
+                android:id="@+id/privacyPolicyItem"
+                layout="@layout/settings_item_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/aboutUsItem" />
+
+            <include
+                android:id="@+id/termsItem"
+                layout="@layout/settings_item_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/privacyPolicyItem" />
+
+            <include
+                android:id="@+id/logoutItem"
+                layout="@layout/settings_item_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/termsItem" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tvAppVersion"
+            style="@style/OpenSansRegular14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="App Version: 1.0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

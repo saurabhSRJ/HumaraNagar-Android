@@ -32,12 +32,10 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.provider"
             android:exported="false"
-            android:grantUriPermissions="true"
-            tools:replace="android:authorities">
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"
-                tools:replace="android:resource" />
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <service
@@ -78,9 +76,6 @@
             android:name="com.humara.nagar.ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
-        <activity
-            android:name=".ui.common.WebViewActivity"
-            android:screenOrientation="portrait" />
     </application>
 
     <queries>
