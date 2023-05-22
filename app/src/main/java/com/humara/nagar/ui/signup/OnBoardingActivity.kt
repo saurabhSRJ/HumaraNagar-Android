@@ -15,6 +15,7 @@ import com.humara.nagar.databinding.ActivitiyOnboardingBinding
 import com.humara.nagar.fluid_resize.FluidContentResizer
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
+import com.humara.nagar.ui.common.WebViewFragment
 import com.humara.nagar.ui.signup.otp_verification.OtpVerificationFragment
 import com.humara.nagar.ui.signup.pending_approval.PendingApprovalFragment
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationFragment
@@ -148,7 +149,7 @@ class OnBoardingActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.findFragmentByTag(OtpVerificationFragment.TAG) != null) {
+        if (supportFragmentManager.findFragmentByTag(OtpVerificationFragment.TAG) != null || supportFragmentManager.findFragmentByTag(WebViewFragment.TAG) != null) {
             supportFragmentManager.popBackStack()
             showSignupOrLoginFragment(true)
         } else {

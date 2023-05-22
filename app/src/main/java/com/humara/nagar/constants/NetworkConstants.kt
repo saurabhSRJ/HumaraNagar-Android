@@ -27,6 +27,7 @@ interface NetworkConstants {
             const val RATE_COMPLAINT = "/complaint/rate/{id}"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in"
             const val TERMS_CONDITION_URL = "https://humaranagar.in"
+            const val ABOUT_US_URL = "https://humaranagar.in"
         }
     }
 

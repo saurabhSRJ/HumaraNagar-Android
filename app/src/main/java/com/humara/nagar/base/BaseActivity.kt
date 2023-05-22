@@ -2,15 +2,12 @@ package com.humara.nagar.base
 
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.SplashActivity
@@ -58,6 +55,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun initViewModelObservers() {
         appConfigViewModel.logoutLiveData.observe(this) {
+            getUserSharedPreferences().clearAll()
+            getAppSharedPreferences().logOut(false)
             SplashActivity.start(this)
             finish()
         }
@@ -178,11 +177,9 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    private fun logout(source: String) {
+    fun logout(source: String) {
         AnalyticsTracker.sendEvent(AnalyticsData.EventName.LOGOUT, JSONObject().put(AnalyticsData.Parameters.SOURCE, source))
         NotificationUtils.clearAllNotification(this)
-        getUserSharedPreferences().clearAll()
-        getAppSharedPreferences().logOut(false)
         appConfigViewModel.logout()
     }
 
@@ -208,19 +205,6 @@ abstract class BaseActivity : AppCompatActivity() {
         view?.let {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(it.windowToken, 0)
-        }
-    }
-
-    /**
-     * Sets the Status Bar Color
-     * @param color, is the id value of the color resource
-     */
-    protected fun changeStatusBarColor(color: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            WindowCompat.getInsetsController(window, window.decorView).apply {
-                isAppearanceLightStatusBars = true
-            }
-            window.statusBarColor = ContextCompat.getColor(this, color)
         }
     }
 

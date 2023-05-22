@@ -19,9 +19,5 @@
         android:label="@string/residents"
         tools:layout="@layout/fragment_residents" />
 
-    <fragment
-        android:id="@+id/navigation_certificates"
-        android:name="com.humara.nagar.ui.certificates.CertificatesFragment"
-        android:label="@string/certificates"
-        tools:layout="@layout/fragment_certificates" />
+    <include app:graph="@navigation/settings_navigation" />
 </navigation>

@@ -29,7 +29,7 @@ android {
         minSdk rootProject.minSDKVersion
         targetSdk rootProject.targetSDKVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         archivesBaseName = "app-" + versionName + "-" + versionCode
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         vectorDrawables.useSupportLibrary = true
@@ -57,8 +57,8 @@ android {
         sourceCompatibility sourceCompatibilityVersion
         targetCompatibility targetCompatibilityVersion
     }
-    kotlinOptions {
-        jvmTarget = sourceCompatibilityVersion.toString()
+    kotlin {
+        jvmToolchain(11)
     }
     buildFeatures {
         dataBinding true
@@ -81,7 +81,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
     implementation 'androidx.annotation:annotation:1.6.0'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'

@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
@@ -13,12 +14,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.content.edit
 import androidx.core.view.children
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
+import com.humara.nagar.constants.Constants
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
+import java.util.*
 
 fun Context.showToast(message: String, shortToast: Boolean = false) {
     Toast.makeText(this, message, if (shortToast) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
@@ -127,4 +131,10 @@ fun TextView.setVisibilityAndText(text: String?) {
     } ?: kotlin.run {
         visibility = View.GONE
     }
+}
+
+fun Context.getStringByLocale(@StringRes stringRes: Int, locale: Locale = Locale(Constants.HINDI)): String {
+    val configuration = Configuration(resources.configuration)
+    configuration.setLocale(locale)
+    return createConfigurationContext(configuration).resources.getString(stringRes)
 }

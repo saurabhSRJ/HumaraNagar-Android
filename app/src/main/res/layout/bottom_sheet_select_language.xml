@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_cross" />
+
+        <ImageView
+            android:id="@+id/ivSelectLanguages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_select_language" />
+
+        <TextView
+            android:id="@+id/tvSelectLanguageTitle"
+            style="@style/OpenSansSemiBold18sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/choose_language"
+            android:textColor="@color/grey_4F4F4F"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivSelectLanguages" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSelectLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toBottomOf="@id/tvSelectLanguageTitle"
+            tools:listitem="@layout/select_language_item"
+            tools:itemCount="2"/>
+
+        <Button
+            android:id="@+id/btnOk"
+            style="@style/primary_blue_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ok"
+            android:enabled="false"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@id/rvSelectLanguage"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

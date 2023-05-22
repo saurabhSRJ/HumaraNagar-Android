@@ -21,6 +21,11 @@
         <item name="android:fontFamily">@font/open_sans_regular</item>
     </style>
 
+    <style name="OpenSansRegular18sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+    </style>
+
     <style name="OpenSansSemiBold10sp" parent="@android:style/Widget.TextView">
         <item name="android:textSize">10sp</item>
         <item name="android:fontFamily">@font/open_sans_semibold</item>
@@ -154,4 +159,11 @@
         <item name="android:secondaryProgressTint">@android:color/transparent</item>
     </style>
 
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/top_rounded_corner_white_rectangle</item>
+    </style>
 </resources>

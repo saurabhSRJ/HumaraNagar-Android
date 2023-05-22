@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import com.google.android.material.tabs.TabLayoutMediator
 import com.humara.nagar.R
 import com.humara.nagar.adapter.WelcomeBannerAdapter
@@ -18,7 +19,7 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.databinding.FragmentSignupOrLoginBinding
 import com.humara.nagar.ui.common.ViewPagerSwitcher
-import com.humara.nagar.ui.common.WebViewActivity
+import com.humara.nagar.ui.common.WebViewFragment
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.signup_or_login.model.WelcomeBannerModel
 
@@ -95,7 +96,10 @@ class SignupOrLoginFragment : BaseFragment() {
     }
 
     private fun openWebView(title: String, url: String) {
-        WebViewActivity.startActivity(requireActivity(), getScreenName(), url, title)
+        parentFragmentManager.commit {
+            setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_left)
+            replace(R.id.container, WebViewFragment.getInstance(getScreenName(), url, title), WebViewFragment.TAG)
+        }
     }
 
     private fun hideKeyboardAndHandlePhoneNumberInput() {

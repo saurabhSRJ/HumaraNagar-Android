@@ -13,13 +13,14 @@ interface AnalyticsData {
             const val MAIN_ACTIVITY = "MAIN_ACTIVITY"
             const val HOME_FRAGMENT = "HOME_FRAGMENT"
             const val REPORT_FRAGMENT = "REPORT_FRAGMENT"
-            const val CERTIFICATES_FRAGMENT = "CERTIFICATES_FRAGMENT"
+            const val SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT"
             const val RESIDENTS_FRAGMENT = "RESIDENTS_FRAGMENT"
             const val PENDING_APPROVAL_FRAGMENT = "PENDING_APPROVAL_FRAGMENT"
             const val COMPLAINTS_FRAGMENT = "COMPLAINTS_FRAGMENT"
             const val COMPLAINTS_STATUS_FRAGMENT = "COMPLAINTS_STATUS_FRAGMENT"
             const val IMAGE_PREVIEW_FRAGMENT = "IMAGE_PREVIEW_FRAGMENT"
             const val WEB_VIEW_ACTIVITY = "WEB_VIEW_ACTIVITY"
+            const val LOGOUT_BOTTOM_SHEET = "LOGOUT_BOTTOM_SHEET"
         }
     }
 

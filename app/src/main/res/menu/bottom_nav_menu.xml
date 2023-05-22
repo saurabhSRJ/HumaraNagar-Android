@@ -17,7 +17,7 @@
         android:title="@string/residents" />
 
     <item
-        android:id="@+id/navigation_certificates"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/certificates" />
+        android:id="@+id/settings_navigation"
+        android:icon="@drawable/ic_settings_nav"
+        android:title="@string/settings" />
 </menu>

@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Humara Nagar</string>
     <string name="title_home">Home</string>
-    <string name="certificates">Certificates</string>
     <string name="report">Report</string>
     <string name="residents">Residents</string>
+    <string name="settings">Settings</string>
     <string name="privacy_policy"><u>Privacy Policy</u></string>
     <string name="and">and</string>
     <string name="terms_amp_conditions"><u>Terms &amp; Conditions</u></string>
@@ -17,7 +17,7 @@
     <string name="we_listen">We Listen</string>
     <string name="verify_mobile_number">Verify Mobile Number</string>
     <string name="otp_sent_to">OTP sent to</string>
-    <string name="enter_otp">enter otp</string>
+    <string name="enter_otp">Enter OTP</string>
     <string name="didn_t_receive_otp">Didn\'t receive OTP?</string>
     <string name="resend"><u>Resend</u></string>
     <string name="timer_count">(0:%s)</string>
@@ -36,7 +36,6 @@
     <string name="submit">Submit</string>
     <string name="dob_invalid_message">You must be 18 years or older</string>
     <string name="otp_sent_to_s">OTP sent to %s</string>
-    <string name="humara_nagar">Humara Nagar</string>
     <string name="some_error_occoured">Please try again later after some time.</string>
     <string name="error">Something went wrong</string>
     <string name="no_internet">No Internet Connection</string>
@@ -51,7 +50,7 @@
     <string name="location">Location</string>
     <string name="comment">Comments</string>
     <string name="addImage">Add Image</string>
-    <string name="uploadImageDescription">Upload the image of issues</string>
+    <string name="uploadImageDescription">Upload the images of issue</string>
     <string name="select_option">Select Option</string>
     <string name="permission_required_title">Permission Required</string>
     <string name="selectFromGallery">Select photo from gallery</string>
@@ -63,12 +62,7 @@
     <string name="past_complaints">Past Complaints</string>
     <string name="all_complaints">All Complaints</string>
     <string name="complaint_status">Complaint Status</string>
-    <string name="dateFormatPatternForImageName">yyyyMMdd_HHmmss</string>
     <string name="anErrorOccurred">An error occurred, please try again</string>
-    <string name="successfullySent">Successfully sent</string>
-    <string name="saved">Saved successfully</string>
-    <string name="failed">Failed to save</string>
-
     <!-- Report Status Values -->
     <string name="sent">Sent</string>
     <string name="inprogress">In Progress</string>
@@ -77,7 +71,6 @@
     <string name="resolutionExpectedBy">Resolution by</string>
     <string name="update">Update</string>
 
-    <string name="ward_no_exampe">E12</string>
     <string name="pending_approval_message">You are not yet onboarded on Humara Nagar App. Please reach out to the municipal corporation of your ward to get you started.</string>
     <string name="you_can_still_enter_location_manually">You permanently denied location permission. Please enter location manually</string>
     <string name="please_provide_requested_permission">Please provide requested permission</string>
@@ -102,7 +95,6 @@
     <string name="withdrawn">Withdrawn</string>
     <string name="acknowledge">Acknowledge</string>
     <string name="finish">Finish</string>
-    <string name="few_second_ago">Few seconds ago</string>
     <string name="rate_this_service">Please rate this service</string>
     <string name="provide_more_details">Provide more details</string>
     <string name="confirm">Confirm</string>
@@ -125,4 +117,12 @@
     <string name="no_complaints_message">Nothing to manage yet!\nStart by creating a new complaint</string>
     <string name="unauthorized_access">Unauthorized access</string>
     <string name="map_location_not_available_message">Exact location not available. Please call the resident</string>
+    <string name="rating_for_this_service">Rating for this service</string>
+    <string name="no_rating_received">No rating received</string>
+    <string name="language">Language</string>
+    <string name="about_us">About Us</string>
+    <string name="app_version_d">App Version: %s</string>
+    <string name="are_you_sure_you_want_to_logout">Are you sure you want to logout?</string>
+    <string name="yes_logout">Yes, Logout</string>
+    <string name="choose_language">Choose Language</string>
 </resources>

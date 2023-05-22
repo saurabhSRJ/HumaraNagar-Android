@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settings_navigation"
+    app:startDestination="@id/settingsFragment">
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.humara.nagar.ui.settings.SettingsFragment"
+        android:label="SettingsFragment">
+        <action
+            android:id="@+id/action_settingsFragment_to_webViewFragment"
+            app:destination="@id/webViewFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_settingsFragment_to_logoutBottomSheet"
+            app:destination="@id/logoutBottomSheet" />
+        <action
+            android:id="@+id/action_settingsFragment_to_selectLanguageBottomSheet"
+            app:destination="@id/selectLanguageBottomSheet" />
+    </fragment>
+    <fragment
+        android:id="@+id/webViewFragment"
+        android:name="com.humara.nagar.ui.common.WebViewFragment"
+        android:label="WebViewFragment">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="title"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+    <dialog
+        android:id="@+id/logoutBottomSheet"
+        android:name="com.humara.nagar.ui.settings.LogoutBottomSheet"
+        android:label="LogoutBottomSheet">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+    </dialog>
+    <dialog
+        android:id="@+id/selectLanguageBottomSheet"
+        android:name="com.humara.nagar.ui.settings.language.SelectLanguageBottomSheet"
+        android:label="SelectLanguageBottomSheet">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+    </dialog>
+</navigation>
