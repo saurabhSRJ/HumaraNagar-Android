@@ -15,7 +15,7 @@
             android:layout_marginStart="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/man_user_icon" />
+            app:srcCompat="@drawable/ic_user_image_placeholder" />
 
         <TextView
             android:id="@+id/tvCommentTime"
@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/tvComment"
-            style="@style/OpenSansRegular10sp"
+            style="@style/OpenSansRegular12sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"

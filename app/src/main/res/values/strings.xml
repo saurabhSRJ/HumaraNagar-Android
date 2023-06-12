@@ -131,6 +131,9 @@
     <string name="leave_you_thoughts_here">Leave you thoughts here</string>
     <string name="no_comments_yet">No comments yet</string>
     <string name="just_now">Just now</string>
+    <string name="you_can_see_how_people_vote">You can see how people vote</string>
+    <string name="retry">Retry</string>
+    <string name="error_loading_comments">Error loading comments</string>
     <plurals name="n_days_ago">
         <item quantity="one">%d day ago</item>
         <item quantity="other">%d days ago</item>
@@ -147,4 +150,7 @@
         <item quantity="one">%d year ago</item>
         <item quantity="other">%d years ago</item>
     </plurals>
-</resources>
+    <plurals name="n_votes">
+        <item quantity="one">%d vote</item>
+        <item quantity="other">%d votes</item>
+    </plurals></resources>

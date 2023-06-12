@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clContainer"
@@ -21,35 +22,58 @@
             android:layout_height="0dp"
             android:layout_marginVertical="12dp"
             android:fillViewport="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/tilAddComment"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            tools:visibility="visible">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <include
+                android:id="@+id/postLayout"
+                layout="@layout/post_item"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include
-                    android:id="@+id/postLayout"
-                    layout="@layout/post_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="wrap_content" />
 
         </androidx.core.widget.NestedScrollView>
 
-        <EditText
-            android:id="@+id/etCommentInput"
-            style="@style/OpenSansRegular12sp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilAddComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:layout_marginBottom="12dp"
-            android:background="@drawable/rect_white_bg_grey_border_20dp"
-            android:hint="@string/leave_you_thoughts_here"
-            android:maxLines="5"
-            android:padding="12dp"
-            android:translationZ="2dp"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:visibility="gone"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeWidth="1dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="100"
+            app:endIconDrawable="@drawable/ic_send"
+            app:endIconMode="custom"
+            app:endIconTint="@color/grey_AEAEAE"
+            app:hintEnabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAddComment"
+                style="@style/OpenSansRegular12sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="top|start"
+                android:hint="@string/leave_you_thoughts_here"
+                android:imeOptions="actionDone"
+                android:maxLines="5"
+                android:minHeight="60dp"
+                android:padding="12dp"
+                android:scrollbars="vertical"
+                android:textColor="@color/grey_696969" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -27,6 +27,9 @@ interface NetworkConstants {
             const val RATE_COMPLAINT = "/complaint/rate/{id}"
             const val POST_DETAILS = "/posts/{id}"
             const val CHANGE_POST_LIKE = "/posts/like/{id}"
+            const val POLL_VOTE = "/posts/poll/vote/{id}"
+            const val POST_COMMENTS = "/posts/comments/{id}"
+            const val ADD_COMMENT = "/posts/comment/{id}"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in"
             const val TERMS_CONDITION_URL = "https://humaranagar.in"
             const val ABOUT_US_URL = "https://humaranagar.in"
@@ -36,6 +39,8 @@ interface NetworkConstants {
     interface NetworkQueryConstants {
         companion object {
             const val ID = "id"
+            const val PAGE = "page"
+            const val LIMIT = "limit"
         }
     }
 

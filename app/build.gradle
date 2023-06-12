@@ -48,7 +48,7 @@ android {
             minifyEnabled false
             shrinkResources false
             crunchPngs false
-            buildConfigField "String", "BASE_URL", "\"https://corded-cinema-385603.du.r.appspot.com\""
+            buildConfigField "String", "BASE_URL", "\"https://humara-nagar-server-389413.el.r.appspot.com\""
         }
     }
     compileOptions {

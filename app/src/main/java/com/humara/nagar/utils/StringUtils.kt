@@ -3,9 +3,13 @@ package com.humara.nagar.utils
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.widget.TextView
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 
 object StringUtils {
     /**
@@ -96,5 +100,15 @@ object StringUtils {
             )
         }
         this.text = spannable
+    }
+
+    fun TextView.setEndDrawable(string: String?, @DrawableRes drawableRes: Int) {
+        val lineHeight = lineHeight
+        val drawable = ContextCompat.getDrawable(context, drawableRes)
+        drawable?.setBounds(0, 0, lineHeight, lineHeight)
+        val builder = SpannableStringBuilder()
+        builder.append(string ?: text).append("  ")
+        builder.append(" ", ImageSpan(drawable!!), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text = builder
     }
 }

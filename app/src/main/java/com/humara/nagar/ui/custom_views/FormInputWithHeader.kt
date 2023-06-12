@@ -222,9 +222,3 @@ class FormInputWithHeader @JvmOverloads constructor(
         }
     }
 }
-
-@Parcelize
-data class FormState(
-    val superSavedState: Parcelable?,
-    val childrenStates: SparseArray<Parcelable>? = null
-) : BaseSavedState(superSavedState), Parcelable

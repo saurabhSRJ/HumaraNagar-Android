@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="12dp">
+            android:paddingTop="16dp">
 
             <include
                 android:id="@+id/postHeader"
@@ -47,33 +46,51 @@
                 app:layout_constraintTop_toBottomOf="@id/postContent" />
 
             <include
+                android:id="@+id/pollLayout"
+                layout="@layout/layout_poll_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/postHeader" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/postBarrier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="ivPostImage, pollLayout" />
+
+            <include
                 android:id="@+id/postFooter"
                 layout="@layout/layout_post_footer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/ivPostImage" />
+                app:layout_constraintTop_toBottomOf="@id/postBarrier" />
 
             <View
                 android:id="@+id/commentDivider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="6dp"
                 android:background="@color/grey_E4E4E4"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/postFooter"
-                tools:visibility="visible"/>
+                tools:visibility="visible" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:nestedScrollingEnabled="false"
                 android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/commentDivider"
-                tools:itemCount="12"
+                tools:itemCount="2"
                 tools:listitem="@layout/post_comment_item"
-                tools:visibility="visible"/>
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tvNoComments"
@@ -82,10 +99,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="@string/no_comments_yet"
                 android:textColor="@color/grey_696969"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/commentDivider" />
+                app:layout_constraintTop_toBottomOf="@id/rvComments"
+                tools:text="@string/no_comments_yet" />
+
+            <include
+                android:id="@+id/paginationLoader"
+                layout="@layout/layout_pagination_loader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

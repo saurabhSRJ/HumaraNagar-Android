@@ -97,4 +97,10 @@ object DateTimeUtils {
             }
         }
     }
+
+    fun isIsoTimeLessThanNow(isoTime: String): Boolean {
+        val instant = Instant.parse(isoTime)
+        val currentInstant = Instant.now()
+        return instant.isBefore(currentInstant)
+    }
 }
