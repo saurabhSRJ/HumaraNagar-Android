@@ -14,7 +14,6 @@ import com.humara.nagar.ui.signup.model.LogoutRequest
 import com.humara.nagar.ui.signup.model.Role
 import com.humara.nagar.ui.signup.model.UserReferenceDataRequest
 import com.humara.nagar.utils.SingleLiveEvent
-import com.humara.nagar.utils.getUserSharedPreferences
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -31,33 +30,26 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     val logoutLiveData: LiveData<Boolean> = _logoutLiveData
 
     fun getAppConfigAndUserReferenceData() = viewModelScope.launch {
-        val appConfigDeferred = async { repository.getAppConfig(AppConfigRequest(getUserPreference().userId)) }
-        val userRefDataDeferred = async { repository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) }
+        val appConfigDeferred = async { processCoroutine({ repository.getAppConfig(AppConfigRequest(getUserPreference().userId)) }) }
+        val userRefDataDeferred = async { processCoroutine({ repository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) }) }
         val appConfigResult = appConfigDeferred.await()
         val userRefDataResult = userRefDataDeferred.await()
-        var success = false
-        appConfigResult.onSuccess {
-            getUserPreference().role = it.role
-            getUserPreference().ward = it.ward
-            getUserPreference().wardId = it.wardId
-            getUserPreference().isAdminUser = it.role == Role.ADMIN.role
-            success = true
+        userRefDataResult.onSuccess { refData ->
+            repository.insertCategories(refData.categories)
+            repository.insertLocalities(refData.localities)
+            appConfigResult.onSuccess {
+                getUserPreference().role = it.role
+                getUserPreference().ward = it.ward
+                getUserPreference().wardId = it.wardId
+                getUserPreference().isAdminUser = it.role == Role.ADMIN.role
+                _appConfigSuccessLiveData.postValue(true)
+            }.onError {
+                errorLiveData.postValue(it)
+            }
         }.onError {
-            success = false
-            errorLiveData.postValue(it)
-        }
-        userRefDataResult.onSuccess {
-            repository.insertCategories(it.categories)
-            repository.insertLocalities(it.localities)
-            success = true
-        }.onError {
-            success = false
             errorLiveData.postValue(it)
         }
         Logger.debugLog("User role: ${getUserPreference().role}. isAdmin: ${getUserPreference().isAdminUser}")
-        if (success) {
-            _appConfigSuccessLiveData.postValue(true)
-        }
     }
 
     fun getUserLocalities() = viewModelScope.launch {
@@ -71,13 +63,12 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     }
 
     fun logout() = viewModelScope.launch {
-        Logger.debugLog("refresh token: ${getUserPreference().refreshToken}")
         val response = processCoroutine({ repository.logout(LogoutRequest(getUserPreference().userId, getUserPreference().refreshToken)) })
         //Logging out user in any case for now.
         response.onSuccess {
             _logoutLiveData.postValue(true)
         }.onError {
-            errorLiveData.postValue(it)
+            _logoutLiveData.postValue(true)
         }
     }
 

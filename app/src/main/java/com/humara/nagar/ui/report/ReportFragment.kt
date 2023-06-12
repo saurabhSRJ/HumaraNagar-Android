@@ -90,8 +90,8 @@ class ReportFragment : PermissionFragment() {
         //Handle back button navigation for admin users
         currentBackStackEntry.savedStateHandle.getLiveData<Boolean>(ComplaintsFragment.IS_ADMIN).observe(currentBackStackEntry) { admin ->
             if (admin) {
-                val navOptions = NavOptions.Builder().setPopUpTo(R.id.navigation_home, inclusive = false).build()
-                navController.navigate(R.id.navigation_home, null, navOptions = navOptions)
+                val navOptions = NavOptions.Builder().setPopUpTo(R.id.home_navigation, inclusive = false).build()
+                navController.navigate(R.id.home_navigation, null, navOptions = navOptions)
             }
         }
     }

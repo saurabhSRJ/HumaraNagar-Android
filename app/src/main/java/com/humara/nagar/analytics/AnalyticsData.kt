@@ -21,6 +21,7 @@ interface AnalyticsData {
             const val IMAGE_PREVIEW_FRAGMENT = "IMAGE_PREVIEW_FRAGMENT"
             const val WEB_VIEW_ACTIVITY = "WEB_VIEW_ACTIVITY"
             const val LOGOUT_BOTTOM_SHEET = "LOGOUT_BOTTOM_SHEET"
+            const val POST_DETAILS_FRAGMENT = "POST_DETAILS_FRAGMENT"
         }
     }
 

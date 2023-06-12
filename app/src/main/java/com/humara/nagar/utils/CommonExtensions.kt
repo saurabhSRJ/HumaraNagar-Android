@@ -125,11 +125,11 @@ inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
 }
 
 fun TextView.setVisibilityAndText(text: String?) {
-    text?.let {
-        visibility = View.VISIBLE
-        this.text = it
-    } ?: kotlin.run {
+    if (text.isNullOrEmpty()) {
         visibility = View.GONE
+    } else {
+        visibility = View.VISIBLE
+        this.text = text
     }
 }
 

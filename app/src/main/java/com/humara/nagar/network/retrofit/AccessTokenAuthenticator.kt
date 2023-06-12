@@ -1,5 +1,6 @@
 package com.humara.nagar.network.retrofit
 
+import com.humara.nagar.BuildConfig
 import com.humara.nagar.Logger
 import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.shared_pref.UserPreference
@@ -18,7 +19,8 @@ import okhttp3.Route
 class AccessTokenAuthenticator(private val userPreference: UserPreference, private val retrofit: RetrofitService) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val initialAccessToken = userPreference.token
-        // Check if the request requires an access token or if an initial access token is available
+        // Check if the request requires an access token or if an initial access token is not available.
+        // For e.g. this check is required in case token refresh api fails. We need to delegate the handling downstream instead of re-trying
         if (isRequestWithAccessToken(response).not() || initialAccessToken == null) {
             return null
         }
@@ -27,7 +29,7 @@ class AccessTokenAuthenticator(private val userPreference: UserPreference, priva
             // Check if the initial access token is the same as the last saved access token
             if (initialAccessToken == lastSavedAccessToken) {
                 val tokenRefreshResponse = try {
-                    retrofit.retrofitInstance.create(AuthenticationService::class.java)
+                    retrofit.getRetrofitWithoutAuthInterceptor(BuildConfig.BASE_URL).create(AuthenticationService::class.java)
                         .getAccessTokenFromRefreshToken(TokenRefreshRequest(userPreference.userId, userPreference.refreshToken))
                         .execute()
                 } catch (e: Exception) {

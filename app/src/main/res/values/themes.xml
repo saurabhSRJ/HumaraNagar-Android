@@ -27,7 +27,7 @@
 
     <!--todo add some icon here-->
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round_icon</item>
         <item name="postSplashScreenTheme">@style/SplashActivityTheme</item>
         <item name="windowSplashScreenAnimationDuration">0</item>
         <item name="windowSplashScreenBackground">@color/splash_screen_background</item>

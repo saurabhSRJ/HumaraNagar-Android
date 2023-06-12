@@ -36,7 +36,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/cl_mobile_number_input"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@mipmap/ic_launcher"
+            app:srcCompat="@mipmap/ic_launcher_icon"
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView

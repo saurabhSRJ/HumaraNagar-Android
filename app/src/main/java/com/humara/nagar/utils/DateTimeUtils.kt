@@ -1,6 +1,9 @@
 package com.humara.nagar.utils
 
-import java.time.LocalDate
+import android.content.Context
+import android.text.format.DateUtils
+import com.humara.nagar.R
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
@@ -38,5 +41,60 @@ object DateTimeUtils {
         val month = earlierDate.monthValue
         val day = earlierDate.dayOfMonth
         return Triple(year, month, day)
+    }
+
+    /**
+     * Returns a relative duration string based on the current time compared to the given start time.
+     *
+     * @param context The context used for string resource retrieval.
+     * @param startTime The start time in ISO 8601 format.
+     * @return A string representing the relative duration from the start time to the current time.
+     */
+    fun getRelativeDurationFromCurrentTime(context: Context, startTime: String): String {
+        val instant = Instant.parse(startTime)
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val period = Period.between(dateTime.toLocalDate(), LocalDate.now())
+
+        val days = period.days
+        val weeks = days / 7
+        val months = period.months
+        val years = period.years
+
+        return when {
+            period.toTotalMonths() < 1 -> {
+                // Within a month
+                if (weeks < 1) {
+                    // Within a week
+                    when {
+                        days < 1 -> {
+                            // Within a day
+                            val currentTimeMillis = System.currentTimeMillis()
+                            val instantMillis = instant.toEpochMilli()
+                            val diffInMs = System.currentTimeMillis() - instantMillis
+                            if (diffInMs <= DateUtils.MINUTE_IN_MILLIS) {
+                                context.getString(R.string.just_now)
+                            } else {
+                                DateUtils.getRelativeTimeSpanString(instantMillis, currentTimeMillis, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_TIME).toString()
+                            }
+                        }
+                        else -> {
+                            // Days ago
+                            context.resources.getQuantityString(R.plurals.n_days_ago, days, days)
+                        }
+                    }
+                } else {
+                    // Weeks ago
+                    context.resources.getQuantityString(R.plurals.n_weeks_ago, weeks, weeks)
+                }
+            }
+            period.toTotalMonths() < 12 -> {
+                // Months ago
+                context.resources.getQuantityString(R.plurals.n_months_ago, months, months)
+            }
+            else -> {
+                // Years ago
+                context.resources.getQuantityString(R.plurals.n_years_ago, years, years)
+            }
+        }
     }
 }

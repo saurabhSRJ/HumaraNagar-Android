@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.humara.nagar.R
@@ -16,12 +17,15 @@ import com.humara.nagar.utils.setNonDuplicateClickListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PostFragment : BaseFragment() {
+class HomeFragment : BaseFragment() {
     private var _binding: FragmentHomeBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     private val postAdapter: PostAdapter by lazy {
-        PostAdapter()
+        PostAdapter(requireContext())
+    }
+    private val navController: NavController by lazy {
+        findNavController()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -37,8 +41,6 @@ class PostFragment : BaseFragment() {
     private fun initView() {
         binding.run {
             ivNotification.setNonDuplicateClickListener {
-//                findNavController().navigate(R.id.fullImagePreviewFragment, bundleOf("imagesList" to arrayOf("")))
-                findNavController().navigate(PostFragmentDirections.actionHomeFragmentToFullImagePreviewFragment(arrayOf(""), getScreenName()))
             }
             rvPost.apply {
                 layoutManager = LinearLayoutManager(requireContext())

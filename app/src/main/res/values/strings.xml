@@ -125,4 +125,26 @@
     <string name="are_you_sure_you_want_to_logout">Are you sure you want to logout?</string>
     <string name="yes_logout">Yes, Logout</string>
     <string name="choose_language">Choose Language</string>
+    <string name="post">Post</string>
+    <string name="know_what_s_happening_in_your_town">Know what\'s happening in\nyour town!</string>
+    <string name="like_button_error_message">Like update failed</string>
+    <string name="leave_you_thoughts_here">Leave you thoughts here</string>
+    <string name="no_comments_yet">No comments yet</string>
+    <string name="just_now">Just now</string>
+    <plurals name="n_days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <plurals name="n_weeks_ago">
+        <item quantity="one">%d week ago</item>
+        <item quantity="other">%d weeks ago</item>
+    </plurals>
+    <plurals name="n_months_ago">
+        <item quantity="one">%d month ago</item>
+        <item quantity="other">%d months ago</item>
+    </plurals>
+    <plurals name="n_years_ago">
+        <item quantity="one">%d year ago</item>
+        <item quantity="other">%d years ago</item>
+    </plurals>
 </resources>

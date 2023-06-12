@@ -14,6 +14,7 @@
     <color name="splash_screen_background">#F4F6FC</color>
     <color name="grey_F1F1F1">#F1F1F1</color>
     <color name="grey_E4E4E4">#E4E4E4</color>
+    <color name="grey_696969">#696969</color>
     <color name="black_with_opacity_70">#B3000000</color>
     <color name="rating_star_gold_bg">#FFCB02</color>
     <!--Stroke Button Colors-->
@@ -21,5 +22,8 @@
     <color name="stroke_yellow">#FF9E0D</color>
     <color name="stroke_green">#439916</color>
     <color name="chip_selected_color">#DEE9FE</color>
-
+    <color name="grey_40404F">#40404F</color>
+    <color name="grey_555555">#555555</color>
+    <color name="grey_585C60">#585C60</color>
+    <color name="grey_A9A9A9">#A9A9A9</color>
 </resources>

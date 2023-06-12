@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.humara.nagar.ui.AppConfigViewModel
+import com.humara.nagar.ui.home.post_details.PostDetailsViewModel
 import com.humara.nagar.ui.report.ReportViewModel
 import com.humara.nagar.ui.report.complaint_status.ComplaintStatusViewModel
 import com.humara.nagar.ui.report.complaints.ComplaintsViewModel
@@ -40,6 +41,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(ResidentsViewModel::class.java) -> {
                     ResidentsViewModel(application)
+                }
+                isAssignableFrom(PostDetailsViewModel::class.java) -> {
+                    PostDetailsViewModel(application, extras.createSavedStateHandle())
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }

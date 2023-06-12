@@ -25,6 +25,8 @@ interface NetworkConstants {
             const val FINISH_COMPLAINT = "/complaint/finish/{id}"
             const val WITHDRAW_COMPLAINT = " /complaint/withdraw/{id}"
             const val RATE_COMPLAINT = "/complaint/rate/{id}"
+            const val POST_DETAILS = "/posts/{id}"
+            const val CHANGE_POST_LIKE = "/posts/like/{id}"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in"
             const val TERMS_CONDITION_URL = "https://humaranagar.in"
             const val ABOUT_US_URL = "https://humaranagar.in"

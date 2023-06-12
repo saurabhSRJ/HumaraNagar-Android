@@ -86,6 +86,11 @@
         <item name="android:fontFamily">@font/open_sans_bold</item>
     </style>
 
+    <style name="PoppinsRegular14sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
+
     <!-- Button Styles -->
     <style name="primary_blue_button" parent="@style/Widget.Material3.Button.ElevatedButton">
         <item name="android:backgroundTint">@color/primary_blue_button_background_selector</item>
