@@ -40,27 +40,6 @@ object StorageUtils {
         return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
     }
 
-    suspend fun compressImage(context: Context, uri: Uri) {
-        withContext(Dispatchers.IO) {
-            val IMAGE_MAX_SIZE = 800
-            //Decode image size
-            val o = BitmapFactory.Options()
-            o.inJustDecodeBounds = true
-            context.getBitmapFromUri(uri, o)
-            var scale = 1
-            if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
-                scale = Math.pow(2.0, Math.ceil(Math.log(IMAGE_MAX_SIZE / Math.max(o.outHeight, o.outWidth).toDouble()) / Math.log(0.5)).toInt().toDouble()).toInt()
-            }
-            //Decode with inSampleSize
-            val o2 = BitmapFactory.Options()
-            o2.inSampleSize = scale
-            val image = context.getBitmapFromUri(uri, o2)
-            val baos = ByteArrayOutputStream()
-            image?.compress(Bitmap.CompressFormat.JPEG, 100, baos) //Compression quality, here 100 means no compression, the storage of compressed data to baos
-            Logger.debugLog("Final Image size: ${(baos.toByteArray().size) / 1024}")
-        }
-    }
-
     /**
      * Reduces the image dimensions and memory size through scaling and compression
      *

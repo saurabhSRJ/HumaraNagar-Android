@@ -69,7 +69,7 @@
                 tools:text="Deep Chand Mandi" />
 
             <TextView
-                android:id="@+id/resolvedTV"
+                android:id="@+id/tvResidentName"
                 style="@style/OpenSansRegular12sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -79,6 +79,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/localityTV"
+                tools:text="Resident Name" />
+
+            <TextView
+                android:id="@+id/resolvedTV"
+                style="@style/OpenSansRegular12sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/grey_4F4F4F"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@id/tvResidentName"
                 tools:text="Resolution expected by 24th june" />
 
             <Button

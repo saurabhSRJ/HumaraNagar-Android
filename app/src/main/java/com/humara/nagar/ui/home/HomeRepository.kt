@@ -1,17 +1,30 @@
-package com.humara.nagar.ui.home.post_details
+package com.humara.nagar.ui.home
 
 import android.app.Application
 import com.humara.nagar.network.BaseRepository
+import com.humara.nagar.ui.home.model.EditPostRequest
 import com.humara.nagar.ui.home.model.PollVoteRequest
 import com.humara.nagar.ui.home.model.PostCommentRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class PostRepository(application: Application) : BaseRepository(application) {
-    private val apiService = getRetrofit().create(PostService::class.java)
+class HomeRepository(application: Application) : BaseRepository(application) {
+    private val apiService = getRetrofit().create(HomeService::class.java)
+
+    suspend fun getPosts(page: Int, limit: Int) = withContext(Dispatchers.IO) {
+        apiService.getPosts(page, limit)
+    }
 
     suspend fun getPostDetails(id: Long) = withContext(Dispatchers.IO) {
         apiService.getPostDetails(id)
+    }
+
+    suspend fun editPost(id: Long, request: EditPostRequest) = withContext(Dispatchers.IO) {
+        apiService.editPost(id, request)
+    }
+
+    suspend fun deletePost(id: Long) = withContext(Dispatchers.IO) {
+        apiService.deletePost(id)
     }
 
     suspend fun likePost(id: Long) = withContext(Dispatchers.IO) {

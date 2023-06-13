@@ -8,7 +8,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.databinding.PostCommentItemBinding
 import com.humara.nagar.ui.home.model.CommentDetails
@@ -42,9 +41,7 @@ class PostCommentsAdapter : RecyclerView.Adapter<PostCommentsAdapter.CommentsVie
     }
 
     fun addMoreData(moreData: List<CommentDetails>) {
-        val previousListEnd = comments.size
         comments.addAll(moreData)
-//        notifyItemRangeInserted(previousListEnd, moreData.size)
         notifyDataSetChanged()
     }
 

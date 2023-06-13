@@ -35,13 +35,13 @@
 
                 <EditText
                     android:id="@+id/editText"
+                    style="@style/OpenSansRegular14sp"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginTop="20dp"
-                    style="@style/OpenSansRegular14sp"
-                    android:maxLength="300"
                     android:background="@drawable/rect_white_fill_grey_outline_5dp"
                     android:gravity="top|start"
+                    android:maxLength="300"
                     android:padding="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/textView"
@@ -52,11 +52,11 @@
                     style="@style/primary_blue_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginEnd="5dp"
                     android:text="@string/confirm"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline"
-                    app:layout_constraintStart_toStartOf="@+id/editText"
+                    app:layout_constraintEnd_toEndOf="@+id/editText"
+                    app:layout_constraintStart_toStartOf="@+id/guideline"
                     app:layout_constraintTop_toBottomOf="@+id/editText" />
 
                 <Button
@@ -64,11 +64,11 @@
                     style="@style/StrokeButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginEnd="5dp"
                     android:text="@string/cancel"
-                    app:layout_constraintEnd_toEndOf="@+id/editText"
-                    app:layout_constraintStart_toStartOf="@+id/guideline"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline"
+                    app:layout_constraintStart_toStartOf="@+id/editText"
                     app:layout_constraintTop_toBottomOf="@+id/editText" />
 
                 <androidx.constraintlayout.widget.Guideline

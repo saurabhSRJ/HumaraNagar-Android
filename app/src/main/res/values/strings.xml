@@ -134,6 +134,11 @@
     <string name="you_can_see_how_people_vote">You can see how people vote</string>
     <string name="retry">Retry</string>
     <string name="error_loading_comments">Error loading comments</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="delete_post_warning_message">Are you sure you want to permanently remove this post?</string>
+    <string name="post_deleted">Post deleted</string>
     <plurals name="n_days_ago">
         <item quantity="one">%d day ago</item>
         <item quantity="other">%d days ago</item>

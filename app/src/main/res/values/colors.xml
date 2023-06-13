@@ -19,6 +19,7 @@
     <color name="rating_star_gold_bg">#FFCB02</color>
     <color name="grey_5C5858">#5C5858</color>
     <color name="grey_4F4F4F_with_opacity_54">#8A4F4F4F</color>
+    <color name="grey_EBEDEF">#EBEDEF</color>
     <!--Stroke Button Colors-->
     <color name="stroke_red">#CF0A0A</color>
     <color name="stroke_yellow">#FF9E0D</color>

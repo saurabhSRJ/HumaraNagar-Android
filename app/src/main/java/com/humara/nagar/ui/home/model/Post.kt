@@ -1,23 +1,31 @@
 package com.humara.nagar.ui.home.model
 
+import android.content.Context
 import com.google.gson.annotations.SerializedName
 import com.humara.nagar.utils.DateTimeUtils
+import com.humara.nagar.utils.getUserSharedPreferences
 
 data class Post(
     @SerializedName("post_id") val postId: Long,
     @SerializedName("type") val type: String,
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("last_updated_at") val lastUpdatedAt: String? = null,
-    @SerializedName("total_likes") val totalLikes: Int = 0,
-    @SerializedName("is_liked_by_user") val isLikedByUser: Int = 0,
+    @SerializedName("total_likes") var totalLikes: Int = 0,
+    @SerializedName("is_liked_by_user") var isLikedByUser: Int = 0,
     @SerializedName("total_comments") val totalComments: Int = 0,
     @SerializedName("caption") val caption: String?,
     @SerializedName("user_id") val userId: Long,
     @SerializedName("name") val name: String,
     @SerializedName("locality") val locality: String? = null,
-    @SerializedName("profile_image_path") val profileImage: String? = null,
+    @SerializedName("image") val profileImage: String? = null,
     @SerializedName("info") val info: PostInfo?
-)
+) {
+    fun hasUserLike(): Boolean = isLikedByUser != 0
+
+    fun isCreatedByUser(context: Context): Boolean {
+        return context.getUserSharedPreferences().userId == userId
+    }
+}
 
 data class PostInfo(
     @SerializedName("medias") val medias: List<String>? = null, // image, video or document urls

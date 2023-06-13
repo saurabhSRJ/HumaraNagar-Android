@@ -12,10 +12,12 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.button.MaterialButton
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ComplaintsItemsLayoutBinding
 import com.humara.nagar.ui.report.model.ComplaintDetails
 import com.humara.nagar.utils.ComplaintsUtils.ComplaintState
+import com.humara.nagar.utils.DateTimeUtils
 import com.humara.nagar.utils.GlideUtil
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.setVisibilityAndText
@@ -70,10 +72,12 @@ class ComplaintsAdapter(val isUserAdmin: Boolean, val listener: (String) -> Unit
                 }
                 categoryTV.setVisibilityAndText(complaint.category)
                 localityTV.setVisibilityAndText(complaint.locality)
+                tvResidentName.setVisibilityAndText(complaint.residentName)
                 resolvedTV.apply {
                     val resolvedText = StringBuilder()
                     text = if (!complaint.resolvedOn.isNullOrEmpty()) {
-                        resolvedText.append(resources.getString(R.string.resolvedOn)).append(" ${complaint.resolvedOn}").toString()
+                        val resolvedOnDate = DateTimeUtils.convertIsoDateTimeFormat(complaint.resolvedOn!!, "dd MMMM, yyyy")
+                        resolvedText.append(resources.getString(R.string.resolvedOn)).append(" $resolvedOnDate").toString()
                     } else {
                         resolvedText.append(resources.getString(R.string.resolutionExpectedBy)).append(" ${complaint.resolutionExpectedOn}").toString()
                     }

@@ -37,6 +37,8 @@ class PollOptionsAdapter(val listener: (Int) -> Unit) : RecyclerView.Adapter<Pol
     inner class PollOptionsViewHolder(val binding: ItemPollOptionBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PollOption) {
             binding.run {
+                val layerDrawable = clContainer.background as LayerDrawable
+                val drawable = layerDrawable.findDrawableByLayerId(R.id.indicator) as ClipDrawable
                 if (postInfo.isAllowedToVote()) {
                     ivOption.visibility = View.VISIBLE
                     clContainer.isEnabled = true
@@ -44,13 +46,12 @@ class PollOptionsAdapter(val listener: (Int) -> Unit) : RecyclerView.Adapter<Pol
                         clContainer.isEnabled = false
                         listener(item.optionId)
                     }
+                    drawable.level = 0
                 } else {
                     clContainer.isEnabled = false
                     ivOption.visibility = View.GONE
                     val result: Int = (item.votes * 100 / postInfo.totalVotes)
                     tvPercentage.text = result.toString().plus("%")
-                    val layerDrawable = clContainer.background as LayerDrawable
-                    val drawable = layerDrawable.findDrawableByLayerId(R.id.indicator) as ClipDrawable
                     drawable.level = result * 100
                 }
                 if (item.optionId == postInfo.userVote) {

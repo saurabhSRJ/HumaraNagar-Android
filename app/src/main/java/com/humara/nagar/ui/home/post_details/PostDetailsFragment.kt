@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import at.blogc.android.views.ExpandableTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -22,21 +25,24 @@ import com.humara.nagar.adapter.PostCommentsAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
-import com.humara.nagar.databinding.FragmentPostDetailsBinding
-import com.humara.nagar.databinding.LayoutPollPostBinding
-import com.humara.nagar.databinding.LayoutPostFooterBinding
-import com.humara.nagar.databinding.LayoutPostHeaderBinding
+import com.humara.nagar.databinding.*
+import com.humara.nagar.ui.home.HomeViewModel
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostComments
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.utils.*
 
 class PostDetailsFragment : BaseFragment() {
-    private lateinit var binding: FragmentPostDetailsBinding
+    private var _binding: FragmentPostDetailsBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
     private val navController: NavController by lazy {
         findNavController()
     }
     private val postDetailsViewModel by viewModels<PostDetailsViewModel> {
+        ViewModelFactory()
+    }
+    private val homeViewModel by navGraphViewModels<HomeViewModel>(R.id.home_navigation) {
         ViewModelFactory()
     }
     private val pollOptionsAdapter: PollOptionsAdapter by lazy {
@@ -49,7 +55,7 @@ class PostDetailsFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -64,35 +70,47 @@ class PostDetailsFragment : BaseFragment() {
             observeErrorAndException(this)
             observeProgress(this)
             postDetailsLiveData.observe(viewLifecycleOwner) {
+                Logger.debugLog("post details observed")
                 inflatePostDetails(it)
             }
             postDetailsErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog { }
             }
             initialCommentsLiveData.observe(viewLifecycleOwner) {
+                Logger.debugLog("initial comment observer")
                 showPostComments(it)
             }
             loadMoreCommentsLiveData.observe(viewLifecycleOwner) {
+                Logger.debugLog("load more comment observer")
+                binding.postLayout.tvNoComments.visibility = View.GONE
+                binding.postLayout.rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.addMoreData(it)
             }
             postCommentsErrorLiveData.observe(viewLifecycleOwner) {
-                showCommentsLoadError()
+                showPaginationLoadError()
             }
             commentLoaderLiveData.observe(viewLifecycleOwner) { progress ->
                 if (progress) {
-                    showCommentsLoader()
+                    showPaginationLoader()
                 } else {
-                    hideCommentsLoader()
+                    hidePaginationLoader()
                 }
+            }
+            addCommentSuccessLiveData.observe(viewLifecycleOwner) {
+                updatePostOnHomeScreen(it)
             }
             addCommentErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
             voteSuccessLiveData.observe(viewLifecycleOwner) { post ->
                 handlePollUI(binding.postLayout.pollLayout, post)
+                updatePostOnHomeScreen(post.postId)
             }
             voteErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
+            }
+            likePostSuccessLiveData.observe(viewLifecycleOwner) {
+                updatePostOnHomeScreen(it)
             }
             isLikedLiveData.observe(viewLifecycleOwner) {
                 updateLikeButton(it)
@@ -106,7 +124,16 @@ class PostDetailsFragment : BaseFragment() {
             likePostErrorLiveData.observe(viewLifecycleOwner) {
                 requireContext().showToast(getString(R.string.like_button_error_message), true)
             }
+            deletePostLiveData.observe(viewLifecycleOwner) { id ->
+                homeViewModel.deletePostFromFeed(id)
+                requireContext().showToast(getString(R.string.post_deleted))
+                navController.navigateUp()
+            }
         }
+    }
+
+    private fun updatePostOnHomeScreen(postId: Long) {
+        homeViewModel.setPostUpdateRequired(postId)
     }
 
     private fun initView() {
@@ -115,7 +142,7 @@ class PostDetailsFragment : BaseFragment() {
                 leftIcon.setOnClickListener {
                     navController.navigateUp()
                 }
-                toolbarTitle.text = "Details"
+                toolbarTitle.text = getString(R.string.details)
             }
             clContainer.setOnClickListener { hideKeyboard() }
             postLayout.root.setOnClickListener { hideKeyboard() }
@@ -125,12 +152,11 @@ class PostDetailsFragment : BaseFragment() {
                 adapter = postCommentsAdapter
             }
             nsvPost.setOnScrollChangeListener { v: NestedScrollView, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
-                Logger.debugLog("childCount: ${v.childCount}, lastItem: ${v.getChildAt(v.childCount - 1)}")
                 if (v.getChildAt(v.childCount - 1) != null) {
                     if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && scrollY > oldScrollY
                         && postDetailsViewModel.canLoadMoreData && postDetailsViewModel.commentLoaderLiveData.value == false
                     ) {
-                        postDetailsViewModel.getPostComments(true)
+                        postDetailsViewModel.getPostComments()
                     }
                 }
             }
@@ -145,6 +171,9 @@ class PostDetailsFragment : BaseFragment() {
                     tilAddComment.setEndIconTintList(ContextCompat.getColorStateList(requireContext(), R.color.grey_AEAEAE))
                 }
             }
+            postLayout.paginationLoader.retry.setNonDuplicateClickListener {
+                postDetailsViewModel.getPostComments()
+            }
         }
     }
 
@@ -155,7 +184,7 @@ class PostDetailsFragment : BaseFragment() {
             PostType.TEXT.type -> inflateTextPostDetails(post)
             PostType.IMAGE.type -> inflateImagePostDetails(post)
             PostType.POLL.type -> inflatePollPostDetails(post)
-            else -> ""
+            else -> {} //NA
         }
     }
 
@@ -170,6 +199,7 @@ class PostDetailsFragment : BaseFragment() {
                 tvNoComments.visibility = View.VISIBLE
                 tvNoComments.text = getString(R.string.no_comments_yet)
             } else {
+                tvNoComments.visibility = View.GONE
                 rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.setData(response.comments)
             }
@@ -215,18 +245,18 @@ class PostDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun showCommentsLoader() {
+    private fun showPaginationLoader() {
         binding.postLayout.paginationLoader.apply {
             progress.visibility = View.VISIBLE
             retry.visibility = View.GONE
         }
     }
 
-    private fun hideCommentsLoader() {
+    private fun hidePaginationLoader() {
         binding.postLayout.paginationLoader.progress.visibility = View.GONE
     }
 
-    private fun showCommentsLoadError() {
+    private fun showPaginationLoadError() {
         binding.postLayout.run {
             tvNoComments.visibility = View.VISIBLE
             tvNoComments.text = getString(R.string.error_loading_comments)
@@ -239,8 +269,18 @@ class PostDetailsFragment : BaseFragment() {
             tvName.text = post.name
             tvLocality.setVisibilityAndText(post.locality)
             tvPostTime.text = DateTimeUtils.getRelativeDurationFromCurrentTime(requireContext(), post.createdAt)
+            ivOptions.isVisible = post.isCreatedByUser(requireContext())
             ivOptions.setNonDuplicateClickListener {
-
+                showPostOptionMenu(post, it)
+            }
+            post.profileImage?.let { url ->
+                Glide.with(requireContext())
+                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                    .transform(CenterCrop(), RoundedCorners(12))
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .error(R.drawable.ic_image_placeholder)
+                    .transition(DrawableTransitionOptions.withCrossFade(1000))
+                    .into(ivProfilePhoto)
             }
         }
     }
@@ -276,6 +316,32 @@ class PostDetailsFragment : BaseFragment() {
                 pollOptionsAdapter.setData(it)
             }
         }
+    }
+
+    private fun showPostOptionMenu(post: Post, anchorView: View) {
+        val menuBinding = PostOptionsMenuBinding.inflate(LayoutInflater.from(context), null, false)
+        val popupWindow = PopupWindow(menuBinding.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            isOutsideTouchable = true
+            isFocusable = true
+            elevation = 5.0f
+        }
+        menuBinding.run {
+            menuEdit.setNonDuplicateClickListener {
+                popupWindow.dismiss()
+            }
+            menuDelete.setOnClickListener {
+                FeedUtils.showDeletePostConfirmationDialog(parentFragmentManager, requireContext()) {
+                    homeViewModel.deletePost(post.postId)
+                }
+                popupWindow.dismiss()
+            }
+        }
+        popupWindow.showAsDropDown(anchorView, (-1 * (resources.getDimensionPixelOffset(R.dimen.post_option_menu_offset))), 0)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun updateLikeButton(isLiked: Boolean) {

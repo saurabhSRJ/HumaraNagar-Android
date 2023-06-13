@@ -29,6 +29,25 @@ object DateTimeUtils {
     }
 
     /**
+     * Converts a date-time string in ISO 8601 format to the specified target format.
+     *
+     * @param dateTimeString The date-time string in ISO 8601 format.
+     * @param targetFormat The target format pattern to convert the date-time string to.
+     * @return The date-time string formatted in the target format, or an empty string if there was a parsing exception.
+     */
+    fun convertIsoDateTimeFormat(dateTimeString: String, targetFormat: String): String {
+        val instant = Instant.parse(dateTimeString)
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val targetFormatter = DateTimeFormatter.ofPattern(targetFormat)
+        return try {
+            dateTime.format(targetFormatter)
+        } catch (e: DateTimeParseException) {
+            // Handle parsing exception
+            ""
+        }
+    }
+
+    /**
      * Retrieves a date that is earlier than the current date by the specified number of years.
      *
      * @param yearsToSubtract The number of years to subtract from the current date.

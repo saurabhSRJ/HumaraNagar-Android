@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="16dp"
+        android:elevation="4dp"
+        android:layout_marginBottom="12dp">
+
+        <View
+            android:id="@+id/iv_selfie"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/tv_name"
+            android:layout_width="200dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintStart_toEndOf="@id/iv_selfie"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/tv_number_and_time"
+            android:layout_width="200dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+        <View
+            android:id="@+id/tv_location"
+            android:layout_width="100dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintStart_toStartOf="@id/tv_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_number_and_time" />
+
+        <View
+            android:id="@+id/header_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintTop_toBottomOf="@id/iv_selfie" />
+
+        <View
+            android:id="@+id/tv_post"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintTop_toBottomOf="@id/header_divider" />
+
+        <View
+            android:id="@+id/post_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintTop_toBottomOf="@id/tv_post" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintTop_toBottomOf="@id/post_divider" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -38,17 +38,17 @@
     <fragment
         android:id="@+id/postDetailsFragment"
         android:name="com.humara.nagar.ui.home.post_details.PostDetailsFragment"
-        android:label="PostDetailsFragment" >
+        android:label="PostDetailsFragment">
         <action
             android:id="@+id/action_postDetailsFragment_to_fullImagePreviewFragment"
             app:destination="@id/fullImagePreviewFragment"
             app:enterAnim="@anim/slide_in_from_right"
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_left"
-            app:popExitAnim="@anim/slide_out_to_right"/>
+            app:popExitAnim="@anim/slide_out_to_right" />
         <argument
             android:name="post_id"
-            app:argType="long"/>
+            app:argType="long" />
         <argument
             android:name="source"
             android:defaultValue=""

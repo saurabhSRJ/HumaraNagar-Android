@@ -172,7 +172,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     open fun blockUnauthorizedAccess() {
         Logger.debugLog("Unauthorized access")
-        GenericAlertDialog.show(this, getString(R.string.unauthorized_access), getString(R.string.session_expired_message), false, getString(R.string.logout)) {
+        GenericAlertDialog.show(supportFragmentManager, getString(R.string.unauthorized_access), getString(R.string.session_expired_message), false, getString(R.string.logout)) {
             logout(getScreenName())
         }
     }

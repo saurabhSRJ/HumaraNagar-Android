@@ -112,15 +112,15 @@ open class PermissionFragment : BaseFragment() {
     }
 
     private fun showPermissionRationaleDialog(permission: String) {
-        GenericAlertDialog.show(requireContext(), getString(R.string.permission_required_title), getPermissionGuideMessage(permission),
-            isCancelable = true, getString(R.string.ok)) {
+        GenericAlertDialog.show(parentFragmentManager, getString(R.string.permission_required_title), getPermissionGuideMessage(permission),
+            isCancelable = true, getString(R.string.ok), getString(R.string.cancel)) {
             singlePermissionLauncher.launch(permission)
         }
     }
 
     private fun openAppSettingToAskPermanentlyDeniedPermissions() {
-        GenericAlertDialog.show(requireContext(), getString(R.string.permission_required_title), getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()),
-            isCancelable = true, getString(R.string.grant_permission)) {
+        GenericAlertDialog.show(parentFragmentManager, getString(R.string.permission_required_title), getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()),
+            isCancelable = true, getString(R.string.grant_permission), getString(R.string.cancel)) {
             appSettingLauncher.launch(PermissionInformation(handler, deniedPermissionList, IntentUtils.getAppSettingIntent(requireContext())))
         }
     }
