@@ -29,6 +29,7 @@
             android:layout_height="0dp"
             android:fillViewport="true"
             android:visibility="gone"
+            android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@id/cl_bottom"
             app:layout_constraintTop_toBottomOf="@+id/divider1"
             tools:visibility="visible">

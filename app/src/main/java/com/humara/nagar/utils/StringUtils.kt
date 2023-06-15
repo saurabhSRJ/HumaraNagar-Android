@@ -23,11 +23,12 @@ object StringUtils {
         return inputString.filter { it.isLetterOrDigit() }
     }
 
-    fun showDotStringAfterLimitReached(length: Int, string: String): String {
-        if (string.length <= length) {
-            return string
+    fun showDotStringAfterLimitReached(maxLength: Int, input: String): String {
+        return if (input.length > maxLength) {
+            "${input.take(maxLength)}..."
+        } else {
+            input
         }
-        return "${string.substring(0, length)}..."
     }
 
     /**

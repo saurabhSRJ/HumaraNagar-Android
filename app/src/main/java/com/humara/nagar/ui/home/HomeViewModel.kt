@@ -12,7 +12,6 @@ import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.home.model.FeedResponse
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.utils.SingleLiveEvent
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : BaseViewModel(application) {
@@ -50,7 +49,6 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
 
     fun getPosts() = viewModelScope.launch {
         if (currentPage == 1) _initialPostProgressLiveData.postValue(true)
-        delay(1000)
         val response = processCoroutine({ repository.getPosts(currentPage, limit) }, updateProgress = false)
         if (currentPage == 1) _initialPostProgressLiveData.postValue(false)
         response.onSuccess {

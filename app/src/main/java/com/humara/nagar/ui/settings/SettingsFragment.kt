@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.humara.nagar.BuildConfig
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.databinding.FragmentSettingsBinding
+import com.humara.nagar.utils.GlideUtil
 import com.humara.nagar.utils.setNonDuplicateClickListener
 
 class SettingsFragment : BaseFragment() {
@@ -37,6 +41,14 @@ class SettingsFragment : BaseFragment() {
             toolbar.apply {
                 toolbarTitle.text = getString(R.string.settings)
                 leftIcon.setOnClickListener { navController.navigateUp() }
+            }
+            getUserPreference().profileImage?.let { url ->
+                Glide.with(this@SettingsFragment)
+                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                    .transform(CenterCrop(), RoundedCorners(12))
+                    .placeholder(R.drawable.ic_user_image_placeholder)
+                    .error(R.drawable.ic_user_image_placeholder)
+                    .into(ivProfilePhoto)
             }
             tvName.text = getUserPreference().userProfile?.name
             languageItem.apply {

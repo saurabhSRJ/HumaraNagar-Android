@@ -22,6 +22,11 @@
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_left"
             app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/slide_in_from_bottom"
+            app:popExitAnim="@anim/slide_out_to_bottom" />
     </fragment>
     <fragment
         android:id="@+id/fullImagePreviewFragment"
@@ -53,5 +58,10 @@
             android:name="source"
             android:defaultValue=""
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.humara.nagar.ui.home.create_post.CreatePostFragment"
+        android:label="CreatePostFragment">
     </fragment>
 </navigation>

@@ -41,7 +41,7 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
     val voteErrorLiveData: LiveData<ApiError> = _voteErrorLiveData
     private val _initialCommentsLiveData: MutableLiveData<PostComments> by lazy { MutableLiveData() }
     val initialCommentsLiveData: LiveData<PostComments> = _initialCommentsLiveData
-    private val _loadMoreCommentsLiveData: SingleLiveEvent<List<CommentDetails>> by lazy { SingleLiveEvent() }
+    private val _loadMoreCommentsLiveData: MutableLiveData<List<CommentDetails>> by lazy { MutableLiveData() }
     val loadMoreCommentsLiveData: LiveData<List<CommentDetails>> = _loadMoreCommentsLiveData
     private val _postCommentsErrorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
     val postCommentsErrorLiveData: LiveData<ApiError> = _postCommentsErrorLiveData

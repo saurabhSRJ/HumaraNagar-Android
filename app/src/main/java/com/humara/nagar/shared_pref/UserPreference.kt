@@ -39,6 +39,10 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, User::class.java)
         set(value) = putObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, value)
 
+    inline var profileImage: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.PROFILE_IMAGE, null)
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.PROFILE_IMAGE, value)
+
     inline var isUserLoggedIn: Boolean
         get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, false)
         set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, value)

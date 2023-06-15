@@ -56,7 +56,6 @@
     <string name="selectFromGallery">Select photo from gallery</string>
     <string name="captureFromCamera">Capture photo from camera</string>
     <string name="imagePickingLimit">You can add total 2 images</string>
-    <string name="provider_name" translatable="false">com.example.provider</string>
     <string name="trackYourPastComplaints">Track Your Past Complaints</string>
     <string name="history">History</string>
     <string name="past_complaints">Past Complaints</string>
@@ -126,7 +125,7 @@
     <string name="yes_logout">Yes, Logout</string>
     <string name="choose_language">Choose Language</string>
     <string name="post">Post</string>
-    <string name="know_what_s_happening_in_your_town">Know what\'s happening in\nyour town!</string>
+    <string name="know_what_s_happening_in_your_town">Know what\'s happening \nin your town!</string>
     <string name="like_button_error_message">Like update failed</string>
     <string name="leave_you_thoughts_here">Leave you thoughts here</string>
     <string name="no_comments_yet">No comments yet</string>
@@ -139,6 +138,11 @@
     <string name="delete_post">Delete Post</string>
     <string name="delete_post_warning_message">Are you sure you want to permanently remove this post?</string>
     <string name="post_deleted">Post deleted</string>
+    <string name="share_post">Share Post</string>
+    <string name="what_do_you_want_to_talk_about">What do you want to talk about?</string>
+    <string name="upload_from">Upload from</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
     <plurals name="n_days_ago">
         <item quantity="one">%d day ago</item>
         <item quantity="other">%d days ago</item>

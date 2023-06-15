@@ -24,7 +24,7 @@ import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import java.util.*
 
-fun Context.showToast(message: String, shortToast: Boolean = false) {
+fun Context.showToast(message: String, shortToast: Boolean = true) {
     Toast.makeText(this, message, if (shortToast) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
 }
 

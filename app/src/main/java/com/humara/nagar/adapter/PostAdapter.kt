@@ -20,10 +20,7 @@ import com.humara.nagar.databinding.*
 import com.humara.nagar.ui.home.HomeFragmentDirections
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
-import com.humara.nagar.utils.DateTimeUtils
-import com.humara.nagar.utils.GlideUtil
-import com.humara.nagar.utils.setNonDuplicateClickListener
-import com.humara.nagar.utils.setVisibilityAndText
+import com.humara.nagar.utils.*
 
 class PostAdapter(val context: Context, val listener: FeedItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
@@ -67,6 +64,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
             TEXT_POST -> TextPostViewHolder(binding)
             IMAGE_POST -> ImagePostViewHolder(binding)
             POLLING_POST -> PollingPostViewHolder(binding)
+            DOCUMENT_POST -> DocumentPostViewHolder(binding)
             else -> TextPostViewHolder(binding)
         }
     }
@@ -77,6 +75,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
             TEXT_POST -> (holder as TextPostViewHolder).bind(item)
             IMAGE_POST -> (holder as ImagePostViewHolder).bind(item)
             POLLING_POST -> (holder as PollingPostViewHolder).bind(item)
+            DOCUMENT_POST -> (holder as DocumentPostViewHolder).bind(item)
             else -> (holder as TextPostViewHolder).bind(item)
         }
     }
@@ -88,6 +87,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
             PostType.TEXT.type -> TEXT_POST
             PostType.IMAGE.type -> IMAGE_POST
             PostType.POLL.type -> POLLING_POST
+            PostType.DOCUMENT.type -> DOCUMENT_POST
             else -> TEXT_POST
         }
     }
@@ -115,7 +115,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                         .transform(CenterCrop(), RoundedCorners(12))
                         .placeholder(R.drawable.ic_image_placeholder)
                         .error(R.drawable.ic_image_placeholder)
-                        .transition(DrawableTransitionOptions.withCrossFade(1000))
+                        .transition(DrawableTransitionOptions.withCrossFade(500))
                         .into(ivPostImage)
                     ivPostImage.setNonDuplicateClickListener {
                         it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFullImagePreviewFragment(item.info.medias.toTypedArray(), source))
@@ -137,6 +137,23 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
         }
     }
 
+    inner class DocumentPostViewHolder(val binding: PostItemBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Post) {
+            binding.run {
+                handlePostHeaderUI(postHeader, item)
+                handleCommonPostContent(postContent, item)
+                item.info?.medias?.getOrNull(0)?.let { url ->
+                    tvDocumentPreview.visibility = View.VISIBLE
+                    tvDocumentPreview.text = FileUtil.getFileName(url)
+                    tvDocumentPreview.setNonDuplicateClickListener {
+                        FileUtil.openPdfUrl(context, FeedUtils.getDocumentUrl(url))
+                    }
+                }
+                handlePostFooterUI(postFooter, item, adapterPosition)
+            }
+        }
+    }
+
     private fun handlePostHeaderUI(postHeader: LayoutPostHeaderBinding, post: Post) {
         postHeader.apply {
             tvName.text = post.name
@@ -150,9 +167,8 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                 Glide.with(context)
                     .load(GlideUtil.getUrlWithHeaders(url, context))
                     .transform(CenterCrop(), RoundedCorners(12))
-                    .placeholder(R.drawable.ic_image_placeholder)
-                    .error(R.drawable.ic_image_placeholder)
-                    .transition(DrawableTransitionOptions.withCrossFade(1000))
+                    .placeholder(R.drawable.ic_user_image_placeholder)
+                    .error(R.drawable.ic_user_image_placeholder)
                     .into(ivProfilePhoto)
             }
         }

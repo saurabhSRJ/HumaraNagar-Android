@@ -29,6 +29,13 @@ object IntentUtils {
         }
     }
 
+    fun getOpenDocumentIntent(): Intent {
+        return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/pdf"
+        }
+    }
+
     fun getCameraIntent(context: Context, uri: Uri): Intent {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)

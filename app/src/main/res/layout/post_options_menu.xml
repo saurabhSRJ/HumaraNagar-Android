@@ -26,7 +26,7 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
                 android:paddingVertical="10dp"
-                android:paddingEnd="20dp"
+                android:paddingEnd="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -51,12 +51,12 @@
                 android:id="@+id/menuDelete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="0.4dp"
                 android:background="@color/white"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
                 android:paddingVertical="10dp"
-                android:paddingEnd="20dp"
+                android:paddingEnd="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/menuEdit">
 

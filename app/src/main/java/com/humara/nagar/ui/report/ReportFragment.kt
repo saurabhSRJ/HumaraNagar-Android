@@ -24,6 +24,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
+import com.humara.nagar.BuildConfig
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ImagePreviewAdapter
@@ -333,7 +334,7 @@ class ReportFragment : PermissionFragment() {
     private fun clickPicture() {
         val imageFile = StorageUtils.createImageFile(requireContext())
         currentPhotoPath = imageFile.absolutePath
-        val imageUri = FileProvider.getUriForFile(requireContext(), resources.getString(R.string.provider_name), imageFile)
+        val imageUri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID.plus(".provider"), imageFile)
         val intent: Intent = IntentUtils.getCameraIntent(requireContext(), imageUri)
         if (IntentUtils.hasIntent(requireContext(), intent)) {
             takeCameraLauncher.launch(intent)

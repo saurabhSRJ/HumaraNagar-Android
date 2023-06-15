@@ -10,6 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.humara.nagar.R
 import com.humara.nagar.adapter.FeedItemClickListener
 import com.humara.nagar.adapter.PostAdapter
@@ -19,12 +22,18 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentHomeBinding
 import com.humara.nagar.ui.common.EndlessRecyclerViewScrollListener
 import com.humara.nagar.ui.home.model.Post
+import com.humara.nagar.ui.report.complaints.ComplaintsFragment
 import com.humara.nagar.utils.FeedUtils
+import com.humara.nagar.utils.GlideUtil
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.showToast
 import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment(), FeedItemClickListener {
+    companion object {
+        const val RELOAD_FEED = "reload_feed"
+    }
+
     private var _binding: FragmentHomeBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -45,6 +54,17 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController.currentBackStackEntry?.savedStateHandle?.run {
+            getLiveData<Boolean>(RELOAD_FEED).observe(viewLifecycleOwner) { shouldReload ->
+                if (shouldReload) {
+                    reloadFeed()
+                    requireContext().showToast("Post created successfully")
+                    // To handle a result only once, you must call remove() on the SavedStateHandle to clear the result.
+                    // If you do not remove the result, the LiveData will be triggered each time we come back to this fragment
+                    remove<Boolean>(RELOAD_FEED)
+                }
+            }
+        }
         initViewModelAndObservers()
         initView()
     }
@@ -95,6 +115,14 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
         binding.run {
             ivNotification.setNonDuplicateClickListener {
             }
+            getUserPreference().profileImage?.let { url ->
+                Glide.with(this@HomeFragment)
+                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                    .transform(CenterCrop(), RoundedCorners(12))
+                    .placeholder(R.drawable.ic_user_image_placeholder)
+                    .error(R.drawable.ic_user_image_placeholder)
+                    .into(ivProfilePhoto)
+            }
             rvPost.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = postAdapter
@@ -118,6 +146,9 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             swipeRefresh.setColorSchemeResources(R.color.blue_4285F4, R.color.stroke_green, R.color.stroke_yellow, R.color.stroke_red)
             binding.paginationLoader.retry.setNonDuplicateClickListener {
                 homeViewModel.getPosts()
+            }
+            fabCreatePost.setNonDuplicateClickListener {
+                navController.navigate(HomeFragmentDirections.actionHomeFragmentToCreatePostFragment())
             }
         }
     }

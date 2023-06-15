@@ -45,6 +45,22 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/postContent" />
 
+            <TextView
+                android:id="@+id/tvDocumentPreview"
+                style="@style/OpenSansRegular14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/solid_grey_rect_poll_result"
+                android:drawablePadding="10dp"
+                android:foreground="?android:selectableItemBackground"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:textColor="@color/grey_555555"
+                app:drawableStartCompat="@drawable/ic_document"
+                app:layout_constraintTop_toBottomOf="@id/postContent"
+                tools:text="fileName.pdf" />
+
             <include
                 android:id="@+id/pollLayout"
                 layout="@layout/layout_poll_post"
@@ -59,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="ivPostImage, pollLayout" />
+                app:constraint_referenced_ids="ivPostImage, pollLayout, tvDocumentPreview" />
 
             <include
                 android:id="@+id/postFooter"

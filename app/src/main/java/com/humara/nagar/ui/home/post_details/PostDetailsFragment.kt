@@ -70,7 +70,6 @@ class PostDetailsFragment : BaseFragment() {
             observeErrorAndException(this)
             observeProgress(this)
             postDetailsLiveData.observe(viewLifecycleOwner) {
-                Logger.debugLog("post details observed")
                 inflatePostDetails(it)
             }
             postDetailsErrorLiveData.observe(viewLifecycleOwner) {
@@ -184,6 +183,7 @@ class PostDetailsFragment : BaseFragment() {
             PostType.TEXT.type -> inflateTextPostDetails(post)
             PostType.IMAGE.type -> inflateImagePostDetails(post)
             PostType.POLL.type -> inflatePollPostDetails(post)
+            PostType.DOCUMENT.type -> inflateDocumentPostDetails(post)
             else -> {} //NA
         }
     }
@@ -242,6 +242,21 @@ class PostDetailsFragment : BaseFragment() {
             pollLayout.root.visibility = View.VISIBLE
             handlePollUI(pollLayout, post)
             handlePostFooterUI(postFooter, post)
+        }
+    }
+
+    private fun inflateDocumentPostDetails(post: Post) {
+        binding.postLayout.run {
+            handlePostHeaderUI(postHeader, post)
+            handleCommonPostContent(postContent, post.caption)
+            handlePostFooterUI(postFooter, post)
+            post.info?.medias?.getOrNull(0)?.let { url ->
+                tvDocumentPreview.visibility = View.VISIBLE
+                tvDocumentPreview.text = FileUtil.getFileName(url)
+                tvDocumentPreview.setNonDuplicateClickListener {
+                    FileUtil.openPdfUrl(requireContext(), FeedUtils.getDocumentUrl(url))
+                }
+            }
         }
     }
 

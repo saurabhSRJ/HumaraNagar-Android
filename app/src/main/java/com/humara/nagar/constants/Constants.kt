@@ -13,5 +13,6 @@ interface Constants {
         const val COUNTRY_CODE = "+91"
         const val OTP_RESEND_TIMER_IN_MS = 60 * 1000L
         const val MIN_AGE_REQUIREMENT = 18L
+        const val MAX_DOCUMENT_SIZE_IN_BYTES = 4 * 1024 * 1024
     }
 }

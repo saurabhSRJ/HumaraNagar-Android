@@ -41,6 +41,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
                 getUserPreference().role = it.role
                 getUserPreference().ward = it.ward
                 getUserPreference().wardId = it.wardId
+                getUserPreference().profileImage = it.image
                 getUserPreference().isAdminUser = it.role == Role.ADMIN.role
                 _appConfigSuccessLiveData.postValue(true)
             }.onError {
