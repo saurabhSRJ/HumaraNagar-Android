@@ -22,10 +22,12 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     val initialPostsLiveData: LiveData<List<Post>> = _initialPostsLiveData
     private val _initialPostProgressLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
     val initialPostProgressLiveData: LiveData<Boolean> = _initialPostProgressLiveData
-    private val _loadMorePostsLiveData: SingleLiveEvent<List<Post>> by lazy { SingleLiveEvent() }
-    val loadMorePostsLiveData: LiveData<List<Post>> = _loadMorePostsLiveData
     private val _initialPostErrorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
     val initialPostErrorLiveData: LiveData<ApiError> = _initialPostErrorLiveData
+    private val _loadMorePostsLiveData: SingleLiveEvent<List<Post>> by lazy { SingleLiveEvent() }
+    val loadMorePostsLiveData: LiveData<List<Post>> = _loadMorePostsLiveData
+    private val _loadMorePostProgressLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
+    val loadMorePostProgressLiveData: LiveData<Boolean> = _loadMorePostProgressLiveData
     private val _loadMorePostErrorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
     val loadMorePostErrorLiveData: LiveData<ApiError> = _loadMorePostErrorLiveData
     private val _postDetailsLiveData: SingleLiveEvent<Post> by lazy { SingleLiveEvent() }
@@ -51,9 +53,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getPosts() = viewModelScope.launch {
-        if (currentPage == 1) _initialPostProgressLiveData.postValue(true)
-        val response = processCoroutine({ repository.getPosts(currentPage, limit) }, updateProgress = false)
-        if (currentPage == 1) _initialPostProgressLiveData.postValue(false)
+        val response = processCoroutine({ repository.getPosts(currentPage, limit) }, progressLiveData = if (currentPage == 1) _initialPostProgressLiveData else _loadMorePostProgressLiveData)
         response.onSuccess {
             if (currentPage == 1) processInitialResponse(it)
             else processLoadMoreResponse(it)
@@ -78,12 +78,8 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun processLoadMoreResponse(response: FeedResponse) {
-        val loadsFetchedFromServer = if (response.posts.isNullOrEmpty())
-            emptyList()
-        else
-            response.posts
         setPaginationState(response)
-        _loadMorePostsLiveData.postValue(loadsFetchedFromServer)
+        _loadMorePostsLiveData.postValue(response.posts)
     }
 
     fun flipUserLike(post: Post) {
@@ -141,10 +137,6 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
 
     fun setPostUpdateRequired(postId: Long) {
         _updatePostLiveData.postValue(postId)
-    }
-
-    fun deletePostFromFeed(postId: Long) {
-        _deletePostLiveData.postValue(postId)
     }
 
     private fun setPaginationState(response: FeedResponse) {

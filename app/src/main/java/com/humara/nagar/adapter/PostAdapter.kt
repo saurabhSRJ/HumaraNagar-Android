@@ -37,6 +37,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
     fun setData(data: List<Post>) {
         posts.clear()
         posts.addAll(data)
+        //NOTE: do not change this to notifyItemRangeInserted(0, data.size). Getting crashes for some reason
         notifyDataSetChanged()
     }
 

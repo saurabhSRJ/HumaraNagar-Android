@@ -126,15 +126,17 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
                 binding.btnPost.isEnabled = it
             }
         }
-        homeViewModel.run {
-            observeErrorAndException(this, errorAction = {}, dismissAction = {})
-            observeProgress(this)
-            postDetailsLiveData.observe(viewLifecycleOwner) {
-                initEditPostView(it)
-            }
-            editPostSuccessLiveData.observe(viewLifecycleOwner) {
-                setPreviousScreenPostUpdate()
-                navController.navigateUp()
+        if (args.isEdit) {
+            homeViewModel.run {
+                observeErrorAndException(this, errorAction = {}, dismissAction = {})
+                observeProgress(this)
+                postDetailsLiveData.observe(viewLifecycleOwner) {
+                    initEditPostView(it)
+                }
+                editPostSuccessLiveData.observe(viewLifecycleOwner) {
+                    setPreviousScreenPostUpdate()
+                    navController.navigateUp()
+                }
             }
         }
     }

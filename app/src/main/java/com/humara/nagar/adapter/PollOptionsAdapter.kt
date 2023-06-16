@@ -50,7 +50,11 @@ class PollOptionsAdapter(val listener: (Int) -> Unit) : RecyclerView.Adapter<Pol
                 } else {
                     clContainer.isEnabled = false
                     ivOption.visibility = View.GONE
-                    val result: Int = (item.votes * 100 / postInfo.totalVotes)
+                    val result: Int = if (postInfo.totalVotes == 0) {
+                        0
+                    } else {
+                        (item.votes * 100 / postInfo.totalVotes)
+                    }
                     tvPercentage.text = result.toString().plus("%")
                     drawable.level = result * 100
                 }

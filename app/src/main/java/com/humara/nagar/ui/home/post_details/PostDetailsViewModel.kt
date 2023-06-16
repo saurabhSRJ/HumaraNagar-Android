@@ -94,9 +94,7 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
     }
 
     fun getPostComments() = viewModelScope.launch {
-        _commentLoaderLiveData.postValue(true)
-        val response = processCoroutine({ repository.getPostComments(postId, currentPage, limit) }, updateProgress = false)
-        _commentLoaderLiveData.postValue(false)
+        val response = processCoroutine({ repository.getPostComments(postId, currentPage, limit) }, progressLiveData = _commentLoaderLiveData)
         response.onSuccess {
             if (currentPage == 1) processInitialResponse(it)
             else processLoadMoreResponse(it)
@@ -131,12 +129,13 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
     }
 
     private fun processLoadMoreResponse(response: PostComments) {
-        val loadsFetchedFromServer = if (response.comments.isNullOrEmpty())
-            emptyList()
-        else
-            response.comments
+        val list = arrayListOf<CommentDetails>().apply {
+            if (currentPage == 2) _initialCommentsLiveData.value?.comments?.let { addAll(it) }
+            else _loadMoreCommentsLiveData.value?.let { addAll(it) }
+            addAll(response.comments)
+        }
         setPaginationState(response)
-        _loadMoreCommentsLiveData.postValue(loadsFetchedFromServer)
+        _loadMoreCommentsLiveData.postValue(list)
     }
 
     private fun setPaginationState(response: PostComments) {

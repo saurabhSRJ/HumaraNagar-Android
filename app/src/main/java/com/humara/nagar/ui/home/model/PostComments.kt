@@ -6,7 +6,7 @@ data class PostComments(
     @SerializedName("total_pages") val totalPages: Int,
     @SerializedName("total_count") val totalCount: Int,
     @SerializedName("page") val page: Int,
-    @SerializedName("comments") val comments: List<CommentDetails>?
+    @SerializedName("comments") val comments: List<CommentDetails> = arrayListOf()
 )
 
 data class CommentDetails(

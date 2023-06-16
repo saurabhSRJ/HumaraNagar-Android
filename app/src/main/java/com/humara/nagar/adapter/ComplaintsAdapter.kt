@@ -12,7 +12,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.button.MaterialButton
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ComplaintsItemsLayoutBinding
 import com.humara.nagar.ui.report.model.ComplaintDetails

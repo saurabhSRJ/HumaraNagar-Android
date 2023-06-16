@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -32,6 +32,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     companion object {
         const val RELOAD_FEED = "reload_feed"
         const val UPDATE_POST = "post_id"
+        const val DELETE_POST = "delete_post"
     }
 
     private var _binding: FragmentHomeBinding? = null
@@ -43,9 +44,10 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     private val navController: NavController by lazy {
         findNavController()
     }
-    private val homeViewModel: HomeViewModel by navGraphViewModels(R.id.home_navigation) {
+    private val homeViewModel: HomeViewModel by viewModels {
         ViewModelFactory()
     }
+    private lateinit var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -68,6 +70,10 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 homeViewModel.setPostUpdateRequired(id)
                 remove<Long>(UPDATE_POST)
             }
+            getLiveData<Long>(DELETE_POST).observe(viewLifecycleOwner) { id ->
+                postAdapter.deletePost(id)
+                remove<Long>(DELETE_POST)
+            }
         }
         initViewModelAndObservers()
         initView()
@@ -82,10 +88,16 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             }
             loadMorePostsLiveData.observe(viewLifecycleOwner) {
                 postAdapter.addMoreData(it)
-                hidePaginationLoader()
             }
             initialPostProgressLiveData.observe(viewLifecycleOwner) {
                 handleInitialProgress(it)
+            }
+            loadMorePostProgressLiveData.observe(viewLifecycleOwner) { progress ->
+                if (progress) {
+                    showPaginationLoader()
+                } else {
+                    hidePaginationLoader()
+                }
             }
             initialPostErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(subtitle = it.message, ctaText = getString(R.string.retry), errorAction = { reloadFeed() }, dismissAction = { reloadFeed() })
@@ -130,15 +142,14 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             rvPost.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = postAdapter
-                val scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!, 2) {
+                endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!, 2) {
                     override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                         if (homeViewModel.canLoadMoreData) {
                             homeViewModel.getPosts()
-                            showPaginationLoader()
                         }
                     }
                 }
-                addOnScrollListener(scrollListener)
+                addOnScrollListener(endlessRecyclerViewScrollListener)
             }
             swipeRefresh.setOnRefreshListener {
                 lifecycleScope.launch {
@@ -177,6 +188,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     }
 
     private fun reloadFeed() {
+        endlessRecyclerViewScrollListener.resetState()
         homeViewModel.resetPaginationState()
         homeViewModel.getPosts()
     }

@@ -6,5 +6,5 @@ data class FeedResponse(
     @SerializedName("total_pages") val totalPages: Int,
     @SerializedName("total_count") val totalCount: Int,
     @SerializedName("page") val page: Int,
-    @SerializedName("posts") val posts: List<Post>?
+    @SerializedName("posts") val posts: List<Post> = arrayListOf()
 )

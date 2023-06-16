@@ -13,12 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
 import at.blogc.android.views.ExpandableTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsAdapter
 import com.humara.nagar.adapter.PostCommentsAdapter
@@ -27,7 +27,6 @@ import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.*
 import com.humara.nagar.ui.home.HomeFragment
-import com.humara.nagar.ui.home.HomeViewModel
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostComments
 import com.humara.nagar.ui.home.model.PostType
@@ -41,9 +40,6 @@ class PostDetailsFragment : BaseFragment() {
         findNavController()
     }
     private val postDetailsViewModel by viewModels<PostDetailsViewModel> {
-        ViewModelFactory()
-    }
-    private val homeViewModel by navGraphViewModels<HomeViewModel>(R.id.home_navigation) {
         ViewModelFactory()
     }
     private val pollOptionsAdapter: PollOptionsAdapter by lazy {
@@ -66,7 +62,7 @@ class PostDetailsFragment : BaseFragment() {
         navController.currentBackStackEntry?.savedStateHandle?.run {
             getLiveData<Long>(HomeFragment.UPDATE_POST).observe(viewLifecycleOwner) { id ->
                 postDetailsViewModel.getPostDetails()
-                updatePostOnHomeScreen(id)
+                updatePostOnHomeScreen()
                 remove<Long>(HomeFragment.UPDATE_POST)
             }
         }
@@ -90,7 +86,7 @@ class PostDetailsFragment : BaseFragment() {
             loadMoreCommentsLiveData.observe(viewLifecycleOwner) {
                 binding.postLayout.tvNoComments.visibility = View.GONE
                 binding.postLayout.rvComments.visibility = View.VISIBLE
-                postCommentsAdapter.addMoreData(it)
+                postCommentsAdapter.setData(it)
             }
             postCommentsErrorLiveData.observe(viewLifecycleOwner) {
                 showPaginationLoadError()
@@ -103,20 +99,20 @@ class PostDetailsFragment : BaseFragment() {
                 }
             }
             addCommentSuccessLiveData.observe(viewLifecycleOwner) {
-                updatePostOnHomeScreen(it)
+                updatePostOnHomeScreen()
             }
             addCommentErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
             voteSuccessLiveData.observe(viewLifecycleOwner) { post ->
                 handlePollUI(binding.postLayout.pollLayout, post)
-                updatePostOnHomeScreen(post.postId)
+                updatePostOnHomeScreen()
             }
             voteErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
             likePostSuccessLiveData.observe(viewLifecycleOwner) {
-                updatePostOnHomeScreen(it)
+                updatePostOnHomeScreen()
             }
             isLikedLiveData.observe(viewLifecycleOwner) {
                 updateLikeButton(it)
@@ -131,15 +127,19 @@ class PostDetailsFragment : BaseFragment() {
                 requireContext().showToast(getString(R.string.like_button_error_message), true)
             }
             deletePostLiveData.observe(viewLifecycleOwner) { id ->
-                homeViewModel.deletePostFromFeed(id)
+                deletePostOnHomeScreen(id)
                 requireContext().showToast(getString(R.string.post_deleted))
                 navController.navigateUp()
             }
         }
     }
 
-    private fun updatePostOnHomeScreen(postId: Long) {
-        homeViewModel.setPostUpdateRequired(postId)
+    private fun deletePostOnHomeScreen(postId: Long) {
+        navController.previousBackStackEntry?.savedStateHandle?.set(HomeFragment.DELETE_POST, postId)
+    }
+
+    private fun updatePostOnHomeScreen() {
+        navController.previousBackStackEntry?.savedStateHandle?.set(HomeFragment.UPDATE_POST, args.postId)
     }
 
     private fun initView() {
@@ -208,7 +208,7 @@ class PostDetailsFragment : BaseFragment() {
             setText("")
         }
         binding.postLayout.run {
-            if (response.comments.isNullOrEmpty()) {
+            if (response.comments.isEmpty()) {
                 tvNoComments.visibility = View.VISIBLE
                 tvNoComments.text = getString(R.string.no_comments_yet)
             } else {
