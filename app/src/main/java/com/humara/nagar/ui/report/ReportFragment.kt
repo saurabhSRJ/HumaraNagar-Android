@@ -43,7 +43,9 @@ import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
 import com.skydoves.balloon.BalloonSizeSpec
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -276,7 +278,11 @@ class ReportFragment : PermissionFragment(), MediaSelectionListener {
     private fun checkForLocationPermission() {
         requestPermissions(PermissionUtils.locationPermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
-                getAddress()
+                lifecycleScope.launch {
+                    showProgress(true)
+                    getAddress()
+                    hideProgress()
+                }
             }
 
             override fun onPermissionDenied(permissions: List<String>) {
@@ -287,40 +293,39 @@ class ReportFragment : PermissionFragment(), MediaSelectionListener {
     }
 
     @Suppress("DEPRECATION")
-    private fun getAddress() {
-        showProgress(true)
-        val client = LocationServices.getFusedLocationProviderClient(requireActivity())
-        // Get the last known location. In some rare situations, this can be null.
-        client.lastLocation.addOnSuccessListener { lastLocation ->
-            lastLocation?.let { location ->
-                // Logic to handle location object.
-                var addresses: List<Address>? = null
-                try {
-                    val geocoder = Geocoder(requireContext(), Locale(getAppPreference().appLanguage, "IN"))
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        geocoder.getFromLocation(location.latitude, location.longitude, 1) {
-                            addresses = it
+    private suspend fun getAddress() {
+        withContext(Dispatchers.IO) {
+            val client = LocationServices.getFusedLocationProviderClient(requireActivity())
+            // Get the last known location. In some rare situations, this can be null.
+            client.lastLocation.addOnSuccessListener { lastLocation ->
+                lastLocation?.let { location ->
+                    // Logic to handle location object.
+                    var addresses: List<Address>? = null
+                    try {
+                        val geocoder = Geocoder(requireContext(), Locale(getAppPreference().appLanguage, "IN"))
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            geocoder.getFromLocation(location.latitude, location.longitude, 1) {
+                                addresses = it
+                            }
+                        } else {
+                            addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                         }
-                    } else {
-                        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                        reportViewModel.setLocationCoordinates(location.latitude, location.longitude)
+                    } catch (ioException: IOException) {
+                        Logger.logException(TAG, ioException, Logger.LogLevel.ERROR, true)
+                    } catch (illegalArgumentException: IllegalArgumentException) {
+                        Logger.logException(TAG, illegalArgumentException, Logger.LogLevel.ERROR, true)
+                    } finally {
+                        addresses?.get(0)?.let { address ->
+                            val addressLine = Utils.findLargestPrefixSubstring(address.getAddressLine(0), maxLocationLength, ",")
+                            Logger.debugLog(TAG, "Address: $addressLine")
+                            binding.inputLocation.setInput(addressLine)
+                            reportViewModel.setLocation(addressLine)
+                        }
                     }
-                    reportViewModel.setLocationCoordinates(location.latitude, location.longitude)
-                } catch (ioException: IOException) {
-                    Logger.logException(TAG, ioException, Logger.LogLevel.ERROR, true)
-                } catch (illegalArgumentException: IllegalArgumentException) {
-                    Logger.logException(TAG, illegalArgumentException, Logger.LogLevel.ERROR, true)
-                } finally {
-                    hideProgress()
-                    addresses?.get(0)?.let { address ->
-                        val addressLine = Utils.findLargestPrefixSubstring(address.getAddressLine(0), maxLocationLength, ",")
-                        Logger.debugLog(TAG, "Address: $addressLine")
-                        binding.inputLocation.setInput(addressLine)
-                        reportViewModel.setLocation(addressLine)
-                    }
+                } ?: kotlin.run {
+                    context?.showToast(getString(R.string.location_detection_error_message))
                 }
-            } ?: kotlin.run {
-                context?.showToast(getString(R.string.location_detection_error_message))
-                hideProgress()
             }
         }
     }

@@ -2,7 +2,6 @@ package com.humara.nagar.ui.home.create_post
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +48,7 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
     companion object {
         const val POLL_RESULT_REQUEST = "poll_request"
         const val POLL_DATA = "poll_data"
+        private const val CAMERA_IMAGE_URI = "camera_image_uri"
     }
 
     private lateinit var binding: FragmentCreatePostBinding
@@ -62,7 +62,7 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
         ViewModelFactory()
     }
     private val args: CreatePostFragmentArgs by navArgs()
-    private lateinit var cameraImageUri: Uri
+    private var cameraImageUri: Uri? = null
 
     private val getContentLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (isFragmentAlive()) {
@@ -88,6 +88,9 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCreatePostBinding.inflate(inflater, container, false)
+        savedInstanceState?.run {
+            cameraImageUri = this.parcelable(CAMERA_IMAGE_URI)
+        }
         return binding.root
     }
 
@@ -200,12 +203,14 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
         }
     }
 
-    private fun compressImageAndShowPreview(uri: Uri) {
-        lifecycleScope.launch {
-            createPostViewModel.progressLiveData.postValue(true)
-            val compressedUri = StorageUtils.compressImageFile(requireContext(), uri)
-            createPostViewModel.setImageUri(compressedUri)
-            createPostViewModel.progressLiveData.postValue(false)
+    private fun compressImageAndShowPreview(uri: Uri?) {
+        uri?.let {
+            lifecycleScope.launch {
+                createPostViewModel.progressLiveData.postValue(true)
+                val compressedUri = StorageUtils.compressImageFile(requireContext(), uri)
+                createPostViewModel.setImageUri(compressedUri)
+                createPostViewModel.progressLiveData.postValue(false)
+            }
         }
     }
 
@@ -323,8 +328,7 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
             post.info?.medias?.getOrNull(0)?.let { url ->
                 tvDocumentPreview.visibility = View.VISIBLE
                 tvDocumentPreview.text = FileUtil.getFileName(url)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    tvDocumentPreview.foreground = null
+                tvDocumentPreview.foreground = null
             }
         }
     }
@@ -379,6 +383,11 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
                 //NA
             }
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (cameraImageUri != null) outState.putParcelable(CAMERA_IMAGE_URI, cameraImageUri)
     }
 
     override fun getScreenName(): String = AnalyticsData.ScreenName.CREATE_POST_FRAGMENT

@@ -1,6 +1,5 @@
 package com.humara.nagar.adapter
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +10,7 @@ class PollOptionsPreviewAdapter(val options: List<String>) : RecyclerView.Adapte
         fun bind(item: String) {
             binding.run {
                 tvOption.text = item
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    clContainer.foreground = null
+                clContainer.foreground = null
             }
         }
     }

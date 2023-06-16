@@ -101,7 +101,7 @@ fun Context.getActivityPendingIntent(
     return PendingIntent.getActivity(applicationContext, notificationId, intent, getMutabilityFlags(isMutable))
 }
 
-private fun getMutabilityFlags(isMutable: Boolean = false) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isMutable) {
+private fun getMutabilityFlags(isMutable: Boolean = false) = if (!isMutable) {
     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 } else {
     PendingIntent.FLAG_UPDATE_CURRENT

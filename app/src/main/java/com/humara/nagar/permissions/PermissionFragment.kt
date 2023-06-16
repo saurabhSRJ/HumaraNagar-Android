@@ -3,7 +3,6 @@ package com.humara.nagar.permissions
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import com.humara.nagar.Logger
@@ -87,7 +86,7 @@ open class PermissionFragment : BaseFragment() {
         }
         // If permission is temporarily denied, show rationale dialog
         val showPermissionRationalePopup = PermissionUtils.isPermissionTemporaryDenied(requireActivity(), permission)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && showPermissionRationalePopup) {
+        if (showPermissionRationalePopup) {
             showPermissionRationaleDialog(permission)
         } else {
             handlePermanentlyDeniedPermission()
