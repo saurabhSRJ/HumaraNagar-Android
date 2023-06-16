@@ -65,7 +65,7 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
         getPostComments()
     }
 
-    private fun getPostDetails() = viewModelScope.launch {
+    fun getPostDetails() = viewModelScope.launch {
         val response = processCoroutine({ processCoroutine({ repository.getPostDetails(postId) }) })
         response.onSuccess {
             _postDetailsLiveData.postValue(it)

@@ -9,13 +9,15 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_header"
-            style="@style/OpenSansBold14sp"
+            style="@style/OpenSansSemiBold14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/grey_4F4F4F"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Name" />
+            tools:text="Title"
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_required_asterisk"
@@ -28,52 +30,43 @@
             app:layout_constraintStart_toEndOf="@id/tv_header"
             app:layout_constraintTop_toTopOf="@id/tv_header" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_input"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_input"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:background="@drawable/rect_white_fill_grey_outline_5dp"
-            android:paddingHorizontal="12dp"
+            android:paddingStart="0dp"
+            android:paddingLeft="0dp"
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxStrokeWidth="1dp"
+            app:hintEnabled="false"
             app:layout_constraintTop_toBottomOf="@id/tv_header">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_input"
                 style="@style/OpenSansRegular14sp"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890. "
+                android:gravity="top|start"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
                 android:maxLength="40"
-                android:paddingVertical="12dp"
-                android:singleLine="true"
+                android:padding="12dp"
                 android:scrollbars="vertical"
-                android:gravity="top|start"
+                android:singleLine="true"
                 android:textColor="@color/dark_grey_333333"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/iv_end_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textColorHint="@color/black_with_opacity_20" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_end_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginVertical="12dp"
-                android:adjustViewBounds="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <View
-                android:id="@+id/commentTouchInterceptor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

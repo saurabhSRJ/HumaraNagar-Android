@@ -2,16 +2,17 @@ package com.humara.nagar.ui.home
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onException
 import com.humara.nagar.network.onSuccess
+import com.humara.nagar.ui.home.model.EditPostRequest
 import com.humara.nagar.ui.home.model.FeedResponse
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.utils.SingleLiveEvent
+import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : BaseViewModel(application) {
@@ -35,10 +36,12 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     val updatePostLiveData: LiveData<Long> = _updatePostLiveData
     private val _deletePostLiveData: SingleLiveEvent<Long> by lazy { SingleLiveEvent() }
     val deletePostLiveData: LiveData<Long> = _deletePostLiveData
-    private val _voteSuccessLiveData: MutableLiveData<Post> by lazy { MutableLiveData() }
+    private val _voteSuccessLiveData: SingleLiveEvent<Post> by lazy { SingleLiveEvent() }
     val voteSuccessLiveData: LiveData<Post> = _voteSuccessLiveData
     private val _voteErrorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
     val voteErrorLiveData: LiveData<ApiError> = _voteErrorLiveData
+    private val _editPostSuccessLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
+    val editPostSuccessLiveData: LiveData<Boolean> = _editPostSuccessLiveData
     private var currentPage: Int = 1
     private val limit = 5
     var canLoadMoreData = true
@@ -97,6 +100,15 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
             _voteSuccessLiveData.postValue(it)
         }.onError {
             _voteErrorLiveData.postValue(it)
+        }
+    }
+
+    fun editPost(id: Long, caption: String) = viewModelScope.launch {
+        val response = processCoroutine({ repository.editPost(id, EditPostRequest(StringUtils.replaceWhitespaces(caption.trim()))) })
+        response.onSuccess {
+            _editPostSuccessLiveData.postValue(true)
+        }.onError {
+            errorLiveData.postValue(it)
         }
     }
 

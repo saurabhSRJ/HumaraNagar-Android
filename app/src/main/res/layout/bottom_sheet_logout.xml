@@ -5,34 +5,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="20dp">
-
-        <ImageButton
-            android:id="@+id/iv_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:padding="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_cross" />
+        android:padding="20dp">
 
         <View
             android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/grey_E4E4E4"
-            app:layout_constraintTop_toBottomOf="@id/iv_close" />
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:background="@color/grey_A9A9A9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_title"
             style="@style/OpenSansRegular18sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="24dp"
             android:text="@string/are_you_sure_you_want_to_logout"
             android:textColor="@color/grey_4F4F4F"
@@ -45,7 +33,6 @@
             style="@style/StrokeButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="20dp"
             android:text="@string/cancel"
@@ -60,7 +47,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="20dp"
             android:text="@string/yes_logout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_go_back"

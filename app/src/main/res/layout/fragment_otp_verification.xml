@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/timer_count"
-            android:textColor="@color/blue_4285F4"
+            android:textColor="@color/primary_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_resend"
             app:layout_constraintTop_toTopOf="@id/tv_otp_error_message" />

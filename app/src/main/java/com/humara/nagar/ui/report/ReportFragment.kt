@@ -64,7 +64,6 @@ class ReportFragment : PermissionFragment() {
     companion object {
         const val TAG = "ReportFragment"
         private const val CURRENT_PATH = "CURRENT_PATH"
-        private const val maxCommentLength: Int = 200
         private const val maxImageAttachments = 2
         private const val maxLocationLength = 70
     }
@@ -204,8 +203,7 @@ class ReportFragment : PermissionFragment() {
                 reportViewModel.setLocality(it)
             }
             inputLocation.apply {
-                switchToMultiLined(2, svForm)
-                setMaxLength(maxLocationLength)
+                switchToMultiLined(2)
                 setLayoutListener(true) {
                     if (isInputEmpty()) {
                         checkForLocationPermission()
@@ -216,8 +214,7 @@ class ReportFragment : PermissionFragment() {
                 }
             }
             inputComment.apply {
-                switchToMultiLined(4, svForm)
-                setMaxLength(maxCommentLength)
+                switchToMultiLined(5)
                 setUserInputListener {
                     reportViewModel.setComment(it)
                 }
@@ -252,7 +249,7 @@ class ReportFragment : PermissionFragment() {
                 .setTextSize(12f)
                 .setTextTypeface(Typeface.DEFAULT_BOLD)
                 .setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_F1F1F1))
-                .setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_4285F4))
+                .setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary_color))
                 .setText(resources.getString(R.string.trackYourPastComplaints))
                 .setArrowSize(10)
                 .setIsVisibleArrow(true)
@@ -273,8 +270,8 @@ class ReportFragment : PermissionFragment() {
             return
         }
         val pictureDialog = AlertDialog.Builder(requireContext())
-        pictureDialog.setTitle(resources.getString(R.string.select_option))
-        val pictureDialogItems = arrayOf(resources.getString(R.string.selectFromGallery), resources.getString(R.string.captureFromCamera))
+        pictureDialog.setTitle(resources.getString(R.string.upload_a_photo))
+        val pictureDialogItems = arrayOf(resources.getString(R.string.take_a_photo), resources.getString(R.string.upload_from_gallery))
         pictureDialog.setItems(pictureDialogItems) { _, which ->
             when (which) {
                 0 -> choosePhotoFromGallery()

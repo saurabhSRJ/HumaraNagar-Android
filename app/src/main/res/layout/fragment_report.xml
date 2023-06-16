@@ -11,9 +11,9 @@
         <!--Toolbar-->
         <include
             android:id="@+id/includedToolbar"
+            layout="@layout/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/toolbar_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,22 +58,23 @@
                     android:layout_marginTop="12dp"
                     app:endIcon="@drawable/ic_location"
                     app:header="@string/location"
-                    app:layout_constraintTop_toBottomOf="@id/input_locality" />
+                    app:layout_constraintTop_toBottomOf="@id/input_locality"
+                    app:maximumLength="70" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/input_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     app:header="@string/comment"
                     app:layout_constraintTop_toBottomOf="@id/input_location"
+                    app:maximumLength="200"
                     app:minimumHeight="300" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/addImageLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintStart_toStartOf="@+id/input_comment"
                     app:layout_constraintTop_toBottomOf="@+id/input_comment">
 
@@ -105,8 +106,8 @@
                         style="@style/OpenSansSemiBold16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/asterisk"
                         android:layout_marginStart="5dp"
+                        android:text="@string/asterisk"
                         android:textColor="@color/red_asterisk_D31717"
                         app:layout_constraintStart_toEndOf="@+id/textView"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -133,8 +134,8 @@
                     android:layout_marginTop="15dp"
                     android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@+id/addImageLayout"
-                    tools:listitem="@layout/image_preview_recyclerview_item"
-                    tools:itemCount="2" />
+                    tools:itemCount="2"
+                    tools:listitem="@layout/image_preview_recyclerview_item" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

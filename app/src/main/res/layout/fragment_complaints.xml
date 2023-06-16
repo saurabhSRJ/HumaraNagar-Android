@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_blue_EEF4FF"
+        android:background="@color/secondary_background"
         tools:context=".ui.report.complaints.ComplaintsFragment">
 
         <!--Toolbar-->

@@ -22,7 +22,6 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentHomeBinding
 import com.humara.nagar.ui.common.EndlessRecyclerViewScrollListener
 import com.humara.nagar.ui.home.model.Post
-import com.humara.nagar.ui.report.complaints.ComplaintsFragment
 import com.humara.nagar.utils.FeedUtils
 import com.humara.nagar.utils.GlideUtil
 import com.humara.nagar.utils.setNonDuplicateClickListener
@@ -32,6 +31,7 @@ import kotlinx.coroutines.launch
 class HomeFragment : BaseFragment(), FeedItemClickListener {
     companion object {
         const val RELOAD_FEED = "reload_feed"
+        const val UPDATE_POST = "post_id"
     }
 
     private var _binding: FragmentHomeBinding? = null
@@ -63,6 +63,10 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                     // If you do not remove the result, the LiveData will be triggered each time we come back to this fragment
                     remove<Boolean>(RELOAD_FEED)
                 }
+            }
+            getLiveData<Long>(UPDATE_POST).observe(viewLifecycleOwner) { id ->
+                homeViewModel.setPostUpdateRequired(id)
+                remove<Long>(UPDATE_POST)
             }
         }
         initViewModelAndObservers()
@@ -143,7 +147,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 }
             }
             // Configure the refreshing colors
-            swipeRefresh.setColorSchemeResources(R.color.blue_4285F4, R.color.stroke_green, R.color.stroke_yellow, R.color.stroke_red)
+            swipeRefresh.setColorSchemeResources(R.color.primary_color, R.color.stroke_green, R.color.stroke_yellow, R.color.stroke_red)
             binding.paginationLoader.retry.setNonDuplicateClickListener {
                 homeViewModel.getPosts()
             }
@@ -162,7 +166,8 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     }
 
     override fun onEditPostClick(post: Post) {
-        TODO("Not yet implemented")
+        val action = HomeFragmentDirections.actionHomeFragmentToCreatePostFragment(true, post.postId)
+        navController.navigate(action)
     }
 
     override fun onDeletePostClick(post: Post) {

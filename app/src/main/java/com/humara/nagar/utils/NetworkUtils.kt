@@ -15,7 +15,7 @@ object NetworkUtils {
 
     fun createImageMultipart(uri: Uri, fieldName: String): MultipartBody.Part? {
         val file = uri.path?.let { File(it) }
-        val requestBody = file?.asRequestBody("image/*".toMediaTypeOrNull())
+        val requestBody = file?.asRequestBody("image/jpeg".toMediaTypeOrNull())
         return requestBody?.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
     }
 

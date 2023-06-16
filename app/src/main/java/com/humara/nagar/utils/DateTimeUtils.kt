@@ -6,6 +6,7 @@ import com.humara.nagar.R
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoUnit
 
 object DateTimeUtils {
     /**
@@ -45,6 +46,19 @@ object DateTimeUtils {
             // Handle parsing exception
             ""
         }
+    }
+
+    /**
+     * Returns the date and time x days from the current date and time
+     * in ISO 8601 format (yyyy-MM-dd'T'HH:mm:ss'Z').
+     *
+     * @param daysToAdd The number of days to add to the current date and time.
+     * @return The future date and time in ISO 8601 format.
+     */
+    fun getFutureDateTimeInIsoFormat(daysToAdd: Int): String {
+        val currentDate = Instant.now()
+        val futureDate = currentDate.plus(daysToAdd.toLong(), ChronoUnit.DAYS)
+        return futureDate.toString()
     }
 
     /**

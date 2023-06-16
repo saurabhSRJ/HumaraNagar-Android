@@ -9,7 +9,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_header"
-            style="@style/OpenSansBold14sp"
+            style="@style/OpenSansSemiBold14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/grey_4F4F4F"
@@ -39,8 +39,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_required_asterisk"
-            app:layout_constraintTop_toTopOf="@id/tv_header"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="@id/tv_header" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_box"

@@ -3,16 +3,12 @@ package com.humara.nagar.ui.custom_views
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Parcelable
-import android.text.InputFilter
 import android.text.InputType
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.BaseSavedState
-import android.widget.ScrollView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -21,8 +17,8 @@ import com.humara.nagar.R
 import com.humara.nagar.databinding.ItemFormInputWithHeaderBinding
 import com.humara.nagar.utils.restoreChildViewStates
 import com.humara.nagar.utils.saveChildViewStates
+import com.humara.nagar.utils.setMaxLength
 import com.humara.nagar.utils.setNonDuplicateClickListener
-import kotlinx.parcelize.Parcelize
 
 class FormInputWithHeader @JvmOverloads constructor(
     context: Context,
@@ -47,6 +43,7 @@ class FormInputWithHeader @JvmOverloads constructor(
                 val input = getString(R.styleable.FormInputWithHeader_input)
                 val isRequired = getBoolean(R.styleable.FormInputWithHeader_required_input, true)
                 val minHeight = getInt(R.styleable.FormInputWithHeader_minimumHeight, 0)
+                val maxLength = getInt(R.styleable.FormInputWithHeader_maximumLength, 0)
                 setHeader(header)
                 setEndDrawableIcon(endDrawableIcon)
                 setInputEnabled(inputEnabled)
@@ -54,6 +51,9 @@ class FormInputWithHeader @JvmOverloads constructor(
                 setInput(input)
                 if (minHeight != 0) {
                     setMinimHeight(minHeight)
+                }
+                if (maxLength != 0) {
+                    setMaxLength(maxLength)
                 }
                 setRequiredInput(isRequired)
                 if (isRequired) {
@@ -69,7 +69,10 @@ class FormInputWithHeader @JvmOverloads constructor(
     }
 
     fun setHeader(header: String?) {
-        binding.tvHeader.text = header
+        binding.run {
+            tvHeader.visibility = View.VISIBLE
+            tvHeader.text = header
+        }
     }
 
     fun setEndDrawableIcon(endDrawable: Drawable?) {
@@ -82,34 +85,13 @@ class FormInputWithHeader @JvmOverloads constructor(
         }
     }
 
-    fun switchToMultiLined(maxLine: Int, parentScrollView: ScrollView) {
+    fun switchToMultiLined(maxLine: Int) {
         binding.run {
             etInput.isSingleLine = false
             etInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             etInput.maxLines = maxLine
             etInput.gravity = Gravity.START or Gravity.TOP
-            commentTouchInterceptor.setOnTouchListener { _, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        // Disable parent scroll view when comment box is touched
-                        parentScrollView.requestDisallowInterceptTouchEvent(true)
-                        false
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        // Enable parent scroll view when touch is released
-                        parentScrollView.requestDisallowInterceptTouchEvent(false)
-                        true
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        // Handle scrolling of comment box when touch is moved
-                        parentScrollView.requestDisallowInterceptTouchEvent(true)
-                        false
-                    }
-                    else -> true
-                }
-            }
         }
-        scrollToTopOnFocusChange()
     }
 
     fun scrollToTopOnFocusChange() {
@@ -135,7 +117,8 @@ class FormInputWithHeader @JvmOverloads constructor(
                     if (isEnabled) R.color.dark_grey_333333 else R.color.grey_828282
                 )
             )
-            clInput.setBackgroundResource(if (isEnabled) R.drawable.rect_white_fill_grey_outline_5dp else R.drawable.rect_grey_fill_grey_outline_5dp)
+            tilInput.boxBackgroundColor = ContextCompat.getColor(context, if (isEnabled) R.color.white else R.color.grey_F5F5F5)
+//            clInput.setBackgroundResource(if (isEnabled) R.drawable.rect_white_fill_grey_outline_5dp else R.drawable.rect_grey_fill_grey_outline_5dp)
         }
     }
 
@@ -160,8 +143,12 @@ class FormInputWithHeader @JvmOverloads constructor(
         binding.etInput.inputType = inputType
     }
 
-    fun setMaxLength(maxLength: Int) {
-        binding.etInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
+    private fun setMaxLength(maxLength: Int) {
+        binding.run {
+            etInput.setMaxLength(maxLength)
+            tilInput.isCounterEnabled = true
+            tilInput.counterMaxLength = maxLength
+        }
     }
 
     fun setLayoutListener(isFocusable: Boolean, listener: () -> Unit) {

@@ -9,7 +9,7 @@
     <attr name="required_input" format="boolean" />
     <attr name="options" format="reference" />
     <attr name="minimumHeight" format="integer" />
-
+    <attr name="maximumLength" format="integer" />
     <attr name="FilterChips" format="reference" />
 
     <declare-styleable name="FormInputWithHeader">
@@ -20,8 +20,8 @@
         <attr name="input" />
         <attr name="endIcon" />
         <attr name="required_input" />
-        <attr name="minimumHeight" />/>
-
+        <attr name="minimumHeight" />
+        <attr name="maximumLength" />
     </declare-styleable>
 
     <declare-styleable name="FormSpinnerWithHeader">

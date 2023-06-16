@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/app_name"
-            android:textColor="@color/blue_4285F4"
+            android:textColor="@color/primary_color"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/iv_logo"
             app:layout_constraintStart_toEndOf="@id/iv_logo"

@@ -7,6 +7,7 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.home.HomeViewModel
+import com.humara.nagar.ui.home.create_post.CreatePollViewModel
 import com.humara.nagar.ui.home.create_post.CreatePostViewModel
 import com.humara.nagar.ui.home.post_details.PostDetailsViewModel
 import com.humara.nagar.ui.report.ReportViewModel
@@ -52,6 +53,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(CreatePostViewModel::class.java) -> {
                     CreatePostViewModel(application, extras.createSavedStateHandle())
+                }
+                isAssignableFrom(CreatePollViewModel::class.java) -> {
+                    CreatePollViewModel(application, extras.createSavedStateHandle())
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }

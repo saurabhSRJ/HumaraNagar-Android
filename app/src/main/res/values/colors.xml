@@ -2,14 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="blue_4285F4">#4285F4</color>
+    <color name="primary_color">#4285F4</color>
+    <color name="secondary_background">#EEF4FF</color>
     <color name="grey_4F4F4F">#4F4F4F</color>
     <color name="grey_828282">#828282</color>
     <color name="grey_AEAEAE">#AEAEAE</color>
     <color name="dark_grey_333333">#333333</color>
     <color name="black_with_opacity_20">#33000000</color>
     <color name="red_error">#FF0000</color>
-    <color name="light_blue_EEF4FF">#EEF4FF</color>
     <color name="red_asterisk_D31717">#D31717</color>
     <color name="splash_screen_background">#F4F6FC</color>
     <color name="grey_F1F1F1">#F1F1F1</color>
@@ -23,6 +23,7 @@
     <color name="green_00A5A5">#00A5A5</color>
     <color name="white_FAFAF0">#FAFAF0</color>
     <color name="transparent">#00000000</color>
+    <color name="grey_F5F5F5">#F5F5F5</color>
     <!--Stroke Button Colors-->
     <color name="stroke_red">#CF0A0A</color>
     <color name="stroke_yellow">#FF9E0D</color>

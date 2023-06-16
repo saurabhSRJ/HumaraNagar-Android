@@ -34,6 +34,7 @@ interface NetworkConstants {
             const val DOCUMENT_POST = "/posts/document"
             const val IMAGE_POST = "/posts/image"
             const val TEXT_POST = "/posts/text"
+            const val POLL_POST = "/posts/poll"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in"
             const val TERMS_CONDITION_URL = "https://humaranagar.in"
             const val ABOUT_US_URL = "https://humaranagar.in"

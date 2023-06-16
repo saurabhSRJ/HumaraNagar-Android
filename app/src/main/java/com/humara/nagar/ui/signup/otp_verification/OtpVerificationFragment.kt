@@ -125,7 +125,7 @@ class OtpVerificationFragment : BaseFragment() {
             tvResend.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    if (resendEnabled) R.color.blue_4285F4 else R.color.grey_AEAEAE
+                    if (resendEnabled) R.color.primary_color else R.color.grey_AEAEAE
                 )
             )
         }

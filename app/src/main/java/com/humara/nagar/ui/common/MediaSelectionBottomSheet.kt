@@ -33,7 +33,6 @@ class MediaSelectionBottomSheet : BottomSheetDialogFragment() {
 
     private fun initView() {
         binding.run {
-            ivClose.setOnClickListener { dismiss() }
             llGallery.setOnClickListener {
                 listener?.onGallerySelection()
                 dismiss()

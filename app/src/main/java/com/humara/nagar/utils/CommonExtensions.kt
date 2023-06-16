@@ -8,10 +8,12 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.InputFilter
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -45,6 +47,10 @@ fun View.setNonDuplicateClickListener(listener: View.OnClickListener?) {
 fun View.requestFocusAndShowKeyboard(inputMethodManager: InputMethodManager) {
     this.requestFocus()
     inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+fun EditText.setMaxLength(maxLength: Int) {
+    filters = arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
 }
 
 /**

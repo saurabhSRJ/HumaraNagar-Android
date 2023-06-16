@@ -12,13 +12,13 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import at.blogc.android.views.ExpandableTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsAdapter
 import com.humara.nagar.adapter.PostCommentsAdapter
@@ -26,6 +26,7 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.*
+import com.humara.nagar.ui.home.HomeFragment
 import com.humara.nagar.ui.home.HomeViewModel
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostComments
@@ -53,6 +54,7 @@ class PostDetailsFragment : BaseFragment() {
     private val postCommentsAdapter: PostCommentsAdapter by lazy {
         PostCommentsAdapter()
     }
+    private val args: PostDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
@@ -61,6 +63,13 @@ class PostDetailsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController.currentBackStackEntry?.savedStateHandle?.run {
+            getLiveData<Long>(HomeFragment.UPDATE_POST).observe(viewLifecycleOwner) { id ->
+                postDetailsViewModel.getPostDetails()
+                updatePostOnHomeScreen(id)
+                remove<Long>(HomeFragment.UPDATE_POST)
+            }
+        }
         initViewModelAndObservers()
         initView()
     }
@@ -76,11 +85,9 @@ class PostDetailsFragment : BaseFragment() {
                 showErrorDialog { }
             }
             initialCommentsLiveData.observe(viewLifecycleOwner) {
-                Logger.debugLog("initial comment observer")
                 showPostComments(it)
             }
             loadMoreCommentsLiveData.observe(viewLifecycleOwner) {
-                Logger.debugLog("load more comment observer")
                 binding.postLayout.tvNoComments.visibility = View.GONE
                 binding.postLayout.rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.addMoreData(it)
@@ -144,11 +151,20 @@ class PostDetailsFragment : BaseFragment() {
                 toolbarTitle.text = getString(R.string.details)
             }
             clContainer.setOnClickListener { hideKeyboard() }
-            postLayout.root.setOnClickListener { hideKeyboard() }
-            postLayout.commentDivider.visibility = View.VISIBLE
-            postLayout.rvComments.apply {
-                setHasFixedSize(true)
-                adapter = postCommentsAdapter
+            postLayout.run {
+                root.setOnClickListener { hideKeyboard() }
+                commentDivider.visibility = View.VISIBLE
+                rvComments.apply {
+                    setHasFixedSize(true)
+                    adapter = postCommentsAdapter
+                }
+                paginationLoader.retry.setNonDuplicateClickListener {
+                    postDetailsViewModel.getPostComments()
+                }
+                postFooter.ivComment.setOnClickListener {
+                    etAddComment.requestFocus()
+                    showKeyboard(etAddComment)
+                }
             }
             nsvPost.setOnScrollChangeListener { v: NestedScrollView, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
                 if (v.getChildAt(v.childCount - 1) != null) {
@@ -162,7 +178,7 @@ class PostDetailsFragment : BaseFragment() {
             etAddComment.doAfterTextChanged {
                 val input = it.toString().trim()
                 if (input.isNotEmpty()) {
-                    tilAddComment.setEndIconTintList(ContextCompat.getColorStateList(requireContext(), R.color.blue_4285F4))
+                    tilAddComment.setEndIconTintList(ContextCompat.getColorStateList(requireContext(), R.color.primary_color))
                     tilAddComment.setEndIconOnClickListener {
                         postDetailsViewModel.addComment(input)
                     }
@@ -170,9 +186,7 @@ class PostDetailsFragment : BaseFragment() {
                     tilAddComment.setEndIconTintList(ContextCompat.getColorStateList(requireContext(), R.color.grey_AEAEAE))
                 }
             }
-            postLayout.paginationLoader.retry.setNonDuplicateClickListener {
-                postDetailsViewModel.getPostComments()
-            }
+            etAddComment.setMaxLength(100)
         }
     }
 
@@ -194,11 +208,11 @@ class PostDetailsFragment : BaseFragment() {
             setText("")
         }
         binding.postLayout.run {
-            postFooter.tvCommentCount.text = response.totalCount.toString()
             if (response.comments.isNullOrEmpty()) {
                 tvNoComments.visibility = View.VISIBLE
                 tvNoComments.text = getString(R.string.no_comments_yet)
             } else {
+                postFooter.tvCommentCount.text = response.totalCount.toString()
                 tvNoComments.visibility = View.GONE
                 rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.setData(response.comments)
@@ -238,7 +252,7 @@ class PostDetailsFragment : BaseFragment() {
     private fun inflatePollPostDetails(post: Post) {
         binding.postLayout.run {
             handlePostHeaderUI(postHeader, post)
-            postContent.visibility = View.GONE
+            handleCommonPostContent(postContent, post.caption)
             pollLayout.root.visibility = View.VISIBLE
             handlePollUI(pollLayout, post)
             handlePostFooterUI(postFooter, post)
@@ -302,7 +316,7 @@ class PostDetailsFragment : BaseFragment() {
 
     private fun handleCommonPostContent(postContent: ExpandableTextView, content: String?) {
         postContent.apply {
-            text = content
+            setVisibilityAndText(content)
             maxLines = Int.MAX_VALUE
         }
     }
@@ -342,11 +356,12 @@ class PostDetailsFragment : BaseFragment() {
         }
         menuBinding.run {
             menuEdit.setNonDuplicateClickListener {
+                navController.navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToCreatePostFragment(true, args.postId))
                 popupWindow.dismiss()
             }
             menuDelete.setOnClickListener {
                 FeedUtils.showDeletePostConfirmationDialog(parentFragmentManager, requireContext()) {
-                    homeViewModel.deletePost(post.postId)
+                    postDetailsViewModel.deletePost(post.postId)
                 }
                 popupWindow.dismiss()
             }

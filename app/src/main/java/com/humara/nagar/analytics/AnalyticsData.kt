@@ -22,7 +22,8 @@ interface AnalyticsData {
             const val WEB_VIEW_ACTIVITY = "WEB_VIEW_ACTIVITY"
             const val LOGOUT_BOTTOM_SHEET = "LOGOUT_BOTTOM_SHEET"
             const val POST_DETAILS_FRAGMENT = "POST_DETAILS_FRAGMENT"
-            const val CREATE_POST = "CREATE_POST"
+            const val CREATE_POST_FRAGMENT = "CREATE_POST_FRAGMENT"
+            const val CREATE_POLL_FRAGMENT = "CREATE_POLL_FRAGMENT"
         }
     }
 

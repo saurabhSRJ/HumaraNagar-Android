@@ -129,7 +129,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
         fun bind(item: Post) {
             binding.run {
                 handlePostHeaderUI(postHeader, item)
-                postContent.visibility = View.GONE
+                handleCommonPostContent(postContent, item)
                 pollLayout.root.visibility = View.VISIBLE
                 handlePollUI(pollLayout, item)
                 handlePostFooterUI(postFooter, item, adapterPosition)
@@ -137,7 +137,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
         }
     }
 
-    inner class DocumentPostViewHolder(val binding: PostItemBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class DocumentPostViewHolder(val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Post) {
             binding.run {
                 handlePostHeaderUI(postHeader, item)
@@ -176,8 +176,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
 
     private fun handleCommonPostContent(postContent: ExpandableTextView, post: Post) {
         postContent.apply {
-            visibility = View.VISIBLE
-            text = post.caption
+            setVisibilityAndText(post.caption)
             setOnClickListener {
                 if (isExpanded) {
                     Logger.debugLog("open post detail")
@@ -219,9 +218,8 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
         pollPostBinding.apply {
             post.info?.let {
                 tvQuestion.text = it.question
-                tvSubTitle.text = if (it.isAllowedToVote()) context.getString(R.string.you_can_see_how_people_vote) else context.resources.getQuantityString(R.plurals.n_votes, it
-                    .totalVotes, it
-                    .totalVotes)
+                tvSubTitle.text = if (it.isAllowedToVote()) context.getString(R.string.you_can_see_how_people_vote) else context.resources.getQuantityString(R.plurals.n_votes, it.totalVotes,
+                    it.totalVotes)
                 rvOptions.apply {
                     val pollOptionsAdapter = PollOptionsAdapter { optionId ->
                         listener.submitVote(post, optionId)

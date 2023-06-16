@@ -26,7 +26,7 @@ object ComplaintsUtils {
                     SENT.currentState -> R.color.stroke_red
                     IN_PROGRESS.currentState -> R.color.stroke_yellow
                     RESOLVED.currentState -> R.color.stroke_green
-                    WITHDRAWN.currentState -> R.color.blue_4285F4
+                    WITHDRAWN.currentState -> R.color.primary_color
                     else -> R.color.stroke_red
                 }
             }

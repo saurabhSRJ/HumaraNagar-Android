@@ -58,10 +58,32 @@
             android:name="source"
             android:defaultValue=""
             app:argType="string" />
+        <action
+            android:id="@+id/action_postDetailsFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
         android:name="com.humara.nagar.ui.home.create_post.CreatePostFragment"
         android:label="CreatePostFragment">
+        <action
+            android:id="@+id/action_createPostFragment_to_createPollFragment"
+            app:destination="@id/createPollFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <argument
+            android:name="is_edit"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="post_id"
+            android:defaultValue="0L"
+            app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/createPollFragment"
+        android:name="com.humara.nagar.ui.home.create_post.CreatePollFragment"
+        android:label="CreatePollFragment" />
 </navigation>

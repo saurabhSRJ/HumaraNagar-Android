@@ -25,4 +25,8 @@
         <item quantity="one">%d साल पहले</item>
         <item quantity="other">%d साल पहले</item>
     </plurals>
+    <plurals name="n_days">
+        <item quantity="one">%d दिन</item>
+        <item quantity="other">%d दिन</item>
+    </plurals>
 </resources>

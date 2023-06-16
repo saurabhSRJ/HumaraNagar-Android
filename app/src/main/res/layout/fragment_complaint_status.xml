@@ -195,7 +195,7 @@
                                 android:layout_height="16dp"
                                 android:layout_marginVertical="10dp"
                                 app:srcCompat="@drawable/ic_call"
-                                app:tint="@color/blue_4285F4" />
+                                app:tint="@color/primary_color" />
 
                             <TextView
                                 style="@style/OpenSansSemiBold14sp"
@@ -203,7 +203,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
                                 android:text="@string/call"
-                                android:textColor="@color/blue_4285F4" />
+                                android:textColor="@color/primary_color" />
 
                         </LinearLayout>
 
