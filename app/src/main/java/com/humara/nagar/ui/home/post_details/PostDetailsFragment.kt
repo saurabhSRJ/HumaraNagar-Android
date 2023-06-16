@@ -18,7 +18,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsAdapter
 import com.humara.nagar.adapter.PostCommentsAdapter
@@ -60,7 +59,7 @@ class PostDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController.currentBackStackEntry?.savedStateHandle?.run {
-            getLiveData<Long>(HomeFragment.UPDATE_POST).observe(viewLifecycleOwner) { id ->
+            getLiveData<Long>(HomeFragment.UPDATE_POST).observe(viewLifecycleOwner) {
                 postDetailsViewModel.getPostDetails()
                 updatePostOnHomeScreen()
                 remove<Long>(HomeFragment.UPDATE_POST)
@@ -72,7 +71,7 @@ class PostDetailsFragment : BaseFragment() {
 
     private fun initViewModelAndObservers() {
         postDetailsViewModel.run {
-            observeErrorAndException(this)
+            observeErrorAndException(this, errorAction = {}, dismissAction = {})
             observeProgress(this)
             postDetailsLiveData.observe(viewLifecycleOwner) {
                 inflatePostDetails(it)
@@ -84,8 +83,8 @@ class PostDetailsFragment : BaseFragment() {
                 showPostComments(it)
             }
             loadMoreCommentsLiveData.observe(viewLifecycleOwner) {
-                binding.postLayout.tvNoComments.visibility = View.GONE
-                binding.postLayout.rvComments.visibility = View.VISIBLE
+                binding.tvNoComments.visibility = View.GONE
+                binding.rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.setData(it)
             }
             postCommentsErrorLiveData.observe(viewLifecycleOwner) {
@@ -99,6 +98,10 @@ class PostDetailsFragment : BaseFragment() {
                 }
             }
             addCommentSuccessLiveData.observe(viewLifecycleOwner) {
+                binding.etAddComment.run {
+                    clearFocus()
+                    setText("")
+                }
                 updatePostOnHomeScreen()
             }
             addCommentErrorLiveData.observe(viewLifecycleOwner) {
@@ -153,7 +156,6 @@ class PostDetailsFragment : BaseFragment() {
             clContainer.setOnClickListener { hideKeyboard() }
             postLayout.run {
                 root.setOnClickListener { hideKeyboard() }
-                commentDivider.visibility = View.VISIBLE
                 rvComments.apply {
                     setHasFixedSize(true)
                     adapter = postCommentsAdapter
@@ -203,16 +205,12 @@ class PostDetailsFragment : BaseFragment() {
     }
 
     private fun showPostComments(response: PostComments) {
-        binding.etAddComment.run {
-            clearFocus()
-            setText("")
-        }
-        binding.postLayout.run {
+        binding.run {
             if (response.comments.isEmpty()) {
                 tvNoComments.visibility = View.VISIBLE
                 tvNoComments.text = getString(R.string.no_comments_yet)
             } else {
-                postFooter.tvCommentCount.text = response.totalCount.toString()
+                postLayout.postFooter.tvCommentCount.text = response.totalCount.toString()
                 tvNoComments.visibility = View.GONE
                 rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.setData(response.comments)
@@ -275,18 +273,18 @@ class PostDetailsFragment : BaseFragment() {
     }
 
     private fun showPaginationLoader() {
-        binding.postLayout.paginationLoader.apply {
+        binding.paginationLoader.apply {
             progress.visibility = View.VISIBLE
             retry.visibility = View.GONE
         }
     }
 
     private fun hidePaginationLoader() {
-        binding.postLayout.paginationLoader.progress.visibility = View.GONE
+        binding.paginationLoader.progress.visibility = View.GONE
     }
 
     private fun showPaginationLoadError() {
-        binding.postLayout.run {
+        binding.run {
             tvNoComments.visibility = View.VISIBLE
             tvNoComments.text = getString(R.string.error_loading_comments)
             paginationLoader.retry.visibility = View.VISIBLE

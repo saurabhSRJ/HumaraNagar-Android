@@ -22,6 +22,11 @@ class PostCommentsAdapter : RecyclerView.Adapter<PostCommentsAdapter.CommentsVie
         notifyDataSetChanged()
     }
 
+    fun addMoreData(moreData: List<CommentDetails>) {
+        comments.addAll(moreData)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsViewHolder {
         return CommentsViewHolder(PostCommentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }

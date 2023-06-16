@@ -1,7 +1,6 @@
 package com.humara.nagar.ui.report
 
 import android.app.Activity.RESULT_OK
-import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.location.Address
@@ -35,6 +34,8 @@ import com.humara.nagar.permissions.PermissionFragment
 import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.common.GenericStatusDialog
+import com.humara.nagar.ui.common.MediaSelectionBottomSheet
+import com.humara.nagar.ui.common.MediaSelectionListener
 import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.ui.report.complaints.ComplaintsFragment
 import com.humara.nagar.utils.*
@@ -47,7 +48,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-class ReportFragment : PermissionFragment() {
+class ReportFragment : PermissionFragment(), MediaSelectionListener {
     private var _binding: FragmentReportBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -221,7 +222,7 @@ class ReportFragment : PermissionFragment() {
                 setHint(getString(R.string.comments_short_hint))
             }
             addImageLayout.setOnClickListener {
-                showPictureDialog()
+                showMediaSelectionBottomSheet()
             }
             imagePreviewAdapter = ImagePreviewAdapter { idx ->
                 reportViewModel.deleteImage(idx)
@@ -264,22 +265,12 @@ class ReportFragment : PermissionFragment() {
         }
     }
 
-    private fun showPictureDialog() {
+    private fun showMediaSelectionBottomSheet() {
         if (reportViewModel.imageUris.size >= maxImageAttachments) {
             context?.showToast(getString(R.string.imagePickingLimit), true)
             return
         }
-        val pictureDialog = AlertDialog.Builder(requireContext())
-        pictureDialog.setTitle(resources.getString(R.string.upload_a_photo))
-        val pictureDialogItems = arrayOf(resources.getString(R.string.take_a_photo), resources.getString(R.string.upload_from_gallery))
-        pictureDialog.setItems(pictureDialogItems) { _, which ->
-            when (which) {
-                0 -> choosePhotoFromGallery()
-                1 -> takePhotoFromCamera()
-            }
-        }
-        val dialog = pictureDialog.create()
-        dialog.show()
+        MediaSelectionBottomSheet.show(parentFragmentManager, this)
     }
 
     private fun checkForLocationPermission() {
@@ -293,49 +284,6 @@ class ReportFragment : PermissionFragment() {
                 context?.showToast(getString(R.string.you_can_still_enter_location_manually))
             }
         }, isPermissionNecessary = false)
-    }
-
-    private fun choosePhotoFromGallery() {
-        requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                if (context == null) {
-                    Logger.debugLog(TAG, "fragment detached from the activity")
-                    return
-                }
-                val intent = IntentUtils.getImageGalleryIntent()
-                getContentLauncher.launch(intent)
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //NA
-            }
-        })
-    }
-
-    private fun takePhotoFromCamera() {
-        requestPermissions(PermissionUtils.cameraPermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                if (context == null) {
-                    Logger.debugLog(TAG, "Fragment detached from the activity")
-                    return
-                }
-                clickPicture()
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //NA
-            }
-        })
-    }
-
-    private fun clickPicture() {
-        val imageFile = StorageUtils.createImageFile(requireContext())
-        currentPhotoPath = imageFile.absolutePath
-        val imageUri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID.plus(".provider"), imageFile)
-        val intent: Intent = IntentUtils.getCameraIntent(requireContext(), imageUri)
-        if (IntentUtils.hasIntent(requireContext(), intent)) {
-            takeCameraLauncher.launch(intent)
-        }
     }
 
     @Suppress("DEPRECATION")
@@ -424,4 +372,46 @@ class ReportFragment : PermissionFragment() {
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.REPORT_FRAGMENT
+    override fun onCameraSelection() {
+        requestPermissions(PermissionUtils.cameraPermissions, object : PermissionHandler {
+            override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(TAG, "Fragment detached from the activity")
+                    return
+                }
+                clickPicture()
+            }
+
+            override fun onPermissionDenied(permissions: List<String>) {
+                //NA
+            }
+        })
+    }
+
+    private fun clickPicture() {
+        val imageFile = StorageUtils.createImageFile(requireContext())
+        currentPhotoPath = imageFile.absolutePath
+        val imageUri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID.plus(".provider"), imageFile)
+        val intent: Intent = IntentUtils.getCameraIntent(requireContext(), imageUri)
+        if (IntentUtils.hasIntent(requireContext(), intent)) {
+            takeCameraLauncher.launch(intent)
+        }
+    }
+
+    override fun onGallerySelection() {
+        requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
+            override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(TAG, "fragment detached from the activity")
+                    return
+                }
+                val intent = IntentUtils.getImageGalleryIntent()
+                getContentLauncher.launch(intent)
+            }
+
+            override fun onPermissionDenied(permissions: List<String>) {
+                //NA
+            }
+        })
+    }
 }

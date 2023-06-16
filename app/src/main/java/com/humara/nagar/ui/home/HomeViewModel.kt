@@ -28,8 +28,8 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     val loadMorePostsLiveData: LiveData<List<Post>> = _loadMorePostsLiveData
     private val _loadMorePostProgressLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
     val loadMorePostProgressLiveData: LiveData<Boolean> = _loadMorePostProgressLiveData
-    private val _loadMorePostErrorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
-    val loadMorePostErrorLiveData: LiveData<ApiError> = _loadMorePostErrorLiveData
+    private val _loadMorePostErrorLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
+    val loadMorePostErrorLiveData: LiveData<Boolean> = _loadMorePostErrorLiveData
     private val _postDetailsLiveData: SingleLiveEvent<Post> by lazy { SingleLiveEvent() }
     val postDetailsLiveData: LiveData<Post> = _postDetailsLiveData
     private val _likePostErrorLiveData: SingleLiveEvent<Long> by lazy { SingleLiveEvent() }
@@ -59,7 +59,9 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
             else processLoadMoreResponse(it)
         }.onError {
             if (currentPage == 1) _initialPostErrorLiveData.postValue(it)
-            else _loadMorePostErrorLiveData.postValue(it)
+            else _loadMorePostErrorLiveData.postValue(true)
+        }.onException {
+            if (currentPage > 1) _loadMorePostErrorLiveData.postValue(true)
         }
     }
 

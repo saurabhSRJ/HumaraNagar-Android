@@ -28,11 +28,51 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:visibility="visible">
 
-            <include
-                android:id="@+id/postLayout"
-                layout="@layout/post_item"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="0dp"
+                android:background="@color/white">
+
+                <include
+                    android:id="@+id/postLayout"
+                    layout="@layout/post_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:nestedScrollingEnabled="false"
+                    android:paddingHorizontal="16dp"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/postLayout"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/post_comment_item"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tvNoComments"
+                    style="@style/OpenSansRegular14sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:textColor="@color/grey_696969"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/rvComments"
+                    tools:text="@string/no_comments_yet" />
+
+                <include
+                    android:id="@+id/paginationLoader"
+                    layout="@layout/layout_pagination_loader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tvNoComments" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
 

@@ -43,8 +43,8 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
     val initialCommentsLiveData: LiveData<PostComments> = _initialCommentsLiveData
     private val _loadMoreCommentsLiveData: MutableLiveData<List<CommentDetails>> by lazy { MutableLiveData() }
     val loadMoreCommentsLiveData: LiveData<List<CommentDetails>> = _loadMoreCommentsLiveData
-    private val _postCommentsErrorLiveData: SingleLiveEvent<ApiError> by lazy { SingleLiveEvent() }
-    val postCommentsErrorLiveData: LiveData<ApiError> = _postCommentsErrorLiveData
+    private val _postCommentsErrorLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
+    val postCommentsErrorLiveData: LiveData<Boolean> = _postCommentsErrorLiveData
     private val _commentLoaderLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val commentLoaderLiveData: LiveData<Boolean> = _commentLoaderLiveData
     private val _addCommentSuccessLiveData: SingleLiveEvent<Long> by lazy { SingleLiveEvent() }
@@ -99,7 +99,9 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
             if (currentPage == 1) processInitialResponse(it)
             else processLoadMoreResponse(it)
         }.onError {
-            _postCommentsErrorLiveData.postValue(it)
+            _postCommentsErrorLiveData.postValue(true)
+        }.onException {
+            _postCommentsErrorLiveData.postValue(true)
         }
     }
 
