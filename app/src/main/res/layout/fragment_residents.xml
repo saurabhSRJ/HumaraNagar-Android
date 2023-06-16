@@ -6,7 +6,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/secondary_background"
         tools:context="com.humara.nagar.ui.report.ReportFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout

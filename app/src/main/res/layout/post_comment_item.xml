@@ -5,8 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:paddingTop="8dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/ivUserPhoto"
@@ -22,11 +22,11 @@
             style="@style/OpenSansRegular10sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/grey_696969"
             android:layout_marginEnd="4dp"
+            android:textColor="@color/grey_696969"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="20m"/>
+            tools:text="20m" />
 
         <TextView
             android:id="@+id/tvUserName"
@@ -56,8 +56,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey_E4E4E4"
             android:layout_marginTop="8dp"
+            android:background="@color/grey_E4E4E4"
             app:layout_constraintTop_toBottomOf="@id/tvComment" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

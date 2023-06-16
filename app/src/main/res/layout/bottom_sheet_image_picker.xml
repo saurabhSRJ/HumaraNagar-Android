@@ -6,14 +6,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/top_rounded_corner_white_rectangle"
-        android:backgroundTint="@color/green_00A5A5"
         android:padding="20dp">
 
         <View
             android:id="@+id/holder"
             android:layout_width="40dp"
             android:layout_height="4dp"
-            android:background="@color/white"
+            android:background="@color/grey_A9A9A9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -23,9 +22,9 @@
             style="@style/OpenSansSemiBold16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/upload_a_photo"
-            android:textColor="@color/white_FAFAF0"
             android:layout_marginTop="20dp"
+            android:text="@string/upload_a_photo"
+            android:textColor="@color/grey_555555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/holder" />
 
@@ -43,7 +42,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_camera" />
+                android:src="@drawable/ic_camera"
+                app:tint="@color/grey_555555" />
 
             <TextView
                 style="@style/OpenSansRegular16sp"
@@ -52,7 +52,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
                 android:text="@string/take_a_photo"
-                android:textColor="@color/white_FAFAF0" />
+                android:textColor="@color/grey_555555" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -70,7 +70,7 @@
                 android:layout_height="24dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_add_image"
-                app:tint="@color/white_FAFAF0" />
+                app:tint="@color/grey_555555" />
 
             <TextView
                 style="@style/OpenSansRegular16sp"
@@ -79,7 +79,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
                 android:text="@string/upload_from_gallery"
-                android:textColor="@color/white_FAFAF0" />
+                android:textColor="@color/grey_555555" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

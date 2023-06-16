@@ -40,7 +40,6 @@
             android:paddingLeft="0dp"
             android:paddingEnd="0dp"
             android:paddingRight="0dp"
-            app:boxBackgroundColor="@color/white"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="5dp"
             app:boxCornerRadiusBottomStart="5dp"

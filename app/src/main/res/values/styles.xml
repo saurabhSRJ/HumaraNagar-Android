@@ -121,7 +121,7 @@
     </style>
 
     <style name="StrokeButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="backgroundTint">@color/white</item>
+        <item name="backgroundTint">@color/primary_background</item>
         <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
         <item name="android:padding">16dp</item>
         <item name="cornerRadius">10dp</item>
@@ -141,7 +141,7 @@
 
     <style name="TextButtonStyle" parent="Widget.Material3.Button.TextButton">
         <item name="android:textAppearance">@style/OpenSansSemiBold14sp</item>
-        <item name="backgroundTint">@color/white</item>
+        <item name="backgroundTint">@color/primary_background</item>
         <item name="rippleColor">@color/grey_AEAEAE</item>
     </style>
 
