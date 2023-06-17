@@ -66,7 +66,7 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
     }
 
     fun getPostDetails() = viewModelScope.launch {
-        val response = processCoroutine({ processCoroutine({ repository.getPostDetails(postId) }) })
+        val response = processCoroutine({ repository.getPostDetails(postId) }, updateProgress = false)
         response.onSuccess {
             _postDetailsLiveData.postValue(it)
             savedStateHandle[IS_LIKED] = it.isLikedByUser != 0

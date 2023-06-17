@@ -67,6 +67,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <nav-graph android:value="@navigation/home_navigation" />
         </activity>
         <meta-data
             android:name="preloaded_fonts"
@@ -78,6 +79,7 @@
             android:theme="@style/ActivityTheme" />
         <activity
             android:name="com.humara.nagar.ui.MainActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
     </application>

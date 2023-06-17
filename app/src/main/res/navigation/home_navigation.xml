@@ -61,6 +61,10 @@
         <action
             android:id="@+id/action_postDetailsFragment_to_createPostFragment"
             app:destination="@id/createPostFragment" />
+        <deepLink
+            android:autoVerify="true"
+            app:action="android.intent.action.MY_ACTION"
+            app:uri="https://humara.nagar/post/{post_id}/{source}" />
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"

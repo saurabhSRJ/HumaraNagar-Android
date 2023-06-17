@@ -17,7 +17,7 @@
 
     <!-- Activity theme -->
     <style name="ActivityTheme" parent="Theme.HumaraNagar">
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/primary_background</item>
     </style>
 
     <style name="SplashActivityTheme" parent="Theme.HumaraNagar">

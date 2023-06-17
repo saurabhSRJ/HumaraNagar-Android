@@ -4,26 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humara.nagar.R
 import com.humara.nagar.adapter.FeedItemClickListener
 import com.humara.nagar.adapter.PostAdapter
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentHomeBinding
 import com.humara.nagar.ui.common.EndlessRecyclerViewScrollListener
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.utils.FeedUtils
-import com.humara.nagar.utils.GlideUtil
+import com.humara.nagar.utils.loadUrl
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.showToast
 import kotlinx.coroutines.launch
@@ -130,14 +130,10 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     private fun initView() {
         binding.run {
             ivNotification.setNonDuplicateClickListener {
+
             }
             getUserPreference().profileImage?.let { url ->
-                Glide.with(this@HomeFragment)
-                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .placeholder(R.drawable.ic_user_image_placeholder)
-                    .error(R.drawable.ic_user_image_placeholder)
-                    .into(ivProfilePhoto)
+                ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
             rvPost.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -150,6 +146,9 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                     }
                 }
                 addOnScrollListener(endlessRecyclerViewScrollListener)
+                setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                    showHideBottomNavigationView(scrollY <= oldScrollY)
+                }
             }
             swipeRefresh.setOnRefreshListener {
                 lifecycleScope.launch {
@@ -166,6 +165,10 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 navController.navigate(HomeFragmentDirections.actionHomeFragmentToCreatePostFragment())
             }
         }
+    }
+
+    private fun showHideBottomNavigationView(show: Boolean) {
+        (activity as? BaseActivity)?.findViewById<BottomNavigationView>(R.id.nav_view)?.isVisible = show
     }
 
     override fun onLikeButtonClick(post: Post) {
@@ -191,6 +194,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
         endlessRecyclerViewScrollListener.resetState()
         homeViewModel.resetPaginationState()
         homeViewModel.getPosts()
+        binding.paginationLoader.retry.visibility = View.GONE
     }
 
     private fun handleInitialProgress(showProgress: Boolean) {
@@ -217,7 +221,10 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     }
 
     private fun hidePaginationLoader() {
-        binding.paginationLoader.progress.visibility = View.GONE
+        binding.paginationLoader.apply {
+            progress.visibility = View.GONE
+            retry.visibility = View.GONE
+        }
     }
 
     private fun showPaginationLoadError() {

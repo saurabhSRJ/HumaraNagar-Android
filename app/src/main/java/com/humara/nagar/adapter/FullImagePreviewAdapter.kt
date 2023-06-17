@@ -4,11 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.humara.nagar.R
 import com.humara.nagar.databinding.FullImagePreviewLayoutItemBinding
-import com.humara.nagar.utils.GlideUtil
+import com.humara.nagar.utils.loadUrl
 
 class FullImagePreviewAdapter(val context: Context) : RecyclerView.Adapter<FullImagePreviewAdapter.ViewHolder>() {
     private val imagesList = mutableListOf<String>()
@@ -27,13 +25,7 @@ class FullImagePreviewAdapter(val context: Context) : RecyclerView.Adapter<FullI
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val image = imagesList[position]
-        Glide.with(context)
-            .load(GlideUtil.getUrlWithHeaders(image, context))
-            .placeholder(R.drawable.ic_image_placeholder)
-            .error(R.drawable.ic_image_placeholder)
-            .transition(DrawableTransitionOptions.withCrossFade(1000))
-            .centerCrop()
-            .into(holder.binding.previewIV)
+        holder.binding.previewIV.loadUrl(image, R.drawable.ic_image_placeholder)
     }
 
     override fun getItemCount() = imagesList.size

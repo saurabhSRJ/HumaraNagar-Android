@@ -19,11 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humara.nagar.BuildConfig
 import com.humara.nagar.Logger
 import com.humara.nagar.R
@@ -153,7 +148,6 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
     }
 
     private fun initView() {
-        activity?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.GONE
         binding.run {
             toolbar.apply {
                 btnCross.setOnClickListener {
@@ -162,12 +156,7 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
             }
             clContainer.setOnClickListener { hideKeyboard() }
             getUserPreference().profileImage?.let { url ->
-                Glide.with(this@CreatePostFragment)
-                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .placeholder(R.drawable.ic_user_image_placeholder)
-                    .error(R.drawable.ic_user_image_placeholder)
-                    .into(ivProfilePhoto)
+                ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
             tvName.text = getUserPreference().userProfile?.name
             btnDeleteAttachment.setOnClickListener {
@@ -285,7 +274,7 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
             btnPost.text = getString(R.string.save)
             btnPost.isEnabled = true
             clAttachmentPreview.isClickable = false
-            clAttachmentPreview.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_F5F5F5))
+            clAttachmentPreview.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.translucent_background))
             handleAttachmentPreview(show = true)
             btnDeleteAttachment.visibility = View.GONE
             when (post.type) {
@@ -310,13 +299,7 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
         binding.run {
             post.info?.medias?.getOrNull(0)?.let { url ->
                 ivImagePreview.visibility = View.VISIBLE
-                Glide.with(requireContext())
-                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .placeholder(R.drawable.ic_image_placeholder)
-                    .error(R.drawable.ic_image_placeholder)
-                    .transition(DrawableTransitionOptions.withCrossFade(1000))
-                    .into(ivImagePreview)
+                ivImagePreview.loadUrl(url, R.drawable.ic_image_placeholder)
             } ?: run {
                 ivImagePreview.visibility = View.GONE
             }

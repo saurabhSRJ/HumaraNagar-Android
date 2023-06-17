@@ -51,10 +51,17 @@ class SplashActivity : BaseActivity() {
         appConfigViewModel.run {
             observeErrorAndException(this)
             appConfigSuccessLiveData.observe(this@SplashActivity) {
-                MainActivity.startActivity(this@SplashActivity, getScreenName())
-                finish()
+                launchNextScreen()
             }
         }
+    }
+
+    private fun launchNextScreen() {
+        val launchIntent = Intent(this, MainActivity::class.java).apply {
+            data = intent.data
+        }
+        startActivity(launchIntent)
+        finish()
     }
 
     private fun initConfig() {

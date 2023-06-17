@@ -3,15 +3,11 @@ package com.humara.nagar.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.humara.nagar.R
 import com.humara.nagar.databinding.PostCommentItemBinding
 import com.humara.nagar.ui.home.model.CommentDetails
 import com.humara.nagar.utils.DateTimeUtils
-import com.humara.nagar.utils.GlideUtil
+import com.humara.nagar.utils.loadUrl
 
 class PostCommentsAdapter : RecyclerView.Adapter<PostCommentsAdapter.CommentsViewHolder>() {
     private val comments: ArrayList<CommentDetails> = arrayListOf()
@@ -41,13 +37,7 @@ class PostCommentsAdapter : RecyclerView.Adapter<PostCommentsAdapter.CommentsVie
         fun bind(item: CommentDetails) {
             binding.run {
                 item.image?.let { url ->
-                    Glide.with(root.context)
-                        .load(GlideUtil.getUrlWithHeaders(url, root.context))
-                        .placeholder(R.drawable.ic_image_placeholder)
-                        .error(R.drawable.ic_image_placeholder)
-                        .transform(CenterCrop(), RoundedCorners(12))
-                        .transition(DrawableTransitionOptions.withCrossFade(1000))
-                        .into(ivUserPhoto)
+                    ivUserPhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
                 }
                 tvUserName.text = item.name
                 tvComment.text = item.comment

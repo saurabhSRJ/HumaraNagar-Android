@@ -9,10 +9,6 @@ import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import at.blogc.android.views.ExpandableTextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
@@ -111,13 +107,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                 handlePostFooterUI(postFooter, item, adapterPosition)
                 item.info?.medias?.getOrNull(0)?.let { url ->
                     ivPostImage.visibility = View.VISIBLE
-                    Glide.with(context)
-                        .load(GlideUtil.getUrlWithHeaders(url, context))
-                        .transform(CenterCrop(), RoundedCorners(12))
-                        .placeholder(R.drawable.ic_image_placeholder)
-                        .error(R.drawable.ic_image_placeholder)
-                        .transition(DrawableTransitionOptions.withCrossFade(500))
-                        .into(ivPostImage)
+                    ivPostImage.loadUrl(url, R.drawable.ic_image_placeholder)
                     ivPostImage.setNonDuplicateClickListener {
                         it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFullImagePreviewFragment(item.info.medias.toTypedArray(), source))
                     }
@@ -165,12 +155,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                 showPostOptionMenu(post, it)
             }
             post.profileImage?.let { url ->
-                Glide.with(context)
-                    .load(GlideUtil.getUrlWithHeaders(url, context))
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .placeholder(R.drawable.ic_user_image_placeholder)
-                    .error(R.drawable.ic_user_image_placeholder)
-                    .into(ivProfilePhoto)
+                ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
         }
     }

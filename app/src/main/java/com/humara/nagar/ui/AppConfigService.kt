@@ -8,7 +8,6 @@ import retrofit2.http.POST
 
 interface AppConfigService {
     @POST(NetworkConstants.NetworkAPIConstants.CONFIG)
-//    @POST("cf592915-a4ab-424d-ad1e-1d61f5abeb31")
     suspend fun getAppConfig(@Body request: AppConfigRequest): NetworkResponse<AppConfigResponse>
 
     @POST(NetworkConstants.NetworkAPIConstants.REF_DATA)

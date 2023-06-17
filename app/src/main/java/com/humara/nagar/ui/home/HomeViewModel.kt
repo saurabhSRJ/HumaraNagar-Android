@@ -3,6 +3,7 @@ package com.humara.nagar.ui.home
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.humara.nagar.Logger
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.network.onError
@@ -53,6 +54,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getPosts() = viewModelScope.launch {
+        Logger.debugLog("current page: $currentPage, can load: $canLoadMoreData")
         val response = processCoroutine({ repository.getPosts(currentPage, limit) }, progressLiveData = if (currentPage == 1) _initialPostProgressLiveData else _loadMorePostProgressLiveData)
         response.onSuccess {
             if (currentPage == 1) processInitialResponse(it)
@@ -66,7 +68,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getPostDetails(postId: Long) = viewModelScope.launch {
-        val response = processCoroutine({ processCoroutine({ repository.getPostDetails(postId) }) })
+        val response = processCoroutine({ repository.getPostDetails(postId) })
         response.onSuccess {
             _postDetailsLiveData.postValue(it)
         }.onError {
@@ -150,5 +152,4 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
         currentPage = 1
         canLoadMoreData = true
     }
-
 }

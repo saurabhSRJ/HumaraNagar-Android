@@ -24,6 +24,7 @@ interface AnalyticsData {
             const val POST_DETAILS_FRAGMENT = "POST_DETAILS_FRAGMENT"
             const val CREATE_POST_FRAGMENT = "CREATE_POST_FRAGMENT"
             const val CREATE_POLL_FRAGMENT = "CREATE_POLL_FRAGMENT"
+            const val ADD_PROFILE_PHOTO_FRAGMENT = "ADD_PROFILE_PHOTO_FRAGMENT"
         }
     }
 

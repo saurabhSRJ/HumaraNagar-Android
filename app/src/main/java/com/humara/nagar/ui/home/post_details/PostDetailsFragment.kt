@@ -1,9 +1,13 @@
 package com.humara.nagar.ui.home.post_details
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -15,9 +19,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import at.blogc.android.views.ExpandableTextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsAdapter
 import com.humara.nagar.adapter.PostCommentsAdapter
@@ -77,7 +83,7 @@ class PostDetailsFragment : BaseFragment() {
                 inflatePostDetails(it)
             }
             postDetailsErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog { }
+                showErrorDialog(subtitle = it.message)
             }
             initialCommentsLiveData.observe(viewLifecycleOwner) {
                 showPostComments(it)
@@ -233,13 +239,7 @@ class PostDetailsFragment : BaseFragment() {
             handlePostFooterUI(postFooter, post)
             post.info?.medias?.getOrNull(0)?.let { url ->
                 ivPostImage.visibility = View.VISIBLE
-                Glide.with(requireContext())
-                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .placeholder(R.drawable.ic_image_placeholder)
-                    .error(R.drawable.ic_image_placeholder)
-                    .transition(DrawableTransitionOptions.withCrossFade(1000))
-                    .into(ivPostImage)
+                ivPostImage.loadUrl(url, R.drawable.ic_image_placeholder)
                 ivPostImage.setNonDuplicateClickListener {
                     navController.navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToFullImagePreviewFragment(post.info.medias.toTypedArray(), getScreenName()))
                 }
@@ -301,13 +301,7 @@ class PostDetailsFragment : BaseFragment() {
                 showPostOptionMenu(post, it)
             }
             post.profileImage?.let { url ->
-                Glide.with(requireContext())
-                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .placeholder(R.drawable.ic_image_placeholder)
-                    .error(R.drawable.ic_image_placeholder)
-                    .transition(DrawableTransitionOptions.withCrossFade(1000))
-                    .into(ivProfilePhoto)
+                ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
         }
     }
@@ -326,7 +320,7 @@ class PostDetailsFragment : BaseFragment() {
                 postDetailsViewModel.flipUserLike()
             }
             ivShare.setNonDuplicateClickListener {
-
+                sharePost()
             }
         }
     }
@@ -374,6 +368,78 @@ class PostDetailsFragment : BaseFragment() {
 
     private fun updateLikeButton(isLiked: Boolean) {
         binding.postLayout.postFooter.ivLike.setImageResource(if (isLiked) R.drawable.ic_like_selected else R.drawable.ic_like_unselected)
+    }
+
+    private fun sharePost() {
+        showProgress(true)
+        val postShareBinding = PostShareLayoutBinding.inflate(layoutInflater, binding.root as ViewGroup, true)
+        val postShareView = postShareBinding.root
+        postDetailsViewModel.postDetailsLiveData.value?.let { post ->
+            postShareBinding.run {
+                tvName.text = post.name
+                tvLocality.setVisibilityAndText(post.locality)
+                postContent.setVisibilityAndText(post.caption)
+                val url = post.info?.medias?.getOrNull(0)
+                if (url != null) {
+                    ivPostImage.visibility = View.VISIBLE
+                    Logger.debugLog("url: $url")
+                    Glide.with(requireContext())
+                        .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Logger.debugLog("load failed")
+                                sharePostOnWhatsapp(postShareView)
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Logger.debugLog("resource ready")
+                                sharePostOnWhatsapp(postShareView)
+                                return false
+                            }
+                        })
+                        .into(ivPostImage)
+                } else {
+                    sharePostOnWhatsapp(postShareView)
+                }
+            }
+        }
+    }
+
+    private fun sharePostOnWhatsapp(postShareView: View) {
+        Logger.debugLog("Share whatsapp")
+        postShareView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                postShareView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val shareProfileViaWhatsAppBitmap = Bitmap.createBitmap(
+                    postShareView.measuredWidth,
+                    postShareView.measuredHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val c = Canvas(shareProfileViaWhatsAppBitmap!!)
+                postShareView.draw(c)
+                Utils.shareViaIntent(
+                    requireActivity(),
+                    shareProfileViaWhatsAppBitmap,
+                    "Checkout this post on Humara Nagar App ".plus("https://humara.nagar/post/${args.postId}/send")
+                )
+                (binding.root as ViewGroup).removeView(postShareView)
+                hideProgress()
+            }
+        })
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.POST_DETAILS_FRAGMENT

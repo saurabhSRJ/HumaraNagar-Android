@@ -14,11 +14,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.edit
 import androidx.core.view.children
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
 import com.humara.nagar.constants.Constants
@@ -41,6 +47,18 @@ fun View.setNonDuplicateClickListener(listener: View.OnClickListener?) {
             listener?.onClick(this)
             setTag(R.id.TAG_CLICK_TIME, curTime)
         }
+    }
+}
+
+fun ImageView.loadUrl(url: String?, @DrawableRes placeholder: Int) {
+    url?.let {
+        Glide.with(this)
+            .load(GlideUtil.getUrlWithHeaders(url, this.context))
+            .transform(CenterCrop(), RoundedCorners(12))
+            .placeholder(placeholder)
+            .error(placeholder)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
+            .into(this)
     }
 }
 

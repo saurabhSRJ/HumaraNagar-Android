@@ -12,10 +12,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ComplaintStatusAdapter
@@ -135,13 +131,7 @@ class ComplaintStatusFragment : BaseFragment() {
             complaintStatusAdapter.setData(response.trackingInfo)
             val images = StringUtils.convertToList(response.images)
             if (images.isNotEmpty()) {
-                Glide.with(this@ComplaintStatusFragment)
-                    .load(GlideUtil.getUrlWithHeaders(images[0], root.context))
-                    .placeholder(R.drawable.ic_image_placeholder)
-                    .error(R.drawable.ic_image_placeholder)
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .transition(DrawableTransitionOptions.withCrossFade(1000))
-                    .into(imageView)
+                imageView.loadUrl(images[0], R.drawable.ic_image_placeholder)
                 val shakeAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.wobble)
                 imageContainer.startAnimation(shakeAnimation)
                 imageView.setNonDuplicateClickListener {
