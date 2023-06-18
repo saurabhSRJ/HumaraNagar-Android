@@ -131,6 +131,20 @@ object DateTimeUtils {
         }
     }
 
+    fun getRemainingDurationForPoll(context: Context, expiryTime: String): String {
+        val instant = Instant.parse(expiryTime)
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val period = Period.between(LocalDate.now(), dateTime.toLocalDate())
+        val days = period.days
+        return if (days < 1) {
+            val currentTimeMillis = System.currentTimeMillis()
+            val instantMillis = instant.toEpochMilli()
+            DateUtils.getRelativeTimeSpanString(instantMillis, currentTimeMillis, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL).toString()
+        } else {
+            context.getString(R.string.n_days_left, days)
+        }
+    }
+
     fun isIsoTimeLessThanNow(isoTime: String): Boolean {
         val instant = Instant.parse(isoTime)
         val currentInstant = Instant.now()

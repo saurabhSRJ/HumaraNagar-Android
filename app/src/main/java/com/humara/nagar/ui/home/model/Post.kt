@@ -35,7 +35,7 @@ data class PostInfo(
     @SerializedName("user_vote") val userVote: Int?,
     @SerializedName("options") val options: List<PollOption> = listOf()
 ) {
-    fun isAllowedToVote(): Boolean = userVote == null && DateTimeUtils.isIsoTimeLessThanNow(expiryTime).not()
+    fun isActive(): Boolean = userVote == null && DateTimeUtils.isIsoTimeLessThanNow(expiryTime).not()
     fun getOptionsText(): List<String> = options.map { it.option }
 }
 

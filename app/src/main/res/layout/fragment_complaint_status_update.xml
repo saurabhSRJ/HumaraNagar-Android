@@ -42,6 +42,7 @@
                     android:background="@drawable/rect_white_fill_grey_outline_5dp"
                     android:gravity="top|start"
                     android:maxLength="300"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:padding="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/textView"

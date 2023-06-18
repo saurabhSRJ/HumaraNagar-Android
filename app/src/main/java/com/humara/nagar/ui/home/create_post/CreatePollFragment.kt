@@ -1,7 +1,6 @@
 package com.humara.nagar.ui.home.create_post
 
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,30 +68,25 @@ class CreatePollFragment : BaseFragment() {
                     createPollViewModel.setQuestion(it)
                 }
             }
-            val textInputType = InputType.TYPE_CLASS_TEXT
             inputFirstOption.apply {
                 setUserInputListener {
                     createPollViewModel.setFirstOption(it)
                 }
-                setInputType(textInputType)
             }
             inputSecondOption.apply {
                 setUserInputListener {
                     createPollViewModel.setSecondOption(it)
                 }
-                setInputType(textInputType)
             }
             inputThirdOption.apply {
                 setUserInputListener {
                     createPollViewModel.setThirdOption(it)
                 }
-                setInputType(textInputType)
             }
             inputFourthOption.apply {
                 setUserInputListener {
                     createPollViewModel.setFourthOption(it)
                 }
-                setInputType(textInputType)
             }
             btnAddOption.setOnClickListener {
                 if (inputThirdOption.isVisible) {

@@ -92,7 +92,7 @@
                     app:header="@string/option_1"
                     app:hint="@string/add_option"
                     app:layout_constraintTop_toBottomOf="@id/inputQuestion"
-                    app:maximumLength="40" />
+                    app:maximumLength="30" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/inputSecondOption"
@@ -102,7 +102,7 @@
                     app:header="@string/option_2"
                     app:hint="@string/add_option"
                     app:layout_constraintTop_toBottomOf="@id/inputFirstOption"
-                    app:maximumLength="40" />
+                    app:maximumLength="30" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/inputThirdOption"
@@ -113,7 +113,7 @@
                     app:header="@string/option_3"
                     app:hint="@string/add_option"
                     app:layout_constraintTop_toBottomOf="@id/inputSecondOption"
-                    app:maximumLength="40"
+                    app:maximumLength="30"
                     app:required_input="false" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
@@ -125,7 +125,7 @@
                     app:header="@string/option_4"
                     app:hint="@string/add_option"
                     app:layout_constraintTop_toBottomOf="@id/inputThirdOption"
-                    app:maximumLength="40"
+                    app:maximumLength="30"
                     app:required_input="false" />
 
                 <Button

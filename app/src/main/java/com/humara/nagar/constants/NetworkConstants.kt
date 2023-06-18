@@ -16,6 +16,7 @@ interface NetworkConstants {
             const val LOGIN = "/login"
             const val SIGNUP = "/signup"
             const val CONFIG = "/config"
+            const val UPDATE_IMAGE = "/profile"
             const val LOGOUT = "/logout"
             const val COMPLAINT = "/complaint"
             const val REF_DATA = "/ref-data"

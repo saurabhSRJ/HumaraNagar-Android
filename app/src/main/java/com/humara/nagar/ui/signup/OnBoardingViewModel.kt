@@ -1,6 +1,7 @@
 package com.humara.nagar.ui.signup
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -34,8 +35,10 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     val profileCreationRequiredLiveData: LiveData<Boolean> = _profileCreationRequiredLiveData
     private val _successfulUserSignupLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val successfulUserSignupLiveData: LiveData<Boolean> = _successfulUserSignupLiveData
-    private val _showHomeScreenLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
-    val showHomeScreenLiveData: LiveData<Boolean> = _showHomeScreenLiveData
+    private val _showAddProfileImageScreenLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val showAddProfileImageScreenLiveData: LiveData<Boolean> = _showAddProfileImageScreenLiveData
+    private val _addProfileImageStatusLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val addProfileImageStatusLiveData: LiveData<Boolean> = _addProfileImageStatusLiveData
 
     fun checkIfUserIsUnderOngoingRegistrationProcess() {
         _isUserUnderAnExistingRegistrationProcessLiveData.value = getUserPreference().userId != 0L
@@ -95,10 +98,21 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
             val createdUser = User(request.userId, request.name, getUserPreference().mobileNumber, request.fatherOrSpouseName, request.gender, request.locality)
             getUserPreference().userProfile = createdUser
             getUserPreference().isUserLoggedIn = true
+            getUserPreference().profileImage = it.image
             Logger.debugLog("Saved Profile: $createdUser")
             _successfulUserSignupLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)
+        }
+    }
+
+    fun updateProfileImage(imageUri: Uri) = viewModelScope.launch {
+        val response = processCoroutine({ repository.updateProfileImage(imageUri) })
+        response.onSuccess {
+            getUserPreference().profileImage = it.image
+            _addProfileImageStatusLiveData.postValue(true)
+        }.onError {
+            _addProfileImageStatusLiveData.postValue(false)
         }
     }
 
@@ -123,6 +137,6 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
 
     fun onUserOnBoard() {
         AnalyticsTracker.onUserOnBoard(getApplication())
-        _showHomeScreenLiveData.value = true
+        _showAddProfileImageScreenLiveData.value = true
     }
 }

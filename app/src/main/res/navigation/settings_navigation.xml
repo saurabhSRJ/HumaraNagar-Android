@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_selectLanguageBottomSheet"
             app:destination="@id/selectLanguageBottomSheet" />
+        <action
+            android:id="@+id/action_settingsFragment_to_updateProfileImageFragment"
+            app:destination="@id/updateProfileImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/webViewFragment"
@@ -56,4 +59,16 @@
             android:defaultValue=""
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/updateProfileImageFragment"
+        android:name="com.humara.nagar.ui.common.UpdateProfileImageFragment"
+        android:label="UpdateProfileImageFragment">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="is_edit"
+            app:argType="boolean" />
+    </fragment>
 </navigation>

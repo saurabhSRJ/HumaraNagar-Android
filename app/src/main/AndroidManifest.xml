@@ -62,6 +62,7 @@
             android:name="com.humara.nagar.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -79,7 +80,6 @@
             android:theme="@style/ActivityTheme" />
         <activity
             android:name="com.humara.nagar.ui.MainActivity"
-            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme" />
     </application>

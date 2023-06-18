@@ -59,7 +59,7 @@
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890. "
                 android:gravity="top|start"
                 android:imeOptions="actionNext"
-                android:inputType="textPersonName"
+                android:inputType="textCapSentences"
                 android:maxLength="40"
                 android:padding="12dp"
                 android:scrollbars="vertical"

@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/ivProfilePhoto"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="40dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_user_image_placeholder"
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:maxLines="1"
             android:textColor="@color/black_with_opacity_70"
             app:layout_constraintEnd_toEndOf="@id/ivProfilePhoto"

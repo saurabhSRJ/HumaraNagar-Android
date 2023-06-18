@@ -7,7 +7,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
-import androidx.appcompat.app.AppCompatActivity
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.SplashActivity
@@ -15,6 +14,7 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.network.retrofit.UnauthorizedException
+import com.humara.nagar.permissions.PermissionActivity
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
 import com.humara.nagar.ui.AppConfigViewModel
@@ -34,7 +34,7 @@ import java.io.IOException
  * Base Activity for all the Activities present in the Project. Provides some common functionality for all the Activities.
  * By default, Kotlin classes are final – they can't be inherited. To make a class inheritable, mark it with the open keyword
  */
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : PermissionActivity() {
     private lateinit var progressDialogue: Dialog
     private val appConfigViewModel: AppConfigViewModel by viewModels {
         ViewModelFactory()

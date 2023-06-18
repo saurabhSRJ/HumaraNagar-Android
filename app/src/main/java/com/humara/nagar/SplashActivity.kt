@@ -56,9 +56,13 @@ class SplashActivity : BaseActivity() {
         }
     }
 
+    /* Note: When implicit deeplink is clicked system back button exits the app and goes back to previous app. However navigation up button works as expected
+        https://stackoverflow.com/questions/69482684/navigation-component-implicit-deep-link-back-press-exits-the-app
+     */
     private fun launchNextScreen() {
         val launchIntent = Intent(this, MainActivity::class.java).apply {
             data = intent.data
+            Logger.debugLog("intent data: $data")
         }
         startActivity(launchIntent)
         finish()

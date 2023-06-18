@@ -43,6 +43,9 @@ class SettingsFragment : BaseFragment() {
                 ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
             tvName.text = getUserPreference().userProfile?.name
+            ivProfilePhoto.setNonDuplicateClickListener {
+                openUpdateProfileImageFragment()
+            }
             languageItem.apply {
                 tvTitle.text = getString(R.string.language)
                 root.setNonDuplicateClickListener {
@@ -75,6 +78,11 @@ class SettingsFragment : BaseFragment() {
             }
             tvAppVersion.text = getString(R.string.app_version_d, BuildConfig.VERSION_NAME)
         }
+    }
+
+    private fun openUpdateProfileImageFragment() {
+        val action = SettingsFragmentDirections.actionSettingsFragmentToUpdateProfileImageFragment(true, getScreenName())
+        navController.navigate(action)
     }
 
     private fun openWebView(url: String, title: String) {

@@ -1,6 +1,7 @@
 package com.humara.nagar.ui.signup.profile_creation
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,11 +78,18 @@ class ProfileCreationFragment : BaseFragment() {
 
     private fun initView() {
         binding.run {
-            inputName.setUserInputListener {
-                profileCreationViewModel.setUserName(it)
+            val capWordsType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
+            inputName.apply {
+                setUserInputListener {
+                    profileCreationViewModel.setUserName(it)
+                }
+                setInputType(capWordsType)
             }
-            inputGuardianName.setUserInputListener {
-                profileCreationViewModel.setParentName(it)
+            inputGuardianName.apply {
+                setUserInputListener {
+                    profileCreationViewModel.setParentName(it)
+                }
+                setInputType(capWordsType)
             }
             inputPhoneNumber.setInput(Utils.getMobileNumberWithCountryCode(getUserPreference().mobileNumber))
             inputDob.setLayoutListener(false) {
@@ -97,6 +105,8 @@ class ProfileCreationFragment : BaseFragment() {
                 hideKeyboard()
                 onBoardingViewModel.updateSavedUserDetailsAndSignup(profileCreationViewModel.getProfileCreationObjectWithCollectedData())
             }
+            clHeader.setOnClickListener { hideKeyboard() }
+            clForm.setOnClickListener { hideKeyboard() }
         }
     }
 

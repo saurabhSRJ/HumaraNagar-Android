@@ -88,7 +88,7 @@ class FormInputWithHeader @JvmOverloads constructor(
     fun switchToMultiLined(maxLine: Int) {
         binding.run {
             etInput.isSingleLine = false
-            etInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            etInput.inputType =  InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             etInput.maxLines = maxLine
             etInput.gravity = Gravity.START or Gravity.TOP
         }

@@ -5,17 +5,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.humara.nagar.Logger
 import com.humara.nagar.R
-import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.ui.common.GenericAlertDialog
 import com.humara.nagar.utils.IntentUtils
 import com.humara.nagar.utils.PermissionUtils
 
 /**
- * A headless fragment that provides a simple way to request runtime permissions from the user using requestPermissions().
+ * Base activity that provides a simple way to request runtime permissions from the user using requestPermissions().
  */
-open class PermissionFragment : BaseFragment() {
+open class PermissionActivity : AppCompatActivity() {
     companion object {
         const val TAG = "PermissionFragment"
     }
@@ -29,7 +29,7 @@ open class PermissionFragment : BaseFragment() {
     private val appSettingLauncher = registerForActivityResult(OpenAppSettings()) { information ->
         this.deniedPermissionList = information.permissionList
         this.handler = information.handler
-        if (PermissionUtils.hasPermission(requireContext(), deniedPermissionList.last())) {
+        if (PermissionUtils.hasPermission(this, deniedPermissionList.last())) {
             handleGrantedPermission()
         } else {
             //TODO: Handle permanently denied permission not given from app settings
@@ -69,7 +69,7 @@ open class PermissionFragment : BaseFragment() {
         this.handler = handler
         this.isPermissionNecessary = isPermissionNecessary
         //Check if all the permission are already allowed
-        if (PermissionUtils.hasPermissions(requireContext(), permissions)) {
+        if (PermissionUtils.hasPermissions(this, permissions)) {
             handler.onPermissionGranted()
         } else {
             // Launch the permission request for the specified permissions
@@ -80,12 +80,12 @@ open class PermissionFragment : BaseFragment() {
     private fun handleDeniedPermission(permission: String) {
         // In some cases permissions are coupled in same group like (WRITE_EXTERNAL_STORAGE & READ_EXTERNAL_STORAGE). Granting WRITE_EXTERNAL_STORAGE first automatically provide READ_EXTERNAL_STORAGE
         // This check avoids that scenario
-        if (PermissionUtils.hasPermission(requireContext(), permission)) {
+        if (PermissionUtils.hasPermission(this, permission)) {
             handleGrantedPermission()
             return
         }
         // If permission is temporarily denied, show rationale dialog
-        val showPermissionRationalePopup = PermissionUtils.isPermissionTemporaryDenied(requireActivity(), permission)
+        val showPermissionRationalePopup = PermissionUtils.isPermissionTemporaryDenied(this, permission)
         if (showPermissionRationalePopup) {
             showPermissionRationaleDialog(permission)
         } else {
@@ -111,16 +111,16 @@ open class PermissionFragment : BaseFragment() {
     }
 
     private fun showPermissionRationaleDialog(permission: String) {
-        GenericAlertDialog.show(parentFragmentManager, getString(R.string.permission_required_title), getPermissionGuideMessage(permission),
+        GenericAlertDialog.show(supportFragmentManager, getString(R.string.permission_required_title), getPermissionGuideMessage(permission),
             isCancelable = true, getString(R.string.ok), getString(R.string.cancel)) {
             singlePermissionLauncher.launch(permission)
         }
     }
 
     private fun openAppSettingToAskPermanentlyDeniedPermissions() {
-        GenericAlertDialog.show(parentFragmentManager, getString(R.string.permission_required_title), getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()),
+        GenericAlertDialog.show(supportFragmentManager, getString(R.string.permission_required_title), getPermanentlyDeniedPermissionRequestMessage(deniedPermissionList.last()),
             isCancelable = true, getString(R.string.grant_permission), getString(R.string.cancel)) {
-            appSettingLauncher.launch(PermissionInformation(handler, deniedPermissionList, IntentUtils.getAppSettingIntent(requireContext())))
+            appSettingLauncher.launch(PermissionInformation(handler, deniedPermissionList, IntentUtils.getAppSettingIntent(this)))
         }
     }
 
@@ -165,6 +165,4 @@ open class PermissionFragment : BaseFragment() {
             return information
         }
     }
-
-    override fun getScreenName() = "Permission Fragment"
 }

@@ -329,12 +329,19 @@ class PostDetailsFragment : BaseFragment() {
         pollPostBinding.apply {
             post.info?.let {
                 tvQuestion.text = it.question
-                tvSubTitle.text = if (it.isAllowedToVote()) getString(R.string.you_can_see_how_people_vote) else resources.getQuantityString(R.plurals.n_votes, it.totalVotes, it.totalVotes)
+                tvSubTitle.text = if (it.isActive()) getString(R.string.you_can_see_how_people_vote) else resources.getQuantityString(R.plurals.n_votes, it.totalVotes, it.totalVotes)
                 rvOptions.apply {
                     adapter = pollOptionsAdapter
                     setHasFixedSize(true)
                 }
                 pollOptionsAdapter.setData(it)
+                if (it.isActive()) {
+                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), it.expiryTime)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_585C60))
+                } else {
+                    tvExpiryTime.text = getString(R.string.completed)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.stroke_green))
+                }
             }
         }
     }

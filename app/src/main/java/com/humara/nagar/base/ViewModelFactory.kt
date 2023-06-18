@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.humara.nagar.ui.AppConfigViewModel
+import com.humara.nagar.ui.common.MediaSelectionViewModel
 import com.humara.nagar.ui.home.HomeViewModel
 import com.humara.nagar.ui.home.create_post.CreatePollViewModel
 import com.humara.nagar.ui.home.create_post.CreatePostViewModel
@@ -56,6 +57,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(CreatePollViewModel::class.java) -> {
                     CreatePollViewModel(application, extras.createSavedStateHandle())
+                }
+                isAssignableFrom(MediaSelectionViewModel::class.java) -> {
+                    MediaSelectionViewModel(application)
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }

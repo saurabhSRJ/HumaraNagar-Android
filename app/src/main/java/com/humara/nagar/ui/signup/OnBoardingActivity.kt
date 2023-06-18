@@ -14,7 +14,7 @@ import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.databinding.ActivitiyOnboardingBinding
 import com.humara.nagar.fluid_resize.FluidContentResizer
 import com.humara.nagar.ui.AppConfigViewModel
-import com.humara.nagar.ui.MainActivity
+import com.humara.nagar.ui.common.UpdateProfileImageFragment
 import com.humara.nagar.ui.common.WebViewFragment
 import com.humara.nagar.ui.signup.otp_verification.OtpVerificationFragment
 import com.humara.nagar.ui.signup.pending_approval.PendingApprovalFragment
@@ -73,8 +73,8 @@ class OnBoardingActivity : BaseActivity() {
             successfulUserSignupLiveData.observe(this@OnBoardingActivity) {
                 onUserOnBoard()
             }
-            showHomeScreenLiveData.observe(this@OnBoardingActivity) {
-                showHomeScreen()
+            showAddProfileImageScreenLiveData.observe(this@OnBoardingActivity) {
+                showUpdateProfileImageFragment()
             }
             checkIfUserIsUnderOngoingRegistrationProcess()
         }
@@ -89,11 +89,6 @@ class OnBoardingActivity : BaseActivity() {
 
     private fun fetchAppConfig() {
         appConfigViewModel.getAppConfigAndUserReferenceData()
-    }
-
-    private fun showHomeScreen() {
-        MainActivity.startActivity(this, getScreenName())
-        finish()
     }
 
     private fun showSignupOrLoginFragment(shouldShowReverseEntryAnimation: Boolean) {
@@ -120,6 +115,15 @@ class OnBoardingActivity : BaseActivity() {
             shouldShowEntryAndExitAnimations = true,
             shouldShowReverseEntryAnimation = false,
             PendingApprovalFragment.TAG
+        )
+    }
+
+    private fun showUpdateProfileImageFragment() {
+        showFragment(
+            UpdateProfileImageFragment.getInstance(getScreenName(), isEdit = false),
+            shouldShowEntryAndExitAnimations = true,
+            shouldShowReverseEntryAnimation = false,
+            UpdateProfileImageFragment.TAG
         )
     }
 

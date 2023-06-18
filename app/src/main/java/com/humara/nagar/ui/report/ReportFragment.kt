@@ -1,8 +1,6 @@
 package com.humara.nagar.ui.report
 
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.graphics.Typeface
 import android.location.Address
 import android.location.Geocoder
@@ -12,10 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -24,14 +19,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
-import com.humara.nagar.BuildConfig
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.ImagePreviewAdapter
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseActivity
+import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentReportBinding
-import com.humara.nagar.permissions.PermissionFragment
 import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.common.GenericStatusDialog
@@ -47,11 +42,10 @@ import com.skydoves.balloon.BalloonSizeSpec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.IOException
 import java.util.*
 
-class ReportFragment : PermissionFragment(), MediaSelectionListener {
+class ReportFragment : BaseFragment(), MediaSelectionListener {
     private var _binding: FragmentReportBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -61,31 +55,13 @@ class ReportFragment : PermissionFragment(), MediaSelectionListener {
     private val appConfigViewModel by viewModels<AppConfigViewModel> {
         ViewModelFactory()
     }
-    private lateinit var currentPhotoPath: String
     private lateinit var imagePreviewAdapter: ImagePreviewAdapter
     private val navController: NavController by lazy { findNavController() }
 
     companion object {
         const val TAG = "ReportFragment"
-        private const val CURRENT_PATH = "CURRENT_PATH"
         private const val maxImageAttachments = 2
         private const val maxLocationLength = 70
-    }
-
-    private val getContentLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (isFragmentAlive()) {
-            onImageSelection(result?.data)
-        }
-    }
-
-    private val takeCameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode != RESULT_OK || context == null) {
-            context?.showToast(getString(R.string.no_image_clicked), true)
-            return@registerForActivityResult
-        }
-        if (isFragmentAlive()) {
-            onImageCapture()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,9 +78,6 @@ class ReportFragment : PermissionFragment(), MediaSelectionListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentReportBinding.inflate(inflater, container, false)
-        savedInstanceState?.run {
-            currentPhotoPath = getString(CURRENT_PATH, "")
-        }
         return binding.root
     }
 
@@ -178,7 +151,6 @@ class ReportFragment : PermissionFragment(), MediaSelectionListener {
             inputComment.setInput("")
             inputLocation.setInput("")
             reportViewModel.deleteAllImages()
-            currentPhotoPath = ""
         }
     }
 
@@ -273,11 +245,11 @@ class ReportFragment : PermissionFragment(), MediaSelectionListener {
             context?.showToast(getString(R.string.imagePickingLimit), true)
             return
         }
-        MediaSelectionBottomSheet.show(parentFragmentManager, this)
+        MediaSelectionBottomSheet.show(parentFragmentManager, this, maxImageAttachments)
     }
 
     private fun checkForLocationPermission() {
-        requestPermissions(PermissionUtils.locationPermissions, object : PermissionHandler {
+        (activity as BaseActivity).requestPermissions(PermissionUtils.locationPermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
                 lifecycleScope.launch {
                     showProgress(true)
@@ -332,93 +304,13 @@ class ReportFragment : PermissionFragment(), MediaSelectionListener {
         }
     }
 
-    private fun onImageSelection(data: Intent?) {
-        data?.clipData?.let { selectedImages ->
-            val count = selectedImages.itemCount
-            if (count > maxImageAttachments - reportViewModel.imageUris.size) {
-                context?.showToast(getString(R.string.imagePickingLimit), true)
-                return
-            }
-            for (i in 0 until count) {
-                val imageUri = selectedImages.getItemAt(i).uri
-                imageUri?.let { uri ->
-                    compressImage(uri)
-                }
-            }
-        } ?: data?.data?.let {
-            compressImage(it)
-        } ?: kotlin.run {
-            context?.showToast(getString(R.string.no_image_selected), true)
-        }
-    }
-
-    private fun onImageCapture() {
-        if (this::currentPhotoPath.isInitialized && currentPhotoPath.isNotEmpty()) {
-            val imageUri = Uri.fromFile(File(currentPhotoPath))
-            compressImage(imageUri)
-        }
-    }
-
-    private fun compressImage(uri: Uri) {
-        lifecycleScope.launch {
-            reportViewModel.progressLiveData.postValue(true)
-            val compressedUri = StorageUtils.compressImageFile(requireContext(), uri)
-            reportViewModel.addImages(listOf(compressedUri))
-            reportViewModel.progressLiveData.postValue(false)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        if (this::currentPhotoPath.isInitialized) outState.putString(CURRENT_PATH, currentPhotoPath)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.REPORT_FRAGMENT
-    override fun onCameraSelection() {
-        requestPermissions(PermissionUtils.cameraPermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                if (context == null) {
-                    Logger.debugLog(TAG, "Fragment detached from the activity")
-                    return
-                }
-                clickPicture()
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //NA
-            }
-        })
-    }
-
-    private fun clickPicture() {
-        val imageFile = StorageUtils.createImageFile(requireContext())
-        currentPhotoPath = imageFile.absolutePath
-        val imageUri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID.plus(".provider"), imageFile)
-        val intent: Intent = IntentUtils.getCameraIntent(requireContext(), imageUri)
-        if (IntentUtils.hasIntent(requireContext(), intent)) {
-            takeCameraLauncher.launch(intent)
-        }
-    }
-
-    override fun onGallerySelection() {
-        requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                if (context == null) {
-                    Logger.debugLog(TAG, "fragment detached from the activity")
-                    return
-                }
-                val intent = IntentUtils.getImageGalleryIntent()
-                getContentLauncher.launch(intent)
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //NA
-            }
-        })
+    override fun onMediaSelection(uris: List<Uri>) {
+        reportViewModel.addImages(uris)
     }
 }

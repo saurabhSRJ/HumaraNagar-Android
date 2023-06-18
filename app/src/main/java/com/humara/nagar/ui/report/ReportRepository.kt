@@ -28,9 +28,7 @@ class ReportRepository(application: Application) : BaseRepository(application) {
         val imageParts = ArrayList<MultipartBody.Part>()
         for (filePath in imageUris) {
             val imagePart = NetworkUtils.createImageMultipart(filePath, NetworkConstants.NetworkFormDataConstants.IMAGE)
-            if (imagePart != null) {
-                imageParts.add(imagePart)
-            }
+            imageParts.add(imagePart)
         }
         apiService.postComplaint(partMap, imageParts)
     }

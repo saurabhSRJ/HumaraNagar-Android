@@ -39,7 +39,7 @@ class PollOptionsAdapter(val listener: (Int) -> Unit) : RecyclerView.Adapter<Pol
             binding.run {
                 val layerDrawable = clContainer.background as LayerDrawable
                 val drawable = layerDrawable.findDrawableByLayerId(R.id.indicator) as ClipDrawable
-                if (postInfo.isAllowedToVote()) {
+                if (postInfo.isActive()) {
                     ivOption.visibility = View.VISIBLE
                     clContainer.isEnabled = true
                     clContainer.setNonDuplicateClickListener {

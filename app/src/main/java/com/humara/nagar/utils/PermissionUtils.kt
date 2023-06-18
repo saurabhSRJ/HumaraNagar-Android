@@ -7,9 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
-import com.humara.nagar.permissions.PermissionFragment
-import com.humara.nagar.permissions.PermissionHandler
 
 object PermissionUtils {
     val storagePermissions = getStoragePermissions()
@@ -70,12 +67,6 @@ object PermissionUtils {
 
     fun hasPermission(context: Context, permission: String): Boolean {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-    }
-
-    fun askPermissions(fragmentManager: FragmentManager, permissions: Array<String>, permissionHandler: PermissionHandler, isPermissionNecessary: Boolean = true) {
-        val askPermissionFragment = PermissionFragment()
-        fragmentManager.beginTransaction().add(askPermissionFragment, PermissionFragment.TAG).commitNow()
-        askPermissionFragment.requestPermissions(permissions, permissionHandler, isPermissionNecessary)
     }
 
     /**

@@ -70,7 +70,7 @@ class MainActivity : BaseActivity() {
 
     private fun checkAndRequestNotificationPermission() {
         if (NotificationManagerCompat.from(this).areNotificationsEnabled().not()) {
-            PermissionUtils.askPermissions(supportFragmentManager, PermissionUtils.notificationPermissions, object : PermissionHandler {
+            requestPermissions(PermissionUtils.notificationPermissions, object : PermissionHandler {
                 override fun onPermissionGranted() {
                     setUpPushNotificationToken()
                 }

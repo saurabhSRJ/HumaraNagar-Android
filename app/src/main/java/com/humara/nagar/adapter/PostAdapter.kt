@@ -204,7 +204,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
         pollPostBinding.apply {
             post.info?.let {
                 tvQuestion.text = it.question
-                tvSubTitle.text = if (it.isAllowedToVote()) context.getString(R.string.you_can_see_how_people_vote) else context.resources.getQuantityString(R.plurals.n_votes, it.totalVotes,
+                tvSubTitle.text = if (it.isActive()) context.getString(R.string.you_can_see_how_people_vote) else context.resources.getQuantityString(R.plurals.n_votes, it.totalVotes,
                     it.totalVotes)
                 rvOptions.apply {
                     val pollOptionsAdapter = PollOptionsAdapter { optionId ->
@@ -213,6 +213,13 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                     adapter = pollOptionsAdapter
                     setHasFixedSize(true)
                     pollOptionsAdapter.setData(it)
+                }
+                if (it.isActive()) {
+                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(context, it.expiryTime)
+                    tvExpiryTime.setTextColor(context.getColor(R.color.grey_585C60))
+                } else {
+                    tvExpiryTime.text = context.getString(R.string.completed)
+                    tvExpiryTime.setTextColor(context.getColor(R.color.stroke_green))
                 }
             }
         }

@@ -13,10 +13,10 @@ object NetworkUtils {
         return this.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
-    fun createImageMultipart(uri: Uri, fieldName: String): MultipartBody.Part? {
-        val file = uri.path?.let { File(it) }
-        val requestBody = file?.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        return requestBody?.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
+    fun createImageMultipart(uri: Uri, fieldName: String): MultipartBody.Part {
+        val file = File(uri.path ?: "")
+        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        return requestBody.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
     }
 
     fun createDocumentMultiPart(uri: Uri, fieldName: String): MultipartBody.Part? {

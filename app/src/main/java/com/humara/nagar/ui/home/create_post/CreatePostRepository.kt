@@ -32,7 +32,7 @@ class CreatePostRepository(application: Application) : BaseRepository(applicatio
             put(NetworkConstants.NetworkFormDataConstants.CAPTION, caption.createPartFromString())
         }
         val imagePart = ArrayList<MultipartBody.Part>()
-        NetworkUtils.createImageMultipart(imageUri, NetworkConstants.NetworkFormDataConstants.IMAGE)?.let {
+        NetworkUtils.createImageMultipart(imageUri, NetworkConstants.NetworkFormDataConstants.IMAGE).let {
             imagePart.add(it)
         }
         apiService.createImagePost(partMap, imagePart)

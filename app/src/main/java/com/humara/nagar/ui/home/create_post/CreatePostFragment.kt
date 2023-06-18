@@ -10,7 +10,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResultListener
@@ -19,15 +18,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.humara.nagar.BuildConfig
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsPreviewAdapter
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentCreatePostBinding
-import com.humara.nagar.permissions.PermissionFragment
-import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.common.MediaSelectionBottomSheet
 import com.humara.nagar.ui.common.MediaSelectionListener
 import com.humara.nagar.ui.home.HomeFragment
@@ -35,15 +31,13 @@ import com.humara.nagar.ui.home.HomeViewModel
 import com.humara.nagar.ui.home.create_post.model.PollRequest
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
-import com.humara.nagar.ui.report.ReportFragment
 import com.humara.nagar.utils.*
 import kotlinx.coroutines.launch
 
-class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
+class CreatePostFragment : BaseFragment(), MediaSelectionListener {
     companion object {
         const val POLL_RESULT_REQUEST = "poll_request"
         const val POLL_DATA = "poll_data"
-        private const val CAMERA_IMAGE_URI = "camera_image_uri"
     }
 
     private lateinit var binding: FragmentCreatePostBinding
@@ -57,19 +51,12 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
         ViewModelFactory()
     }
     private val args: CreatePostFragmentArgs by navArgs()
-    private var cameraImageUri: Uri? = null
 
     private val getContentLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (isFragmentAlive()) {
             result.data?.data?.let { documentUri ->
                 onDocumentSelection(documentUri)
             }
-        }
-    }
-
-    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
-        if (success) {
-            compressImageAndShowPreview(cameraImageUri)
         }
     }
 
@@ -83,9 +70,6 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCreatePostBinding.inflate(inflater, container, false)
-        savedInstanceState?.run {
-            cameraImageUri = this.parcelable(CAMERA_IMAGE_URI)
-        }
         return binding.root
     }
 
@@ -249,6 +233,7 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
                     val pollOptionsAdapter = PollOptionsPreviewAdapter(poll.options)
                     adapter = pollOptionsAdapter
                 }
+                tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), it.expiryTime)
             }
         } ?: run {
             binding.layoutPollPreview.root.visibility = View.GONE
@@ -326,51 +311,15 @@ class CreatePostFragment : PermissionFragment(), MediaSelectionListener {
                     val pollOptionsAdapter = PollOptionsPreviewAdapter(poll.getOptionsText())
                     adapter = pollOptionsAdapter
                 }
+                tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), poll.expiryTime)
             }
         }
     }
 
-    override fun onCameraSelection() {
-        requestPermissions(PermissionUtils.cameraPermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                if (context == null) {
-                    Logger.debugLog(ReportFragment.TAG, "Fragment detached from the activity")
-                    return
-                }
-                clickPicture()
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //NA
-            }
-        })
-    }
-
-    private fun clickPicture() {
-        val imageFile = StorageUtils.createImageFile(requireContext())
-        cameraImageUri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID.plus(".provider"), imageFile)
-        takePictureLauncher.launch(cameraImageUri)
-    }
-
-    override fun onGallerySelection() {
-        requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
-            override fun onPermissionGranted() {
-                if (context == null) {
-                    Logger.debugLog(ReportFragment.TAG, "fragment detached from the activity")
-                    return
-                }
-                pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-
-            override fun onPermissionDenied(permissions: List<String>) {
-                //NA
-            }
-        })
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        if (cameraImageUri != null) outState.putParcelable(CAMERA_IMAGE_URI, cameraImageUri)
+    override fun onMediaSelection(uris: List<Uri>) {
+        if (uris.isNotEmpty()) {
+            createPostViewModel.setImageUri(uris[0])
+        }
     }
 
     override fun getScreenName(): String = AnalyticsData.ScreenName.CREATE_POST_FRAGMENT
