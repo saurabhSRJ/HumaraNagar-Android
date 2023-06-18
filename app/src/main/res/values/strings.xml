@@ -157,7 +157,9 @@
     <string name="profile_photo_selection_title">In case you are shy we have selected a cool avatar for you. You can edit this later.</string>
     <string name="edit_photo">Edit Photo</string>
     <string name="n_days_left">%dd left</string>
+    <string name="n_hours_left">%dh left</string>
     <string name="completed">Completed</string>
+    <string name="share_post_caption">"Checkout this post by %1$s on Humara Nagar. %2$s</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

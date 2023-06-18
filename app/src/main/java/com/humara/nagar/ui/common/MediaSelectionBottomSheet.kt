@@ -60,7 +60,9 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
         }
     }
 
-    // Registers a photo picker activity launcher in single-select mode.
+    /* Registers a photo picker activity launcher in single-select mode. Photo picker is available on Android 11 and later.
+       If the photo picker isn't available on a device, the library automatically invokes the ACTION_OPEN_DOCUMENT intent action instead.
+    */
     private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         // Callback is invoked after the user selects a media item or closes the photo picker.
         uri?.let {
@@ -76,11 +78,35 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
         onImageSelection(result?.data)
     }
 
+    private var pickMultipleMediaLauncher: ActivityResultLauncher<PickVisualMediaRequest>? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.run {
+            maxSelectionItems = getInt(MAX_SELECTION, 1)
+        }
+        savedInstanceState?.run {
+            cameraImageUri = this.parcelable(CAMERA_IMAGE_URI)
+        }
+        if (maxSelectionItems > 1) {
+            pickMultipleMediaLauncher = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(maxSelectionItems)) { uris ->
+                if (uris.isNotEmpty()) {
+                    compressImage(uris)
+                } else {
+                    context?.showToast(getString(R.string.no_image_selected), true)
+                    dismiss()
+                    return@registerForActivityResult
+                }
+            }
+        }
+    }
+
     private fun onImageSelection(data: Intent?) {
         data?.clipData?.let { selectedImages ->
             val count = selectedImages.itemCount
             if (count > maxSelectionItems) {
                 context?.showToast(getString(R.string.imagePickingLimit), true)
+                dismiss()
                 return
             }
             val uris = mutableListOf<Uri>()
@@ -99,12 +125,6 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = BottomSheetImagePickerBinding.inflate(inflater, container, false)
         isCancelable = true
-        savedInstanceState?.run {
-            cameraImageUri = this.parcelable(CAMERA_IMAGE_URI)
-        }
-        arguments?.run {
-            maxSelectionItems = getInt(MAX_SELECTION, 1)
-        }
         return binding.root
     }
 
@@ -147,7 +167,11 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
                 if (maxSelectionItems == 1) {
                     pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 } else {
-                    getContentLauncher.launch(IntentUtils.getImageGalleryIntent())
+                    if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
+                        pickMultipleMediaLauncher?.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        getContentLauncher.launch(IntentUtils.getImageGalleryIntent())
+                    }
                 }
             }
 
@@ -175,7 +199,7 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
 
     private fun clickPicture() {
         val imageFile = StorageUtils.createImageFile(requireContext())
-        cameraImageUri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID.plus(".provider"), imageFile)
+        cameraImageUri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID, imageFile)
         takePictureLauncher.launch(cameraImageUri)
     }
 

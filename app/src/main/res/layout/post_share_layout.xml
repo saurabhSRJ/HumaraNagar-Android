@@ -7,15 +7,13 @@
         android:id="@+id/cvContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         app:cardElevation="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="4dp">
+            android:paddingVertical="10dp">
 
             <ImageView
                 android:id="@+id/ivProfilePhoto"
@@ -23,7 +21,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/man_user_icon" />
+                app:srcCompat="@drawable/ic_user_image_placeholder" />
 
             <TextView
                 android:id="@+id/tvName"
@@ -53,7 +51,7 @@
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/grey_E4E4E4"
                 app:layout_constraintTop_toBottomOf="@id/ivProfilePhoto" />
 
@@ -62,9 +60,9 @@
                 style="@style/OpenSansRegular14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/grey_555555"
                 app:layout_constraintTop_toBottomOf="@id/divider"
                 tools:text="Hello, I am looking for a new career opportunity and would appreciate your support." />
@@ -73,9 +71,11 @@
                 android:id="@+id/ivPostImage"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 android:adjustViewBounds="true"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/postContent" />
 
             <include
@@ -83,7 +83,7 @@
                 layout="@layout/layout_poll_post"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/postContent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

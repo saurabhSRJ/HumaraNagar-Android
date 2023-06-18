@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.*
 
-object FileUtil {
+object FileUtils {
     private const val MAX_FILE_NAME_LENGTH = 20
     const val TAG = "FileUtil"
 
@@ -111,7 +111,7 @@ object FileUtil {
     }
 
     fun openPdfFile(context: Context, file: File) {
-        val path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID.plus(".provider"), file)
+        val path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file)
         val pdfOpeningIntent = Intent(Intent.ACTION_VIEW)
         pdfOpeningIntent.setDataAndType(path, "application/pdf")
         pdfOpeningIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

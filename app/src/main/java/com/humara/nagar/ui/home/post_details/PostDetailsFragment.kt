@@ -26,15 +26,19 @@ import com.bumptech.glide.request.target.Target
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsAdapter
+import com.humara.nagar.adapter.PollOptionsPreviewAdapter
 import com.humara.nagar.adapter.PostCommentsAdapter
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.*
+import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.home.HomeFragment
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostComments
 import com.humara.nagar.ui.home.model.PostType
+import com.humara.nagar.ui.report.ReportFragment
 import com.humara.nagar.utils.*
 
 class PostDetailsFragment : BaseFragment() {
@@ -199,8 +203,11 @@ class PostDetailsFragment : BaseFragment() {
     }
 
     private fun inflatePostDetails(post: Post) {
-        binding.nsvPost.visibility = View.VISIBLE
-        binding.tilAddComment.visibility = View.VISIBLE
+        binding.run {
+            nsvPost.visibility = View.VISIBLE
+            tilAddComment.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+        }
         when (post.type) {
             PostType.TEXT.type -> inflateTextPostDetails(post)
             PostType.IMAGE.type -> inflateImagePostDetails(post)
@@ -264,9 +271,9 @@ class PostDetailsFragment : BaseFragment() {
             handlePostFooterUI(postFooter, post)
             post.info?.medias?.getOrNull(0)?.let { url ->
                 tvDocumentPreview.visibility = View.VISIBLE
-                tvDocumentPreview.text = FileUtil.getFileName(url)
+                tvDocumentPreview.text = FileUtils.getFileName(url)
                 tvDocumentPreview.setNonDuplicateClickListener {
-                    FileUtil.openPdfUrl(requireContext(), FeedUtils.getDocumentUrl(url))
+                    FileUtils.openPdfUrl(requireContext(), FeedUtils.getDocumentUrl(url))
                 }
             }
         }
@@ -320,27 +327,27 @@ class PostDetailsFragment : BaseFragment() {
                 postDetailsViewModel.flipUserLike()
             }
             ivShare.setNonDuplicateClickListener {
-                sharePost()
+                onSharePostClick()
             }
         }
     }
 
     private fun handlePollUI(pollPostBinding: LayoutPollPostBinding, post: Post) {
-        pollPostBinding.apply {
+        pollPostBinding.run {
             post.info?.let {
                 tvQuestion.text = it.question
-                tvSubTitle.text = if (it.isActive()) getString(R.string.you_can_see_how_people_vote) else resources.getQuantityString(R.plurals.n_votes, it.totalVotes, it.totalVotes)
+                tvSubTitle.text = if (it.isAllowedToVote()) getString(R.string.you_can_see_how_people_vote) else resources.getQuantityString(R.plurals.n_votes, it.totalVotes, it.totalVotes)
                 rvOptions.apply {
                     adapter = pollOptionsAdapter
                     setHasFixedSize(true)
                 }
                 pollOptionsAdapter.setData(it)
-                if (it.isActive()) {
-                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), it.expiryTime)
-                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_585C60))
-                } else {
+                if (it.isExpired()) {
                     tvExpiryTime.text = getString(R.string.completed)
                     tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.stroke_green))
+                } else {
+                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), it.expiryTime)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_585C60))
                 }
             }
         }
@@ -377,56 +384,114 @@ class PostDetailsFragment : BaseFragment() {
         binding.postLayout.postFooter.ivLike.setImageResource(if (isLiked) R.drawable.ic_like_selected else R.drawable.ic_like_unselected)
     }
 
+    private fun onSharePostClick() {
+        (activity as BaseActivity).requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
+            override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(ReportFragment.TAG, "fragment detached from the activity")
+                    return
+                }
+                sharePost()
+            }
+
+            override fun onPermissionDenied(permissions: List<String>) {
+                //NA
+            }
+        })
+    }
+
     private fun sharePost() {
         showProgress(true)
+        inflateSharePostLayout()
+    }
+
+    private fun inflateSharePostLayout() {
         val postShareBinding = PostShareLayoutBinding.inflate(layoutInflater, binding.root as ViewGroup, true)
-        val postShareView = postShareBinding.root
         postDetailsViewModel.postDetailsLiveData.value?.let { post ->
             postShareBinding.run {
                 tvName.text = post.name
                 tvLocality.setVisibilityAndText(post.locality)
                 postContent.setVisibilityAndText(post.caption)
-                val url = post.info?.medias?.getOrNull(0)
-                if (url != null) {
-                    ivPostImage.visibility = View.VISIBLE
-                    Logger.debugLog("url: $url")
+                post.profileImage?.let {
                     Glide.with(requireContext())
-                        .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                        .load(GlideUtil.getUrlWithHeaders(post.profileImage, requireContext()))
                         .placeholder(R.drawable.ic_image_placeholder)
                         .listener(object : RequestListener<Drawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                Logger.debugLog("load failed")
-                                sharePostOnWhatsapp(postShareView)
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                addPostTypeDataBeforeSharing(post, postShareBinding)
                                 return false
                             }
 
-                            override fun onResourceReady(
-                                resource: Drawable?,
-                                model: Any?,
-                                target: Target<Drawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                Logger.debugLog("resource ready")
-                                sharePostOnWhatsapp(postShareView)
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                addPostTypeDataBeforeSharing(post, postShareBinding)
                                 return false
                             }
                         })
-                        .into(ivPostImage)
-                } else {
-                    sharePostOnWhatsapp(postShareView)
+                        .into(ivProfilePhoto)
+                } ?: run {
+                    addPostTypeDataBeforeSharing(post, postShareBinding)
                 }
             }
         }
     }
 
-    private fun sharePostOnWhatsapp(postShareView: View) {
-        Logger.debugLog("Share whatsapp")
+    private fun addPostTypeDataBeforeSharing(post: Post, binding: PostShareLayoutBinding) {
+        when (post.type) {
+            PostType.IMAGE.type -> addImagePostShareData(post, binding)
+            PostType.POLL.type -> addPollPostShareData(post, binding)
+            PostType.DOCUMENT.type, PostType.TEXT.type -> sharePostOnWhatsapp(binding.root, post.name)
+            else -> {}
+        }
+    }
+
+    private fun addImagePostShareData(post: Post, binding: PostShareLayoutBinding) {
+        val url = post.info?.medias?.getOrNull(0)
+        url?.let {
+            binding.ivPostImage.visibility = View.VISIBLE
+            Glide.with(requireContext())
+                .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                .placeholder(R.drawable.ic_image_placeholder)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        sharePostOnWhatsapp(binding.root, post.name)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        sharePostOnWhatsapp(binding.root, post.name)
+                        return false
+                    }
+                })
+                .into(binding.ivPostImage)
+        } ?: {
+            sharePostOnWhatsapp(binding.root, post.name)
+        }
+    }
+
+    private fun addPollPostShareData(post: Post, binding: PostShareLayoutBinding) {
+        binding.pollLayout.run {
+            root.visibility = View.VISIBLE
+            post.info?.let {
+                tvQuestion.text = it.question
+                tvSubTitle.text = resources.getQuantityString(R.plurals.n_votes, it.totalVotes, it.totalVotes)
+                rvOptions.apply {
+                    adapter = PollOptionsPreviewAdapter(it.getOptionsText())
+                    setHasFixedSize(true)
+                }
+                pollOptionsAdapter.setData(it)
+                if (it.isExpired()) {
+                    tvExpiryTime.text = getString(R.string.completed)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.stroke_green))
+                } else {
+                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), it.expiryTime)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_585C60))
+                }
+            }
+            sharePostOnWhatsapp(binding.root, post.name)
+        }
+    }
+
+    private fun sharePostOnWhatsapp(postShareView: View, name: String) {
         postShareView.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -438,10 +503,10 @@ class PostDetailsFragment : BaseFragment() {
                 )
                 val c = Canvas(shareProfileViaWhatsAppBitmap!!)
                 postShareView.draw(c)
-                Utils.shareViaIntent(
+                IntentUtils.shareViaIntent(
                     requireActivity(),
                     shareProfileViaWhatsAppBitmap,
-                    "Checkout this post on Humara Nagar App ".plus("https://humara.nagar/post/${args.postId}/send")
+                    getString(R.string.share_post_caption, name, "https://humara.nagar/post/${args.postId}/send")
                 )
                 (binding.root as ViewGroup).removeView(postShareView)
                 hideProgress()

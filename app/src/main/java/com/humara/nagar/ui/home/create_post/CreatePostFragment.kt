@@ -199,10 +199,10 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
     }
 
     private fun onDocumentSelection(uri: Uri) {
-        if (FileUtil.isValidDocumentSize(requireContext(), uri)) {
+        if (FileUtils.isValidDocumentSize(requireContext(), uri)) {
             lifecycleScope.launch {
                 createPostViewModel.progressLiveData.postValue(true)
-                val tempFile = FileUtil.createFileFromContentUri(requireContext(), uri)
+                val tempFile = FileUtils.createFileFromContentUri(requireContext(), uri)
                 createPostViewModel.setDocumentUri(Uri.fromFile(tempFile))
                 createPostViewModel.progressLiveData.postValue(false)
             }
@@ -213,9 +213,9 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         binding.run {
             uri?.let {
                 tvDocumentPreview.visibility = View.VISIBLE
-                tvDocumentPreview.text = FileUtil.getFileName(uri.path)
+                tvDocumentPreview.text = FileUtils.getFileName(uri.path)
                 tvDocumentPreview.setOnClickListener {
-                    FileUtil.openPdfFile(requireContext(), uri.toFile())
+                    FileUtils.openPdfFile(requireContext(), uri.toFile())
                 }
             } ?: run {
                 tvDocumentPreview.visibility = View.GONE
@@ -295,7 +295,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         binding.run {
             post.info?.medias?.getOrNull(0)?.let { url ->
                 tvDocumentPreview.visibility = View.VISIBLE
-                tvDocumentPreview.text = FileUtil.getFileName(url)
+                tvDocumentPreview.text = FileUtils.getFileName(url)
                 tvDocumentPreview.foreground = null
             }
         }

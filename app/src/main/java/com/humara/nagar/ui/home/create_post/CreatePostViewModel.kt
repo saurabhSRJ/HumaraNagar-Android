@@ -55,7 +55,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     }
 
     private fun createImagePost() = viewModelScope.launch {
-        val response = processCoroutine({ repository.createImagePost(StringUtils.replaceWhitespaces(captionLiveData.value!!.trim()), imageUriLiveData.value!!) })
+        val response = processCoroutine({ repository.createImagePost(StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: ""), imageUriLiveData.value!!) })
         response.onSuccess {
             _postCreationSuccessLiveData.postValue(true)
         }.onError {
@@ -64,7 +64,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     }
 
     private fun createDocumentPost() = viewModelScope.launch {
-        val response = processCoroutine({ repository.createDocumentPost(StringUtils.replaceWhitespaces(captionLiveData.value!!.trim()), documentUriLiveData.value!!) })
+        val response = processCoroutine({ repository.createDocumentPost(StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: ""), documentUriLiveData.value!!) })
         response.onSuccess {
             _postCreationSuccessLiveData.postValue(true)
         }.onError {
@@ -74,7 +74,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
 
     private fun createPollPost() = viewModelScope.launch {
         val pollRequest = pollRequestLiveData.value!!.apply {
-            caption = captionLiveData.value ?: ""
+            caption = StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: "")
         }
         val response = processCoroutine({ repository.createPollPost(pollRequest) })
         response.onSuccess {

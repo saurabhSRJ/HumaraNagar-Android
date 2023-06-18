@@ -1,9 +1,14 @@
 package com.humara.nagar.ui.home
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -11,21 +16,29 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.FeedItemClickListener
+import com.humara.nagar.adapter.PollOptionsPreviewAdapter
 import com.humara.nagar.adapter.PostAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentHomeBinding
+import com.humara.nagar.databinding.PostShareLayoutBinding
+import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.common.EndlessRecyclerViewScrollListener
 import com.humara.nagar.ui.home.model.Post
-import com.humara.nagar.utils.FeedUtils
-import com.humara.nagar.utils.loadUrl
-import com.humara.nagar.utils.setNonDuplicateClickListener
-import com.humara.nagar.utils.showToast
+import com.humara.nagar.ui.home.model.PostType
+import com.humara.nagar.ui.report.ReportFragment
+import com.humara.nagar.utils.*
 import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment(), FeedItemClickListener {
@@ -229,6 +242,129 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
 
     private fun showPaginationLoadError() {
         binding.paginationLoader.retry.visibility = View.VISIBLE
+    }
+
+    override fun onSharePostClick(post: Post) {
+        (activity as BaseActivity).requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
+            override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(ReportFragment.TAG, "fragment detached from the activity")
+                    return
+                }
+                inflateSharePostLayout(post)
+            }
+
+            override fun onPermissionDenied(permissions: List<String>) {
+                //NA
+            }
+        })
+    }
+
+    private fun inflateSharePostLayout(post: Post) {
+        showProgress(true)
+        val postShareBinding = PostShareLayoutBinding.inflate(layoutInflater, binding.root as ViewGroup, true)
+        postShareBinding.run {
+            tvName.text = post.name
+            tvLocality.setVisibilityAndText(post.locality)
+            postContent.setVisibilityAndText(post.caption)
+            post.profileImage?.let {
+                Glide.with(requireContext())
+                    .load(GlideUtil.getUrlWithHeaders(post.profileImage, requireContext()))
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            addPostTypeDataBeforeSharing(post, postShareBinding)
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            addPostTypeDataBeforeSharing(post, postShareBinding)
+                            return false
+                        }
+                    })
+                    .into(ivProfilePhoto)
+            } ?: run {
+                addPostTypeDataBeforeSharing(post, postShareBinding)
+            }
+        }
+    }
+
+    private fun addPostTypeDataBeforeSharing(post: Post, binding: PostShareLayoutBinding) {
+        when (post.type) {
+            PostType.IMAGE.type -> addImagePostShareData(post, binding)
+            PostType.POLL.type -> addPollPostShareData(post, binding)
+            PostType.DOCUMENT.type, PostType.TEXT.type -> sharePostOnWhatsapp(binding.root, post.name, post.postId)
+            else -> {}
+        }
+    }
+
+    private fun addImagePostShareData(post: Post, binding: PostShareLayoutBinding) {
+        val url = post.info?.medias?.getOrNull(0)
+        url?.let {
+            binding.ivPostImage.visibility = View.VISIBLE
+            Glide.with(requireContext())
+                .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                .placeholder(R.drawable.ic_image_placeholder)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                        return false
+                    }
+                })
+                .into(binding.ivPostImage)
+        } ?: {
+            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+        }
+    }
+
+    private fun addPollPostShareData(post: Post, binding: PostShareLayoutBinding) {
+        binding.pollLayout.run {
+            root.visibility = View.VISIBLE
+            post.info?.let {
+                tvQuestion.text = it.question
+                tvSubTitle.text = resources.getQuantityString(R.plurals.n_votes, it.totalVotes, it.totalVotes)
+                rvOptions.apply {
+                    adapter = PollOptionsPreviewAdapter(it.getOptionsText())
+                    setHasFixedSize(true)
+                }
+                if (it.isExpired()) {
+                    tvExpiryTime.text = getString(R.string.completed)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.stroke_green))
+                } else {
+                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), it.expiryTime)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_585C60))
+                }
+            }
+            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+        }
+    }
+
+    private fun sharePostOnWhatsapp(postShareView: View, name: String, postId: Long) {
+        postShareView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                postShareView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val shareProfileViaWhatsAppBitmap = Bitmap.createBitmap(
+                    postShareView.measuredWidth,
+                    postShareView.measuredHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val c = Canvas(shareProfileViaWhatsAppBitmap!!)
+                postShareView.draw(c)
+                IntentUtils.shareViaIntent(
+                    requireActivity(),
+                    shareProfileViaWhatsAppBitmap,
+                    getString(R.string.share_post_caption, name, "https://humara.nagar/post/${postId}/send")
+                )
+                (binding.root as ViewGroup).removeView(postShareView)
+                hideProgress()
+            }
+        })
     }
 
     override fun onDestroyView() {

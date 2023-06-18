@@ -51,7 +51,7 @@ class ComplaintStatusViewModel(application: Application, private val savedStateH
         getComplaintStatus(complaintId)
     }
 
-    private fun getComplaintStatus(id: String) = viewModelScope.launch {
+    fun getComplaintStatus(id: String) = viewModelScope.launch {
         val response = processCoroutine({ repository.getComplaintStatus(id) })
         response.onSuccess {
             _complaintStatusLiveData.postValue(it)

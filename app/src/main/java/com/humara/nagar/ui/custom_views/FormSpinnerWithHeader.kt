@@ -52,6 +52,14 @@ class FormSpinnerWithHeader @JvmOverloads constructor(context: Context, attrs: A
         binding.tvRequiredAsterisk.isVisible = text.isNullOrEmpty()
     }
 
+    fun clearInput() {
+        binding.run {
+            spinnerTV.text.clear()
+            tvRequiredAsterisk.isVisible = true
+            tvError.isVisible = false
+        }
+    }
+
     fun setOptions(options: Array<String>) {
         val adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, options)
         binding.spinnerTV.run {

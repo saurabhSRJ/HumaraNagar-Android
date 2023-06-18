@@ -39,6 +39,9 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     val showAddProfileImageScreenLiveData: LiveData<Boolean> = _showAddProfileImageScreenLiveData
     private val _addProfileImageStatusLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val addProfileImageStatusLiveData: LiveData<Boolean> = _addProfileImageStatusLiveData
+    private val _showHomeScreenLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val showHomeScreenLiveData: LiveData<Boolean> = _showHomeScreenLiveData
+    private var isNewUser: Boolean = true
 
     fun checkIfUserIsUnderOngoingRegistrationProcess() {
         _isUserUnderAnExistingRegistrationProcessLiveData.value = getUserPreference().userId != 0L
@@ -67,6 +70,7 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
                     Logger.debugLog("Saved Profile: $userInfo")
                 }
             }
+            isNewUser = loginResponse.isNewUser
             _profileCreationRequiredLiveData.postValue(loginResponse.isNewUser)
         }.onError {
             if (it.responseCode == HttpURLConnection.HTTP_BAD_REQUEST) {
@@ -137,6 +141,10 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
 
     fun onUserOnBoard() {
         AnalyticsTracker.onUserOnBoard(getApplication())
-        _showAddProfileImageScreenLiveData.value = true
+        if (isNewUser) {
+            _showAddProfileImageScreenLiveData.value = true
+        } else {
+            _showHomeScreenLiveData.value = true
+        }
     }
 }

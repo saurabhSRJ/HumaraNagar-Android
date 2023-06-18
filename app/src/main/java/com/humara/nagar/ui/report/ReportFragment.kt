@@ -146,8 +146,8 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
 
     private fun resetComplaintForm() {
         binding.run {
-            inputCategory.setInput("")
-            inputLocality.setInput("")
+            inputCategory.clearInput()
+            inputLocality.clearInput()
             inputComment.setInput("")
             inputLocation.setInput("")
             reportViewModel.deleteAllImages()
@@ -290,11 +290,13 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
                     } catch (illegalArgumentException: IllegalArgumentException) {
                         Logger.logException(TAG, illegalArgumentException, Logger.LogLevel.ERROR, true)
                     } finally {
-                        addresses?.get(0)?.let { address ->
+                        addresses?.getOrNull(0)?.let { address ->
                             val addressLine = Utils.findLargestPrefixSubstring(address.getAddressLine(0), maxLocationLength, ",")
                             Logger.debugLog(TAG, "Address: $addressLine")
                             binding.inputLocation.setInput(addressLine)
                             reportViewModel.setLocation(addressLine)
+                        } ?: {
+                            context?.showToast(getString(R.string.location_detection_error_message))
                         }
                     }
                 } ?: kotlin.run {

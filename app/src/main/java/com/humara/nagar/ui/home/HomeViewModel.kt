@@ -45,7 +45,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     private val _editPostSuccessLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
     val editPostSuccessLiveData: LiveData<Boolean> = _editPostSuccessLiveData
     private var currentPage: Int = 1
-    private val limit = 5
+    private val limit = 10
     var canLoadMoreData = true
 
     init {

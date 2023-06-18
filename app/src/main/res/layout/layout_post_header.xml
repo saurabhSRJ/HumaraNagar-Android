@@ -13,7 +13,7 @@
             android:layout_height="40dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/man_user_icon" />
+            app:srcCompat="@drawable/ic_user_image_placeholder" />
 
         <ImageButton
             android:id="@+id/ivOptions"

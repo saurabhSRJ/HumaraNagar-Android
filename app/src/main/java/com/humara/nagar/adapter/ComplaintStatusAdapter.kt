@@ -18,7 +18,7 @@ class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewH
     fun setData(steps: List<TrackingInfo>) {
         stepperList.clear()
         stepperList.addAll(steps)
-        notifyItemRangeInserted(0, stepperList.size)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

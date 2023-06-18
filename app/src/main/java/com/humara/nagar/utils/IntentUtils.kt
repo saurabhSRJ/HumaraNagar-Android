@@ -1,12 +1,20 @@
 package com.humara.nagar.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.provider.Settings
+import androidx.core.content.FileProvider
+import com.humara.nagar.BuildConfig
+import com.humara.nagar.Logger
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 object IntentUtils {
     fun hasIntent(context: Context, intent: Intent): Boolean {
@@ -33,6 +41,31 @@ object IntentUtils {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/pdf"
         }
+    }
+
+    fun shareViaIntent(activity: Activity, bitmap: Bitmap?, text: String?) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+            bitmap?.let {
+                val filesDir: File = activity.applicationContext.filesDir
+                val imageFile = File(filesDir, "JPEG_${StorageUtils.getTimestampString()}.jpeg")
+                val os: OutputStream
+                try {
+                    os = FileOutputStream(imageFile)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                    os.flush()
+                    os.close()
+                } catch (e: Exception) {
+                    Logger.logException("SharePostStorage", e, Logger.LogLevel.ERROR, true)
+                }
+                val imgBitmapUri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID, imageFile)
+                putExtra(Intent.EXTRA_STREAM, imgBitmapUri)
+                type = "image/jpeg"
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        }
+        activity.startActivity(shareIntent)
     }
 
     fun getCameraIntent(context: Context, uri: Uri): Intent {

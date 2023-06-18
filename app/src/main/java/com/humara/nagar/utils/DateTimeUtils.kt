@@ -2,11 +2,13 @@ package com.humara.nagar.utils
 
 import android.content.Context
 import android.text.format.DateUtils
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.TimeUnit
 
 object DateTimeUtils {
     /**
@@ -87,8 +89,12 @@ object DateTimeUtils {
         val instant = Instant.parse(startTime)
         val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
         val period = Period.between(dateTime.toLocalDate(), LocalDate.now())
+        val currentTimeMillis = System.currentTimeMillis()
+        val instantMillis = instant.toEpochMilli()
+        val diffInMs = currentTimeMillis - instantMillis
 
-        val days = period.days
+        val differenceHours = TimeUnit.MILLISECONDS.toHours(diffInMs)
+        val days = TimeUnit.MILLISECONDS.toDays(differenceHours).toInt()
         val weeks = days / 7
         val months = period.months
         val years = period.years
@@ -101,9 +107,6 @@ object DateTimeUtils {
                     when {
                         days < 1 -> {
                             // Within a day
-                            val currentTimeMillis = System.currentTimeMillis()
-                            val instantMillis = instant.toEpochMilli()
-                            val diffInMs = System.currentTimeMillis() - instantMillis
                             if (diffInMs <= DateUtils.MINUTE_IN_MILLIS) {
                                 context.getString(R.string.just_now)
                             } else {
@@ -133,15 +136,14 @@ object DateTimeUtils {
 
     fun getRemainingDurationForPoll(context: Context, expiryTime: String): String {
         val instant = Instant.parse(expiryTime)
-        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-        val period = Period.between(LocalDate.now(), dateTime.toLocalDate())
-        val days = period.days
-        return if (days < 1) {
-            val currentTimeMillis = System.currentTimeMillis()
-            val instantMillis = instant.toEpochMilli()
-            DateUtils.getRelativeTimeSpanString(instantMillis, currentTimeMillis, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL).toString()
+        val diffInMs = instant.toEpochMilli() - System.currentTimeMillis()
+        val differenceHours = TimeUnit.MILLISECONDS.toHours(diffInMs)
+        val differenceDays = TimeUnit.MILLISECONDS.toDays(diffInMs)
+        Logger.debugLog("days: $differenceDays, hours: $differenceHours")
+        return if (differenceHours < 24) {
+            context.getString(R.string.n_hours_left, differenceHours)
         } else {
-            context.getString(R.string.n_days_left, days)
+            context.getString(R.string.n_days_left, differenceDays)
         }
     }
 

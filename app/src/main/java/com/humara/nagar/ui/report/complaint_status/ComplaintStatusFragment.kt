@@ -73,7 +73,7 @@ class ComplaintStatusFragment : BaseFragment() {
             acknowledgementSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_acknowledgment_sent))
                 setComplaintsListReload()
-                navController.navigateUp()
+                getComplaintStatus(args.complaintId)
             }
             acknowledgementErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(errorAction = {}, dismissAction = {})
@@ -81,7 +81,7 @@ class ComplaintStatusFragment : BaseFragment() {
             finishComplaintSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_resolved))
                 setComplaintsListReload()
-                navController.navigateUp()
+                getComplaintStatus(args.complaintId)
             }
             finishComplaintErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(errorAction = {}, dismissAction = {})
@@ -151,6 +151,8 @@ class ComplaintStatusFragment : BaseFragment() {
                     locationTV.setNonDuplicateClickListener {
                         context?.startActivity(mapIntent)
                     }
+                } else {
+                    context?.showToast(getString(R.string.map_location_not_available_message))
                 }
             } else {
                 context?.showToast(getString(R.string.map_location_not_available_message))

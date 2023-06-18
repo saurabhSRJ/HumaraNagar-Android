@@ -36,8 +36,8 @@ object StorageUtils {
     }
 
     // Create a unique image file name based on timestamp
-    private fun getTimestampString(): String {
-        return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+    fun getTimestampString(): String {
+        return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
     }
 
     /**

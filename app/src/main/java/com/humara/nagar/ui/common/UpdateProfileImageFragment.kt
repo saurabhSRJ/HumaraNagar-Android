@@ -13,7 +13,6 @@ import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.databinding.FragmentAddProfilePhotoBinding
-import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.utils.loadUrl
 import com.humara.nagar.utils.setNonDuplicateClickListener
@@ -23,7 +22,9 @@ class UpdateProfileImageFragment : BaseFragment(), MediaSelectionListener {
     companion object {
         const val TAG = "AddProfilePhotoFragment"
         private const val IS_EDIT = "is_edit"
-        fun getInstance(source: String, isEdit: Boolean = true): UpdateProfileImageFragment {
+        private var successListener: () -> Unit = {}
+        fun getInstance(source: String, isEdit: Boolean = true, successListener: () -> Unit = {}): UpdateProfileImageFragment {
+            this.successListener = successListener
             return UpdateProfileImageFragment().apply {
                 arguments = Bundle().apply {
                     putString(IntentKeyConstants.SOURCE, source)
@@ -86,8 +87,7 @@ class UpdateProfileImageFragment : BaseFragment(), MediaSelectionListener {
                 if (isEditFlow) {
                     findNavController().navigateUp()
                 } else {
-                    MainActivity.startActivity(requireContext(), getScreenName())
-                    activity?.finish()
+                    successListener()
                 }
             }
         }

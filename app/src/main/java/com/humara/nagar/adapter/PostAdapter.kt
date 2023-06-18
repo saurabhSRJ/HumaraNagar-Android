@@ -135,9 +135,9 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                 handleCommonPostContent(postContent, item)
                 item.info?.medias?.getOrNull(0)?.let { url ->
                     tvDocumentPreview.visibility = View.VISIBLE
-                    tvDocumentPreview.text = FileUtil.getFileName(url)
+                    tvDocumentPreview.text = FileUtils.getFileName(url)
                     tvDocumentPreview.setNonDuplicateClickListener {
-                        FileUtil.openPdfUrl(context, FeedUtils.getDocumentUrl(url))
+                        FileUtils.openPdfUrl(context, FeedUtils.getDocumentUrl(url))
                     }
                 }
                 handlePostFooterUI(postFooter, item, adapterPosition)
@@ -191,7 +191,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                 }
                 ivLike.setImageResource(if (post.hasUserLike()) R.drawable.ic_like_selected else R.drawable.ic_like_unselected)
                 ivShare.setOnClickListener {
-
+                    listener.onSharePostClick(post)
                 }
                 ivComment.setNonDuplicateClickListener {
                     it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(post.postId, source))
@@ -204,7 +204,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
         pollPostBinding.apply {
             post.info?.let {
                 tvQuestion.text = it.question
-                tvSubTitle.text = if (it.isActive()) context.getString(R.string.you_can_see_how_people_vote) else context.resources.getQuantityString(R.plurals.n_votes, it.totalVotes,
+                tvSubTitle.text = if (it.isAllowedToVote()) context.getString(R.string.you_can_see_how_people_vote) else context.resources.getQuantityString(R.plurals.n_votes, it.totalVotes,
                     it.totalVotes)
                 rvOptions.apply {
                     val pollOptionsAdapter = PollOptionsAdapter { optionId ->
@@ -214,12 +214,12 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                     setHasFixedSize(true)
                     pollOptionsAdapter.setData(it)
                 }
-                if (it.isActive()) {
-                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(context, it.expiryTime)
-                    tvExpiryTime.setTextColor(context.getColor(R.color.grey_585C60))
-                } else {
+                if (it.isExpired()) {
                     tvExpiryTime.text = context.getString(R.string.completed)
                     tvExpiryTime.setTextColor(context.getColor(R.color.stroke_green))
+                } else {
+                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(context, it.expiryTime)
+                    tvExpiryTime.setTextColor(context.getColor(R.color.grey_585C60))
                 }
             }
         }
@@ -253,4 +253,6 @@ interface FeedItemClickListener {
     fun onEditPostClick(post: Post)
 
     fun onDeletePostClick(post: Post)
+
+    fun onSharePostClick(post: Post)
 }
