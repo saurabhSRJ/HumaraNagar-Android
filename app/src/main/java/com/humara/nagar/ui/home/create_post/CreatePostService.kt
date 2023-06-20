@@ -27,4 +27,8 @@ interface CreatePostService {
 
     @POST(NetworkConstants.NetworkAPIConstants.POLL_POST)
     suspend fun createPollPost(@Body request: PollRequest): NetworkResponse<Any>
+
+    @Multipart
+    @POST(NetworkConstants.NetworkAPIConstants.VIDEO_POST)
+    suspend fun createVideoPost(@PartMap partMap: MutableMap<String, RequestBody>, @Part video: ArrayList<MultipartBody.Part>): NetworkResponse<Any>
 }

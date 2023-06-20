@@ -27,6 +27,9 @@
             app:destination="@id/createPostFragment"
             app:enterAnim="@anim/slide_in_from_bottom"
             app:popExitAnim="@anim/slide_out_to_bottom" />
+        <action
+            android:id="@+id/action_homeFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/fullImagePreviewFragment"
@@ -65,6 +68,9 @@
             android:autoVerify="true"
             app:action="android.intent.action.MY_ACTION"
             app:uri="https://humara.nagar/post/{post_id}/{source}" />
+        <action
+            android:id="@+id/action_postDetailsFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPostFragment"
@@ -85,9 +91,24 @@
             android:name="post_id"
             android:defaultValue="0L"
             app:argType="long" />
+        <action
+            android:id="@+id/action_createPostFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/createPollFragment"
         android:name="com.humara.nagar.ui.home.create_post.CreatePollFragment"
         android:label="CreatePollFragment" />
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.humara.nagar.ui.common.VideoPlayerFragment"
+        android:label="VideoPlayerFragment">
+        <argument
+            android:name="video_uri"
+            app:argType="android.net.Uri" />
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -24,4 +24,10 @@ object NetworkUtils {
         val requestBody = file?.asRequestBody("application/pdf".toMediaTypeOrNull())
         return requestBody?.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
     }
+
+    fun createVideoMultiPart(uri: Uri, fieldName: String): MultipartBody.Part? {
+        val file = uri.path?.let { File(it) }
+        val requestBody = file?.asRequestBody("video/mp4".toMediaTypeOrNull())
+        return requestBody?.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
+    }
 }

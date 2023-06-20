@@ -68,6 +68,11 @@ class SplashActivity : BaseActivity() {
         finish()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Logger.debugLog("onNewIntent called")
+    }
+
     private fun initConfig() {
         if (getUserPreference().isUserLoggedIn) {
             appConfigViewModel.getAppConfigAndUserReferenceData()

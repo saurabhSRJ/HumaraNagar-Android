@@ -156,6 +156,14 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:visibility="visible" />
+
+                    <include
+                        android:id="@+id/videoPreview"
+                        layout="@layout/layout_video_preview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageButton

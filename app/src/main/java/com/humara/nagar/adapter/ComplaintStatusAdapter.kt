@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.R
 import com.humara.nagar.databinding.StepperItemBinding
@@ -46,7 +45,7 @@ class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewH
                 else
                     barView.setImageResource(R.drawable.stepper_dotted_bar)
                 //handle ui  for last item
-                if (adapterPosition == stepperList.size -1) {
+                if (adapterPosition == stepperList.size - 1) {
                     barView.visibility = View.GONE
                     updateDateTv.visibility = View.GONE
                 } else {

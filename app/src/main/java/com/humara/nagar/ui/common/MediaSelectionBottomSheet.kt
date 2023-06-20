@@ -164,6 +164,7 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
                     Logger.debugLog(ReportFragment.TAG, "fragment detached from the activity")
                     return
                 }
+                Logger.debugLog("media selection available: ${ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()}")
                 if (maxSelectionItems == 1) {
                     pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 } else {

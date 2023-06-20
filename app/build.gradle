@@ -60,6 +60,11 @@ android {
     kotlin {
         jvmToolchain(11)
     }
+    kotlinOptions {
+        freeCompilerArgs += [
+                '-Xjvm-default=enable'
+        ]
+    }
     buildFeatures {
         dataBinding true
     }
@@ -107,10 +112,15 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
     //shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    //CameraX dependencies
-    implementation "androidx.camera:camera-core:$rootProject.camerax_version"
-    implementation "androidx.camera:camera-camera2:$rootProject.camerax_version"
-    implementation "androidx.camera:camera-lifecycle:$rootProject.camerax_version"
+//    //ExoPlayer
+//    implementation "androidx.media3:media3-exoplayer:$rootProject.exoPlayerVersion"
+//    implementation "androidx.media3:media3-ui:$rootProject.exoPlayerVersion"
+//    implementation 'com.github.danylovolokh:video-player-manager:0.2.0'
+    def kohii_version = "1.1.0.2011003-RC2"
+    implementation "im.ene.kohii:kohii-core:${kohii_version}" // core library
+    implementation "im.ene.kohii:kohii-exoplayer:${kohii_version}" // default support for ExoPlayer
+    implementation "com.google.android.exoplayer:exoplayer:2.11.3"
+    // required ExoPlayer implementation.
     //test dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

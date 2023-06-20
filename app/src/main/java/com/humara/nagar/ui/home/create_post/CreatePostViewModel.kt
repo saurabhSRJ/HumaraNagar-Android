@@ -18,20 +18,26 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
         private const val CAPTION = "caption"
         private const val DOCUMENT_URI = "document_uri"
         private const val IMAGE_URI = "image_uri"
+        private const val VIDEO_URI = "video_uri"
         private const val POLL_REQUEST = "poll_request"
         private const val ATTACHMENT_AVAILABLE = "attachment_available"
         private const val POST_ENABLED = "post_enabled"
+        private const val THUMBNAIL_URI = "thumbnail_uri"
     }
 
     private val repository = CreatePostRepository(application)
     private val captionLiveData: LiveData<String> = savedStateHandle.getLiveData(CAPTION)
     val documentUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(DOCUMENT_URI)
     val imageUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(IMAGE_URI)
+    val videoUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(VIDEO_URI)
+    val thumbnailUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(THUMBNAIL_URI)
     val pollRequestLiveData: LiveData<PollRequest> = savedStateHandle.getLiveData(POLL_REQUEST)
     val attachmentAvailableLivedata: LiveData<Boolean> = savedStateHandle.getLiveData(ATTACHMENT_AVAILABLE)
     private val _postCreationSuccessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val postCreationSuccessLiveData: LiveData<Boolean> = _postCreationSuccessLiveData
     val postButtonStateLiveData: LiveData<Boolean> = savedStateHandle.getLiveData(POST_ENABLED)
+    private val _attachmentParsingErrorLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val attachmentParsingErrorLiveData: LiveData<Boolean> = _attachmentParsingErrorLiveData
 
     fun createPost() {
         if (imageUriLiveData.value != null) {
@@ -40,6 +46,8 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
             createDocumentPost()
         } else if (pollRequestLiveData.value != null) {
             createPollPost()
+        } else if (videoUriLiveData.value != null) {
+            createVideoPost()
         } else if (captionLiveData.value != null) {
             createTextPost()
         }
@@ -72,6 +80,15 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
         }
     }
 
+    private fun createVideoPost() = viewModelScope.launch {
+        val response = processCoroutine({ repository.createVideoPost(StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: ""), videoUriLiveData.value!!) })
+        response.onSuccess {
+            _postCreationSuccessLiveData.postValue(true)
+        }.onError {
+            errorLiveData.postValue(it)
+        }
+    }
+
     private fun createPollPost() = viewModelScope.launch {
         val pollRequest = pollRequestLiveData.value!!.apply {
             caption = StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: "")
@@ -88,6 +105,8 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
         savedStateHandle[DOCUMENT_URI] = null
         savedStateHandle[IMAGE_URI] = null
         savedStateHandle[POLL_REQUEST] = null
+        savedStateHandle[VIDEO_URI] = null
+        savedStateHandle[THUMBNAIL_URI] = null
         updateViewStates()
     }
 
@@ -106,13 +125,26 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
         updateViewStates()
     }
 
+    fun setVideoUri(uri: Uri) {
+        savedStateHandle[VIDEO_URI] = uri
+        updateViewStates()
+    }
+
     fun setPollData(pollRequest: PollRequest) {
         savedStateHandle[POLL_REQUEST] = pollRequest
         updateViewStates()
     }
 
+    fun setThumbnailUri(uri: Uri) {
+        savedStateHandle[THUMBNAIL_URI] = uri
+    }
+
+    fun setAttachmentError() {
+        _attachmentParsingErrorLiveData.value = true
+    }
+
     private fun updateViewStates() {
-        val attachmentAvailable = imageUriLiveData.value == null && documentUriLiveData.value == null && pollRequestLiveData.value == null
+        val attachmentAvailable = imageUriLiveData.value == null && documentUriLiveData.value == null && pollRequestLiveData.value == null && videoUriLiveData.value == null
         savedStateHandle[ATTACHMENT_AVAILABLE] = attachmentAvailable.not()
         savedStateHandle[POST_ENABLED] = attachmentAvailableLivedata.value == true || captionLiveData.value.isNullOrEmpty().not()
     }

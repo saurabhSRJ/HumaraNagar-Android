@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.humara.nagar.KohiiProvider
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.FeedItemClickListener
@@ -39,6 +40,8 @@ import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.ui.report.ReportFragment
 import com.humara.nagar.utils.*
+import kohii.v1.core.MemoryMode
+import kohii.v1.exoplayer.Kohii
 import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment(), FeedItemClickListener {
@@ -52,7 +55,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     private val postAdapter: PostAdapter by lazy {
-        PostAdapter(requireContext(), this)
+        PostAdapter(kohii, requireContext(), this)
     }
     private val navController: NavController by lazy {
         findNavController()
@@ -61,6 +64,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
         ViewModelFactory()
     }
     private lateinit var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var kohii: Kohii
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -88,8 +92,15 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 remove<Long>(DELETE_POST)
             }
         }
+        setUpVideoPlayer()
         initViewModelAndObservers()
         initView()
+    }
+
+    private fun setUpVideoPlayer() {
+        kohii = KohiiProvider.get(requireContext())
+        kohii.register(this, memoryMode = MemoryMode.HIGH)
+            .addBucket(binding.rvPost)
     }
 
     private fun initViewModelAndObservers() {

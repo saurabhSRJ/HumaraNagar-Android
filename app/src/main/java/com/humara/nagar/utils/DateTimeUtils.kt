@@ -2,7 +2,6 @@ package com.humara.nagar.utils
 
 import android.content.Context
 import android.text.format.DateUtils
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -139,7 +138,6 @@ object DateTimeUtils {
         val diffInMs = instant.toEpochMilli() - System.currentTimeMillis()
         val differenceHours = TimeUnit.MILLISECONDS.toHours(diffInMs)
         val differenceDays = TimeUnit.MILLISECONDS.toDays(diffInMs)
-        Logger.debugLog("days: $differenceDays, hours: $differenceHours")
         return if (differenceHours < 24) {
             context.getString(R.string.n_hours_left, differenceHours)
         } else {

@@ -71,12 +71,31 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/postContent" />
 
+            <FrameLayout
+                android:id="@+id/playerViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/postFooter"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintTop_toBottomOf="@id/postContent" />
+
+            <include
+                android:id="@+id/videoPreview"
+                layout="@layout/layout_video_preview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/playerViewContainer"
+                app:layout_constraintTop_toTopOf="@id/playerViewContainer" />
+
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/postBarrier"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="ivPostImage, pollLayout, tvDocumentPreview" />
+                app:constraint_referenced_ids="ivPostImage, pollLayout, tvDocumentPreview, playerViewContainer" />
 
             <include
                 android:id="@+id/postFooter"

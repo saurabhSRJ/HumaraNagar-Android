@@ -9,37 +9,40 @@ import android.provider.OpenableColumns
 import androidx.core.content.FileProvider
 import com.humara.nagar.BuildConfig
 import com.humara.nagar.Logger
+import com.humara.nagar.R
 import com.humara.nagar.constants.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.*
 
 object FileUtils {
-    private const val MAX_FILE_NAME_LENGTH = 20
     const val TAG = "FileUtil"
+    private const val MAX_FILE_NAME_LENGTH = 20
+    private const val TEMP_FILE_NAME_PREFIX = BuildConfig.APPLICATION_ID.plus("_document")
+    private const val TEMP_FILE_NAME_SUFFIX = ".pdf"
+    private const val TEMP_FILE_NAME_FULL = TEMP_FILE_NAME_PREFIX.plus(TEMP_FILE_NAME_SUFFIX)
 
-    suspend fun createFileFromContentUri(context: Context, uri: Uri) = withContext(Dispatchers.IO) {
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val fileName: String = getFileName(context, uri)
-        val splitName: Array<String> = splitFileName(fileName)
-        var tempFile = File.createTempFile(splitName[0], splitName[1])
-        tempFile = rename(tempFile, fileName)
-        tempFile.deleteOnExit()
-        var out: FileOutputStream? = null
+    suspend fun createTempUriFromContentUri(context: Context, uri: Uri): Uri? = withContext(Dispatchers.IO) {
         try {
-            out = FileOutputStream(tempFile)
+            val inputStream = context.contentResolver.openInputStream(uri)
+            var tempFile: File = File.createTempFile(TEMP_FILE_NAME_PREFIX, TEMP_FILE_NAME_SUFFIX)
+            val newFile: File? = rename(tempFile, TEMP_FILE_NAME_FULL)
+            tempFile = newFile ?: return@withContext null
+            val outputStream = FileOutputStream(tempFile)
+            copyStreamToFile(inputStream, outputStream)
+            inputStream?.close()
+            Uri.fromFile(tempFile)
         } catch (e: FileNotFoundException) {
             Logger.logException(TAG, e, Logger.LogLevel.ERROR, true)
+            return@withContext null
         }
-        out?.let {
-            copyStreamToFile(inputStream, out)
-            inputStream?.close()
-        }
-        out?.close()
-        tempFile
     }
 
-    private fun getFileName(context: Context, uri: Uri): String {
+    /**
+     * Get the file's display name from content uri
+     * @return display name if content uri else empty string
+     */
+    fun getFileName(context: Context, uri: Uri): String {
         var result = ""
         if (uri.scheme == "content") {
             context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
@@ -49,7 +52,7 @@ object FileUtils {
                 }
             }
         }
-        return result
+        return StringUtils.showDotStringAfterLimitReached(MAX_FILE_NAME_LENGTH, result)
     }
 
     fun getFileName(url: String?): String {
@@ -63,47 +66,43 @@ object FileUtils {
         return StringUtils.showDotStringAfterLimitReached(MAX_FILE_NAME_LENGTH, result)
     }
 
-    private fun splitFileName(fileName: String): Array<String> {
-        var name = fileName
-        var extension = ""
-        val i = fileName.lastIndexOf(".")
-        if (i != -1) {
-            name = fileName.substring(0, i)
-            extension = fileName.substring(i)
-        }
-        return arrayOf(name, extension)
-    }
-
-    private fun rename(file: File, newName: String): File {
+    fun rename(file: File, newName: String): File? {
         val newFile = File(file.parent, newName)
-        if (newFile != file) {
-            if (newFile.exists() && newFile.delete()) {
+        try {
+            if (newFile.exists() && !newFile.delete()) {
+                Logger.debugLog("File delete operation failed")
+                return null
+            } else {
                 Logger.debugLog("Delete old $newName file")
             }
+
             if (file.renameTo(newFile)) {
                 Logger.debugLog("Rename file to $newName")
+                return newFile
+            } else {
+                Logger.debugLog("Rename file operation failed")
             }
+        } catch (e: IOException) {
+            Logger.debugLog("Exception in delete or rename file operation: ${e.message}")
         }
-        return newFile
+        return null
     }
 
-    private fun copyStreamToFile(inputStream: InputStream?, outputStream: OutputStream) {
-        inputStream?.use { input ->
+    fun copyStreamToFile(inputStream: InputStream?, outputStream: OutputStream) {
+        /*
+            use extension executes the given block function on this resource and then closes it down correctly whether an exception is thrown or not.
+            This technique is also known as try-with-resources in the JVM community
+         */
+        inputStream?.let { input ->
             outputStream.use { output ->
-                val buffer = ByteArray(4 * 1024) // buffer size
-                while (true) {
-                    val byteCount = input.read(buffer)
-                    if (byteCount < 0) break
-                    output.write(buffer, 0, byteCount)
-                }
-                output.flush()
+                input.copyTo(output)
             }
         }
     }
 
     fun isValidDocumentSize(context: Context, uri: Uri): Boolean {
-        return if (getDocumentSize(context, uri) > Constants.MAX_DOCUMENT_SIZE_IN_BYTES) {
-            context.showToast("Maximum file size should be 4MB", true)
+        return if (getMediaSize(context, uri) > Constants.MAX_DOCUMENT_SIZE_IN_BYTES) {
+            context.showToast(context.getString(R.string.document_file_size_error_message, Constants.MAX_DOCUMENT_SIZE_IN_MB), true)
             false
         } else {
             true
@@ -118,7 +117,7 @@ object FileUtils {
         try {
             context.startActivity(pdfOpeningIntent)
         } catch (ignore: ActivityNotFoundException) {
-            context.showToast("Error opening file", true)
+            context.showToast(context.getString(R.string.error_opening_file))
         }
     }
 
@@ -129,14 +128,14 @@ object FileUtils {
             pdfOpeningIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context.startActivity(pdfOpeningIntent)
         } catch (ex: Exception) {
-            context.showToast("Error opening file")
+            context.showToast(context.getString(R.string.error_opening_file))
         }
     }
 
     /**
      * @returns the document size in bytes
      */
-    private fun getDocumentSize(context: Context, uri: Uri): Int {
+    fun getMediaSize(context: Context, uri: Uri): Int {
         val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null, null)
         var size: Int = Int.MAX_VALUE
         cursor?.use {

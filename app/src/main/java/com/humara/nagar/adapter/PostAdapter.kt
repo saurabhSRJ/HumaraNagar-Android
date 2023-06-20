@@ -1,6 +1,7 @@
 package com.humara.nagar.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +18,11 @@ import com.humara.nagar.ui.home.HomeFragmentDirections
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.utils.*
+import kohii.v1.core.Common
+import kohii.v1.core.Playback
+import kohii.v1.exoplayer.Kohii
 
-class PostAdapter(val context: Context, val listener: FeedItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostAdapter(private val kohii: Kohii, val context: Context, val listener: FeedItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val TEXT_POST = 0
         const val IMAGE_POST = 2
@@ -62,6 +66,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
             IMAGE_POST -> ImagePostViewHolder(binding)
             POLLING_POST -> PollingPostViewHolder(binding)
             DOCUMENT_POST -> DocumentPostViewHolder(binding)
+            VIDEO_POST -> VideoViewHolder(binding)
             else -> TextPostViewHolder(binding)
         }
     }
@@ -73,6 +78,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
             IMAGE_POST -> (holder as ImagePostViewHolder).bind(item)
             POLLING_POST -> (holder as PollingPostViewHolder).bind(item)
             DOCUMENT_POST -> (holder as DocumentPostViewHolder).bind(item)
+            VIDEO_POST -> (holder as VideoViewHolder).bind(item)
             else -> (holder as TextPostViewHolder).bind(item)
         }
     }
@@ -85,6 +91,7 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
             PostType.IMAGE.type -> IMAGE_POST
             PostType.POLL.type -> POLLING_POST
             PostType.DOCUMENT.type -> DOCUMENT_POST
+            PostType.VIDEO.type -> VIDEO_POST
             else -> TEXT_POST
         }
     }
@@ -142,6 +149,35 @@ class PostAdapter(val context: Context, val listener: FeedItemClickListener) : R
                 }
                 handlePostFooterUI(postFooter, item, adapterPosition)
             }
+        }
+    }
+
+    inner class VideoViewHolder(val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root), Playback.ArtworkHintListener {
+        fun bind(item: Post) {
+            binding.run {
+                handlePostHeaderUI(postHeader, item)
+                handleCommonPostContent(postContent, item)
+                item.info?.medias?.getOrNull(0)?.let { url ->
+                    val videoUrl = VideoUtils.getVideoUrl(url)
+                    val videoUri = Uri.parse(videoUrl)
+                    playerViewContainer.visibility = View.VISIBLE
+                    videoPreview.ivThumbnail.setImageResource(R.drawable.ic_image_placeholder)
+                    kohii.setUp(videoUri) {
+                        tag = videoUri
+                        preload = true
+                        repeatMode = Common.REPEAT_MODE_ONE
+                        artworkHintListener = this@VideoViewHolder
+                    }.bind(playerViewContainer)
+                    playerViewContainer.setNonDuplicateClickListener {
+                        it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToVideoPlayerFragment(videoUri, source))
+                    }
+                }
+                handlePostFooterUI(postFooter, item, adapterPosition)
+            }
+        }
+
+        override fun onArtworkHint(playback: Playback, shouldShow: Boolean, position: Long, state: Int) {
+            binding.videoPreview.root.isVisible = shouldShow
         }
     }
 

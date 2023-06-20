@@ -1,8 +1,11 @@
 package com.humara.nagar.ui.home.create_post
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsPreviewAdapter
 import com.humara.nagar.analytics.AnalyticsData
@@ -56,15 +60,16 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         if (isFragmentAlive()) {
             result.data?.data?.let { documentUri ->
                 onDocumentSelection(documentUri)
+            } ?: kotlin.run {
+                context?.showToast(getString(R.string.no_document_selected))
+                return@registerForActivityResult
             }
         }
     }
 
-    // Registers a photo picker activity launcher in single-select mode.
     private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        // Callback is invoked after the user selects a media item or closes the photo picker.
         uri?.let {
-            compressImageAndShowPreview(it)
+            onVideoSelection(it)
         }
     }
 
@@ -91,8 +96,14 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
             imageUriLiveData.observe(viewLifecycleOwner) { uri ->
                 showImagePreview(uri)
             }
-            documentUriLiveData.observe(viewLifecycleOwner) { uri ->
-                showPdfPreview(uri)
+            thumbnailUriLiveData.observe(viewLifecycleOwner) {
+                if (documentUriLiveData.value != null) {
+                    showPdfPreview(it)
+                } else if (videoUriLiveData.value != null) {
+                    showVideoPreview(it)
+                } else {
+                    hideVideoAndDocumentPreview()
+                }
             }
             pollRequestLiveData.observe(viewLifecycleOwner) { poll ->
                 showPollPreview(poll)
@@ -103,6 +114,9 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
             }
             attachmentAvailableLivedata.observe(viewLifecycleOwner) { present ->
                 handleAttachmentPreview(present)
+            }
+            attachmentParsingErrorLiveData.observe(viewLifecycleOwner) {
+                context?.showToast(getString(R.string.attachment_error_message), false)
             }
             postButtonStateLiveData.observe(viewLifecycleOwner) {
                 binding.btnPost.isEnabled = it
@@ -176,17 +190,6 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         }
     }
 
-    private fun compressImageAndShowPreview(uri: Uri?) {
-        uri?.let {
-            lifecycleScope.launch {
-                createPostViewModel.progressLiveData.postValue(true)
-                val compressedUri = StorageUtils.compressImageFile(requireContext(), uri)
-                createPostViewModel.setImageUri(compressedUri)
-                createPostViewModel.progressLiveData.postValue(false)
-            }
-        }
-    }
-
     private fun showImagePreview(uri: Uri?) {
         binding.run {
             uri?.let {
@@ -202,8 +205,29 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         if (FileUtils.isValidDocumentSize(requireContext(), uri)) {
             lifecycleScope.launch {
                 createPostViewModel.progressLiveData.postValue(true)
-                val tempFile = FileUtils.createFileFromContentUri(requireContext(), uri)
-                createPostViewModel.setDocumentUri(Uri.fromFile(tempFile))
+                val tempUri: Uri? = FileUtils.createTempUriFromContentUri(requireContext(), uri)
+                tempUri?.let {
+                    createPostViewModel.setDocumentUri(it)
+                    createPostViewModel.setThumbnailUri(uri)
+                } ?: kotlin.run {
+                    createPostViewModel.setAttachmentError()
+                }
+                createPostViewModel.progressLiveData.postValue(false)
+            }
+        }
+    }
+
+    private fun onVideoSelection(uri: Uri) {
+        if (VideoUtils.isValidVideoSize(requireContext(), uri)) {
+            lifecycleScope.launch {
+                createPostViewModel.progressLiveData.postValue(true)
+                val tempUri: Uri? = VideoUtils.createTempUriFromContentUri(requireContext(), uri)
+                tempUri?.let {
+                    createPostViewModel.setVideoUri(it)
+                    createPostViewModel.setThumbnailUri(uri)
+                } ?: kotlin.run {
+                    createPostViewModel.setAttachmentError()
+                }
                 createPostViewModel.progressLiveData.postValue(false)
             }
         }
@@ -213,14 +237,49 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         binding.run {
             uri?.let {
                 tvDocumentPreview.visibility = View.VISIBLE
-                tvDocumentPreview.text = FileUtils.getFileName(uri.path)
-                tvDocumentPreview.setOnClickListener {
+                tvDocumentPreview.text = FileUtils.getFileName(requireContext(), it)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    try {
+                        ivImagePreview.visibility = View.VISIBLE
+                        val thumbnail: Bitmap = requireContext().contentResolver.loadThumbnail(it, Size(640, 480), null)
+                        ivImagePreview.setImageBitmap(thumbnail)
+                    } catch (e: Exception) {
+                        // ignore. Do not load pdf preview in this case
+                    }
+                }
+                clAttachmentPreview.setOnClickListener {
                     FileUtils.openPdfFile(requireContext(), uri.toFile())
                 }
             } ?: run {
                 tvDocumentPreview.visibility = View.GONE
             }
         }
+    }
+
+    private fun showVideoPreview(uri: Uri?) {
+        binding.videoPreview.run {
+            uri?.let {
+                root.visibility = View.VISIBLE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val thumbnail: Bitmap = requireContext().contentResolver.loadThumbnail(it, Size(1000, 1080), null)
+                    ivThumbnail.setImageBitmap(thumbnail)
+                } else {
+                    Glide.with(requireContext())
+                        .load(uri)
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .into(ivThumbnail)
+                }
+                ivPlay.setNonDuplicateClickListener {
+                    val action = CreatePostFragmentDirections.actionCreatePostFragmentToVideoPlayerFragment(uri, getScreenName())
+                    navController.navigate(action)
+                }
+            }
+        }
+    }
+
+    private fun hideVideoAndDocumentPreview() {
+        binding.videoPreview.root.visibility = View.GONE
+        binding.tvDocumentPreview.visibility = View.GONE
     }
 
     private fun showPollPreview(poll: PollRequest?) {
@@ -266,6 +325,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
                 PostType.IMAGE.type -> handleEditImagePost(post)
                 PostType.DOCUMENT.type -> handleEditDocumentPost(post)
                 PostType.POLL.type -> handleEditPollPost(post)
+                PostType.VIDEO.type -> handleEditVideoPost(post)
                 else -> handleEditTextPost()
             }
         }
@@ -312,6 +372,15 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
                     adapter = pollOptionsAdapter
                 }
                 tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), poll.expiryTime)
+            }
+        }
+    }
+
+    private fun handleEditVideoPost(post: Post) {
+        binding.videoPreview.run {
+            post.info?.medias?.getOrNull(0)?.let {
+                root.visibility = View.VISIBLE
+                ivThumbnail.setImageResource(R.drawable.ic_image_placeholder)
             }
         }
     }

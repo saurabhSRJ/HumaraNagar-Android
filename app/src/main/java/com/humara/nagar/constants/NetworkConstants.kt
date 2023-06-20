@@ -36,8 +36,9 @@ interface NetworkConstants {
             const val IMAGE_POST = "/posts/image"
             const val TEXT_POST = "/posts/text"
             const val POLL_POST = "/posts/poll"
-            const val PRIVACY_POLICY_URL = "https://humaranagar.in"
-            const val TERMS_CONDITION_URL = "https://humaranagar.in"
+            const val VIDEO_POST = "/posts/video"
+            const val PRIVACY_POLICY_URL = "https://humaranagar.in/views/privacy_policy.html"
+            const val TERMS_CONDITION_URL = "https://humaranagar.in/views/terms_and_conditions.html"
             const val ABOUT_US_URL = "https://humaranagar.in"
         }
     }
@@ -58,6 +59,7 @@ interface NetworkConstants {
             const val CATEGORY = "category"
             const val COMMENTS = "comments"
             const val IMAGE = "image"
+            const val VIDEO = "video"
             const val LATITUDE = "location_latitude"
             const val LONGITUDE = "location_longitude"
             const val CAPTION = "caption"

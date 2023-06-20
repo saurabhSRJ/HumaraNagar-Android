@@ -38,6 +38,17 @@ class CreatePostRepository(application: Application) : BaseRepository(applicatio
         apiService.createImagePost(partMap, imagePart)
     }
 
+    suspend fun createVideoPost(caption: String, uri: Uri) = withContext(Dispatchers.IO) {
+        val partMap = mutableMapOf<String, RequestBody>().apply {
+            put(NetworkConstants.NetworkFormDataConstants.CAPTION, caption.createPartFromString())
+        }
+        val videoParts = ArrayList<MultipartBody.Part>()
+        NetworkUtils.createVideoMultiPart(uri, NetworkConstants.NetworkFormDataConstants.VIDEO)?.let {
+            videoParts.add(it)
+        }
+        apiService.createVideoPost(partMap, videoParts)
+    }
+
     suspend fun createTextPost(caption: String) = withContext(Dispatchers.IO) {
         apiService.createTextPost(TextPostRequest(caption))
     }
