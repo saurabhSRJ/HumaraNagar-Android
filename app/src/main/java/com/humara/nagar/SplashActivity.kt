@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.bumptech.glide.Glide
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
@@ -39,7 +38,6 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Glide.with(this).asGif().load(R.drawable.splash_screen_gif).into(binding.animatedView)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationUtils.setupDefaultNotificationChannel(this)
         }
@@ -74,14 +72,14 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun initConfig() {
-        if (getUserPreference().isUserLoggedIn) {
-            appConfigViewModel.getAppConfigAndUserReferenceData()
-        } else {
-            Handler(Looper.getMainLooper()).postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (getUserPreference().isUserLoggedIn) {
+                appConfigViewModel.getAppConfigAndUserReferenceData()
+            } else {
                 OnBoardingActivity.startActivity(this, getScreenName())
                 finish()
-            }, 1000)
-        }
+            }
+        }, 1000)
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.SPLASH_ACTIVITY

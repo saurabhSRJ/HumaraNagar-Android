@@ -2,9 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary_color">#4285F4</color>
-    <color name="primary_background">#FFFFFFFF</color>
-    <color name="secondary_background">#EEF4FF</color>
+    <color name="primary_color">#FF9933</color>
+    <color name="primary_background">#FFFFF9</color>
+    <color name="secondary_background">#FFFFF0</color>
     <color name="grey_4F4F4F">#4F4F4F</color>
     <color name="grey_828282">#828282</color>
     <color name="grey_AEAEAE">#AEAEAE</color>
@@ -26,6 +26,7 @@
     <color name="transparent">#00000000</color>
     <color name="grey_F5F5F5">#F5F5F5</color>
     <color name="translucent_background">#80D1CDCD</color>
+    <color name="green_138808">#138808</color>
     <!--Stroke Button Colors-->
     <color name="stroke_red">#CF0A0A</color>
     <color name="stroke_yellow">#FF9E0D</color>

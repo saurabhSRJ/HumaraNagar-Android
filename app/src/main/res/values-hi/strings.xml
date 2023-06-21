@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">हमारा नगर</string>
     <string name="submit">सबमिट</string>
     <string name="camera_permission">कैमरा</string>
     <string name="storage_permission">मेमोरी</string>
@@ -9,6 +10,9 @@
     <string name="just_now">अभी</string>
     <string name="retry">फिर कोशिश करे</string>
     <string name="leave_you_thoughts_here">अपनी टिप्पणी यहाँ लिखें</string>
+    <string name="with_cooperation">सहयोग से:</string>
+    <string name="amit_gupta">अमित गुप्ता</string>
+    <string name="sponsor_ward_number">वार्ड 11</string>
     <plurals name="n_days_ago">
         <item quantity="one">%d दिन पहले</item>
         <item quantity="other">%d दिन पहले</item>

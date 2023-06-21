@@ -24,7 +24,7 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
 
     inline var isAdminUser: Boolean
-        get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.ADMIN_USER, false)
+        get() = false
         set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.ADMIN_USER, value)
 
     inline var ward: String?

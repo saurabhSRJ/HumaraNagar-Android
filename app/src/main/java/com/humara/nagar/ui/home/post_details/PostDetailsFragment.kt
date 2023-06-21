@@ -220,7 +220,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
     private fun inflatePostDetails(post: Post) {
         binding.run {
             nsvPost.visibility = View.VISIBLE
-            tilAddComment.visibility = View.VISIBLE
+            clAddComment.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
         }
         when (post.type) {

@@ -53,6 +53,7 @@ class MainActivity : BaseActivity() {
 
     private fun setUpBottomNavigation() {
         val navView: BottomNavigationView = binding.navView
+        navView.itemIconTintList = null
         if (getUserPreference().isAdminUser.not()) {
             navView.menu.removeItem(R.id.residents_navigation)
         }

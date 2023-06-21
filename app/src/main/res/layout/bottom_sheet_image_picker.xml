@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/top_rounded_corner_white_rectangle"
-        android:backgroundTint="@color/green_00A5A5"
+        android:backgroundTint="@color/primary_color"
         android:padding="20dp">
 
         <View
@@ -23,9 +23,10 @@
             style="@style/OpenSansSemiBold16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="@string/upload_a_photo"
             android:textColor="@color/white_FAFAF0"
-            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/holder" />
 
@@ -33,7 +34,7 @@
             android:id="@+id/llCamera"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="18dp"
             android:orientation="horizontal"
             android:paddingVertical="2dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +60,7 @@
             android:id="@+id/llGallery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:paddingVertical="2dp"
             app:layout_constraintStart_toStartOf="parent"
