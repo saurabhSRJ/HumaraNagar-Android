@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import at.blogc.android.views.ExpandableTextView
+import com.google.android.exoplayer2.Player
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
@@ -18,7 +19,6 @@ import com.humara.nagar.ui.home.HomeFragmentDirections
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.utils.*
-import kohii.v1.core.Common
 import kohii.v1.core.Playback
 import kohii.v1.exoplayer.Kohii
 
@@ -165,7 +165,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                     kohii.setUp(videoUri) {
                         tag = videoUri
                         preload = true
-                        repeatMode = Common.REPEAT_MODE_ONE
+                        repeatMode = Player.REPEAT_MODE_ONE
                         artworkHintListener = this@VideoViewHolder
                     }.bind(playerViewContainer)
                     playerViewContainer.setNonDuplicateClickListener {

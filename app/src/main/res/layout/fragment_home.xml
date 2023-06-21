@@ -12,11 +12,11 @@
 
         <ImageView
             android:id="@+id/ivProfilePhoto"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="@id/tvTitle"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvTitle"
             app:srcCompat="@drawable/ic_user_image_placeholder" />
 
@@ -25,26 +25,12 @@
             style="@style/OpenSansSemiBold18sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:gravity="center"
+            android:layout_marginStart="20dp"
             android:text="@string/know_what_s_happening_in_your_town"
             android:textColor="@color/black_with_opacity_70"
-            app:layout_constraintEnd_toStartOf="@id/ivNotification"
-            app:layout_constraintStart_toEndOf="@id/ivProfilePhoto"
+            app:layout_constraintEnd_toStartOf="@id/ivProfilePhoto"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/ivNotification"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:scaleType="fitCenter"
-            android:layout_marginEnd="12dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:padding="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvTitle"
-            app:srcCompat="@drawable/ic_notification_unread" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_layout"
@@ -77,7 +63,7 @@
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toTopOf="@id/paginationLoader"
             app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
@@ -100,8 +86,8 @@
             android:id="@+id/fabCreatePost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:contentDescription="@string/post"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

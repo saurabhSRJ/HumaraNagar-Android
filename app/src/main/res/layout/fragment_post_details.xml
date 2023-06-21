@@ -112,7 +112,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAddComment"
-                    style="@style/OpenSansRegular12sp"
+                    style="@style/OpenSansRegular14sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"

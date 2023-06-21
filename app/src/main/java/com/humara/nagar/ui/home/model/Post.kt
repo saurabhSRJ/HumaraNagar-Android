@@ -29,6 +29,7 @@ data class Post(
 
 data class PostInfo(
     @SerializedName("medias") val medias: List<String>? = null, // image, video or document urls
+    @SerializedName("thumbnails") val thumbnails: List<String>? = null,
     @SerializedName("question") val question: String?,
     @SerializedName("total_votes") val totalVotes: Int,
     @SerializedName("expiry_time") val expiryTime: String,

@@ -153,9 +153,6 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
 
     private fun initView() {
         binding.run {
-            ivNotification.setNonDuplicateClickListener {
-
-            }
             getUserPreference().profileImage?.let { url ->
                 ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
@@ -304,6 +301,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
         when (post.type) {
             PostType.IMAGE.type -> addImagePostShareData(post, binding)
             PostType.POLL.type -> addPollPostShareData(post, binding)
+            PostType.VIDEO.type -> addVideoPostShareData(post, binding)
             PostType.DOCUMENT.type, PostType.TEXT.type -> sharePostOnWhatsapp(binding.root, post.name, post.postId)
             else -> {}
         }
@@ -352,6 +350,32 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 }
             }
             sharePostOnWhatsapp(binding.root, post.name, post.postId)
+        }
+    }
+
+    private fun addVideoPostShareData(post: Post, binding: PostShareLayoutBinding) {
+        binding.videoThumbnail.run {
+            val url = post.info?.thumbnails?.getOrNull(0)
+            url?.let {
+                root.visibility = View.VISIBLE
+                Glide.with(requireContext())
+                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                            return false
+                        }
+                    })
+                    .into(ivThumbnail)
+            } ?: run {
+                sharePostOnWhatsapp(binding.root, post.name, post.postId)
+            }
         }
     }
 

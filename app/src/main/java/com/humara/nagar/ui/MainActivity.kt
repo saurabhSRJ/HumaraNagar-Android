@@ -53,6 +53,9 @@ class MainActivity : BaseActivity() {
 
     private fun setUpBottomNavigation() {
         val navView: BottomNavigationView = binding.navView
+        if (getUserPreference().isAdminUser.not()) {
+            navView.menu.removeItem(R.id.residents_navigation)
+        }
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
         //the state of each menu item (i.e. bottom nav destinations) is saved and restored when you use setupWithNavController

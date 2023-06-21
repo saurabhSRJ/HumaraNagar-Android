@@ -32,7 +32,7 @@ object StorageUtils {
     fun createImageFile(context: Context): File {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         //save a temp file
-        return File.createTempFile("JPEG_${getTimestampString()}", ".jpg", storageDir)
+        return File.createTempFile("JPEG_${getTimestampString()}", ".jpeg", storageDir)
     }
 
     // Create a unique image file name based on timestamp

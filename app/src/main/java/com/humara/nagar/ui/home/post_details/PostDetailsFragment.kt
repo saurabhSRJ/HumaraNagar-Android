@@ -3,6 +3,7 @@ package com.humara.nagar.ui.home.post_details
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import at.blogc.android.views.ExpandableTextView
@@ -23,6 +25,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.exoplayer2.Player
+import com.humara.nagar.KohiiProvider
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsAdapter
@@ -40,8 +44,11 @@ import com.humara.nagar.ui.home.model.PostComments
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.ui.report.ReportFragment
 import com.humara.nagar.utils.*
+import kohii.v1.core.MemoryMode
+import kohii.v1.core.Playback
+import kohii.v1.exoplayer.Kohii
 
-class PostDetailsFragment : BaseFragment() {
+class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
     private var _binding: FragmentPostDetailsBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -60,6 +67,7 @@ class PostDetailsFragment : BaseFragment() {
         PostCommentsAdapter()
     }
     private val args: PostDetailsFragmentArgs by navArgs()
+    private lateinit var kohii: Kohii
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
@@ -75,8 +83,15 @@ class PostDetailsFragment : BaseFragment() {
                 remove<Long>(HomeFragment.UPDATE_POST)
             }
         }
+        setUpVideoPlayer()
         initViewModelAndObservers()
         initView()
+    }
+
+    private fun setUpVideoPlayer() {
+        kohii = KohiiProvider.get(requireContext())
+        kohii.register(this, memoryMode = MemoryMode.HIGH)
+            .addBucket(binding.nsvPost)
     }
 
     private fun initViewModelAndObservers() {
@@ -213,6 +228,7 @@ class PostDetailsFragment : BaseFragment() {
             PostType.IMAGE.type -> inflateImagePostDetails(post)
             PostType.POLL.type -> inflatePollPostDetails(post)
             PostType.DOCUMENT.type -> inflateDocumentPostDetails(post)
+            PostType.VIDEO.type -> inflateVideoPostDetails(post)
             else -> {} //NA
         }
     }
@@ -277,6 +293,33 @@ class PostDetailsFragment : BaseFragment() {
                 }
             }
         }
+    }
+
+    private fun inflateVideoPostDetails(post: Post) {
+        binding.postLayout.run {
+            handlePostHeaderUI(postHeader, post)
+            handleCommonPostContent(postContent, post.caption)
+            handlePostFooterUI(postFooter, post)
+            post.info?.medias?.getOrNull(0)?.let { url ->
+                val videoUrl = VideoUtils.getVideoUrl(url)
+                val videoUri = Uri.parse(videoUrl)
+                playerViewContainer.visibility = View.VISIBLE
+                videoPreview.ivThumbnail.setImageResource(R.drawable.ic_image_placeholder)
+                kohii.setUp(videoUri) {
+                    tag = videoUri
+                    preload = true
+                    repeatMode = Player.REPEAT_MODE_ONE
+                    artworkHintListener = this@PostDetailsFragment
+                }.bind(playerViewContainer)
+                playerViewContainer.setNonDuplicateClickListener {
+                    it.findNavController().navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToVideoPlayerFragment(videoUri, getScreenName()))
+                }
+            }
+        }
+    }
+
+    override fun onArtworkHint(playback: Playback, shouldShow: Boolean, position: Long, state: Int) {
+        binding.postLayout.videoPreview.root.isVisible = shouldShow
     }
 
     private fun showPaginationLoader() {
@@ -439,6 +482,7 @@ class PostDetailsFragment : BaseFragment() {
         when (post.type) {
             PostType.IMAGE.type -> addImagePostShareData(post, binding)
             PostType.POLL.type -> addPollPostShareData(post, binding)
+            PostType.VIDEO.type -> addVideoPostShareData(post, binding)
             PostType.DOCUMENT.type, PostType.TEXT.type -> sharePostOnWhatsapp(binding.root, post.name)
             else -> {}
         }
@@ -463,7 +507,7 @@ class PostDetailsFragment : BaseFragment() {
                     }
                 })
                 .into(binding.ivPostImage)
-        } ?: {
+        } ?: run {
             sharePostOnWhatsapp(binding.root, post.name)
         }
     }
@@ -488,6 +532,32 @@ class PostDetailsFragment : BaseFragment() {
                 }
             }
             sharePostOnWhatsapp(binding.root, post.name)
+        }
+    }
+
+    private fun addVideoPostShareData(post: Post, binding: PostShareLayoutBinding) {
+        binding.videoThumbnail.run {
+            val url = post.info?.thumbnails?.getOrNull(0)
+            url?.let {
+                root.visibility = View.VISIBLE
+                Glide.with(requireContext())
+                    .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            sharePostOnWhatsapp(binding.root, post.name)
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            sharePostOnWhatsapp(binding.root, post.name)
+                            return false
+                        }
+                    })
+                    .into(ivThumbnail)
+            } ?: run {
+                sharePostOnWhatsapp(binding.root, post.name)
+            }
         }
     }
 
