@@ -5,8 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/secondary_background">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_header"
@@ -132,10 +131,10 @@
                     android:id="@+id/input_locality"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:header="@string/locality"
                     android:layout_marginTop="10dp"
+                    app:header="@string/locality"
                     app:hint="@string/selectLocality"
-                    app:layout_constraintTop_toBottomOf="@id/toggle_gender"/>
+                    app:layout_constraintTop_toBottomOf="@id/toggle_gender" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

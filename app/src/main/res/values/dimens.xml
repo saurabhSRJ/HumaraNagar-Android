@@ -5,4 +5,5 @@
     <dimen name="end_drawable_height">24dp</dimen>
     <dimen name="end_drawable_width">24dp</dimen>
     <dimen name="post_option_menu_offset">100dp</dimen>
+    <dimen name="text_48">40sp</dimen>
 </resources>

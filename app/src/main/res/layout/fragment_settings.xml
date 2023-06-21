@@ -50,7 +50,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="40dp"
             android:background="@drawable/rect_background_grey_f1f1f1_bg_4dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/primary_background"
             app:layout_constraintTop_toBottomOf="@id/tvName">
 
             <include

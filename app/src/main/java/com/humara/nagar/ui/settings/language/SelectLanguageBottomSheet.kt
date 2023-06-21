@@ -27,7 +27,7 @@ class SelectLanguageBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = BottomSheetSelectLanguageBinding.inflate(inflater, container, false)
-        isCancelable = false
+        isCancelable = true
         selectedLanguage = requireContext().getAppSharedPreferences().appLanguage
         return binding.root
     }

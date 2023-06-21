@@ -146,13 +146,13 @@ class ComplaintStatusFragment : BaseFragment() {
                 }
             }
             if (response.latitude != null && response.longitude != null) {
-                val mapIntent = IntentUtils.getGoogleMapIntent(response.latitude.toDouble(), response.longitude.toDouble())
-                if (IntentUtils.hasIntent(requireContext(), mapIntent)) {
-                    locationTV.setNonDuplicateClickListener {
+                locationTV.setNonDuplicateClickListener {
+                    val mapIntent = IntentUtils.getGoogleMapIntent(response.latitude.toDouble(), response.longitude.toDouble())
+                    if (IntentUtils.hasIntent(requireContext(), mapIntent)) {
                         context?.startActivity(mapIntent)
+                    } else {
+                        context?.showToast(getString(R.string.map_location_not_available_message))
                     }
-                } else {
-                    context?.showToast(getString(R.string.map_location_not_available_message))
                 }
             } else {
                 context?.showToast(getString(R.string.map_location_not_available_message))

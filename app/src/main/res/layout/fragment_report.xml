@@ -68,7 +68,8 @@
                     app:header="@string/comment"
                     app:layout_constraintTop_toBottomOf="@id/input_location"
                     app:maximumLength="200"
-                    app:minimumHeight="300" />
+                    app:minimumHeight="200"
+                    tools:layout_editor_absoluteX="12dp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/addImageLayout"
@@ -91,7 +92,7 @@
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
+                        android:layout_marginStart="12dp"
                         android:fontFamily="@font/open_sans_bold"
                         android:text="@string/addImage"
                         android:textColor="@color/grey_4F4F4F"
