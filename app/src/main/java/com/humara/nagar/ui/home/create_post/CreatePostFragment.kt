@@ -37,6 +37,7 @@ import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.utils.*
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class CreatePostFragment : BaseFragment(), MediaSelectionListener {
     companion object {
@@ -70,6 +71,8 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
     private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let {
             onVideoSelection(it)
+        } ?: kotlin.run {
+            context?.showToast(getString(R.string.no_video_selected))
         }
     }
 
@@ -248,7 +251,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
                     }
                 }
                 clAttachmentPreview.setOnClickListener {
-                    FileUtils.openPdfFile(requireContext(), uri.toFile())
+                    FileUtils.openPdfFile(requireContext(), createPostViewModel.documentUriLiveData.value!!.toFile())
                 }
             } ?: run {
                 tvDocumentPreview.visibility = View.GONE
@@ -261,8 +264,12 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
             uri?.let {
                 root.visibility = View.VISIBLE
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    val thumbnail: Bitmap = requireContext().contentResolver.loadThumbnail(it, Size(1000, 1080), null)
-                    ivThumbnail.setImageBitmap(thumbnail)
+                    try {
+                        val thumbnail: Bitmap = requireContext().contentResolver.loadThumbnail(it, Size(1000, 1080), null)
+                        ivThumbnail.setImageBitmap(thumbnail)
+                    } catch (e: IOException) {
+                        ///ignore. Do not show thumbnail
+                    }
                 } else {
                     Glide.with(requireContext())
                         .load(uri)
@@ -371,7 +378,13 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
                     val pollOptionsAdapter = PollOptionsPreviewAdapter(poll.getOptionsText())
                     adapter = pollOptionsAdapter
                 }
-                tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), poll.expiryTime)
+                if (poll.isExpired()) {
+                    tvExpiryTime.text = getString(R.string.completed)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.stroke_green))
+                } else {
+                    tvExpiryTime.text = DateTimeUtils.getRemainingDurationForPoll(requireContext(), poll.expiryTime)
+                    tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_585C60))
+                }
             }
         }
     }

@@ -23,6 +23,7 @@ import androidx.core.content.edit
 import androidx.core.view.children
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.humara.nagar.NagarApp
@@ -55,6 +56,18 @@ fun ImageView.loadUrl(url: String?, @DrawableRes placeholder: Int) {
         Glide.with(this)
             .load(GlideUtil.getUrlWithHeaders(url, this.context))
             .transform(CenterCrop(), RoundedCorners(12))
+            .placeholder(placeholder)
+            .error(placeholder)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
+            .into(this)
+    }
+}
+
+fun ImageView.loadUrlWithoutCrop(url: String?, @DrawableRes placeholder: Int) {
+    url?.let {
+        Glide.with(this)
+            .load(GlideUtil.getUrlWithHeaders(url, this.context))
+            .transform(CenterInside(), RoundedCorners(12))
             .placeholder(placeholder)
             .error(placeholder)
             .transition(DrawableTransitionOptions.withCrossFade(500))

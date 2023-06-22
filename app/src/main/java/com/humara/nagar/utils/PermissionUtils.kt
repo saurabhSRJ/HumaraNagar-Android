@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -13,6 +14,7 @@ object PermissionUtils {
     val cameraPermissions = getCameraPermissions()
     val locationPermissions = getLocationPermission()
     val notificationPermissions = getNotificationPermissions()
+    val sharePostPermissions = getSharePostPermissions()
 
     @JvmName("getNotificationPermissions1")
     private fun getNotificationPermissions(): Array<String> {
@@ -46,6 +48,22 @@ object PermissionUtils {
 
     @JvmName("getStoragePermissions1")
     private fun getStoragePermissions(): Array<String> {
+        var permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            permissions = if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
+                emptyArray()
+            } else {
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        }
+        return permissions
+    }
+
+    @JvmName("getSharePostPermissions1")
+    private fun getSharePostPermissions(): Array<String> {
         var permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE

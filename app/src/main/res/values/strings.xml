@@ -167,6 +167,7 @@
     <string name="with_cooperation">With cooperation:</string>
     <string name="amit_gupta">Amit Gupta</string>
     <string name="sponsor_ward_number">Ward 11</string>
+    <string name="no_video_selected">No Video selected</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

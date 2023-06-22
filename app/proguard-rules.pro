@@ -21,3 +21,5 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.shockwave.**
+
+-dontwarn com.squareup.picasso.**

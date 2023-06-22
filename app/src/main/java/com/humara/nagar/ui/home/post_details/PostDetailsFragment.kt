@@ -428,7 +428,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
     }
 
     private fun onSharePostClick() {
-        (activity as BaseActivity).requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
+        (activity as BaseActivity).requestPermissions(PermissionUtils.sharePostPermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
                 if (context == null) {
                     Logger.debugLog(ReportFragment.TAG, "fragment detached from the activity")

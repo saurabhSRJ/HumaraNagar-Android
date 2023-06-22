@@ -170,4 +170,13 @@
     <style name="MaterialCardViewStyle" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/primary_background</item>
     </style>
+
+    <style name="photoPickerStyle" parent="Matisse.Zhihu">
+        <item name="colorPrimary">@color/primary_background</item>
+        <item name="album.element.color">@color/dark_grey_333333</item>
+        <item name="page.bg">@color/primary_background</item>
+        <item name="bottomToolbar.apply.textColor">@color/primary_color</item>
+        <item name="bottomToolbar.bg">@color/primary_background</item>
+        <item name="bottomToolbar.preview.textColor">@color/dark_grey_333333</item>
+    </style>
 </resources>

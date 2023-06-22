@@ -8,7 +8,7 @@ import com.humara.nagar.R
 import com.humara.nagar.databinding.ThumbnailLayoutItemBinding
 import com.humara.nagar.utils.loadUrl
 
-class ThumbnailAdapter(val context: Context, val onThumbnailClick: (String) -> Unit) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
+class ThumbnailAdapter(val context: Context, val onThumbnailClick: (Int) -> Unit) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
     private val imageList = mutableListOf<String>()
     private var selectedPosition: Int = 0
 
@@ -40,7 +40,7 @@ class ThumbnailAdapter(val context: Context, val onThumbnailClick: (String) -> U
         holder.binding.apply {
             thumbnailIV.loadUrl(currentImageUrl, R.drawable.ic_image_placeholder)
             thumbnailRL.setOnClickListener {
-                onThumbnailClick(currentImageUrl)
+                onThumbnailClick(position)
             }
             if (selectedPosition == position) {
                 thumbnailRL.setBackgroundResource(R.drawable.selected_drawable)

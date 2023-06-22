@@ -1,6 +1,8 @@
 package com.humara.nagar.ui.common
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,8 +24,10 @@ import com.humara.nagar.base.BaseBottomSheetDialogFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.BottomSheetImagePickerBinding
 import com.humara.nagar.permissions.PermissionHandler
-import com.humara.nagar.ui.report.ReportFragment
 import com.humara.nagar.utils.*
+import com.zhihu.matisse.Matisse
+import com.zhihu.matisse.MimeType
+import com.zhihu.matisse.engine.impl.GlideEngine
 import kotlinx.coroutines.launch
 
 class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
@@ -31,6 +35,7 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
         const val TAG = "MediaSelectionBottomSheet"
         private const val CAMERA_IMAGE_URI = "camera_image_uri"
         private const val MAX_SELECTION = "max_selection"
+        private const val REQUEST_CODE_CHOOSE = 19291
         private var listener: MediaSelectionListener? = null
         fun show(fragmentManager: FragmentManager, listener: MediaSelectionListener, maxItems: Int = 1) {
             this.listener = listener
@@ -74,10 +79,6 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
         }
     }
 
-    private val getContentLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        onImageSelection(result?.data)
-    }
-
     private var pickMultipleMediaLauncher: ActivityResultLauncher<PickVisualMediaRequest>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,27 +99,6 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
                     return@registerForActivityResult
                 }
             }
-        }
-    }
-
-    private fun onImageSelection(data: Intent?) {
-        data?.clipData?.let { selectedImages ->
-            val count = selectedImages.itemCount
-            if (count > maxSelectionItems) {
-                context?.showToast(getString(R.string.imagePickingLimit), true)
-                dismiss()
-                return
-            }
-            val uris = mutableListOf<Uri>()
-            for (i in 0 until count) {
-                uris.add(selectedImages.getItemAt(i).uri)
-            }
-            compressImage(uris)
-        } ?: data?.data?.let {
-            compressImage(listOf(it))
-        } ?: kotlin.run {
-            context?.showToast(getString(R.string.no_image_selected), true)
-            dismiss()
         }
     }
 
@@ -161,18 +141,17 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
         (activity as BaseActivity).requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
                 if (context == null) {
-                    Logger.debugLog(ReportFragment.TAG, "fragment detached from the activity")
+                    Logger.debugLog(TAG, "fragment detached from the activity")
                     return
                 }
-                Logger.debugLog("media selection available: ${ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()}")
-                if (maxSelectionItems == 1) {
-                    pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                } else {
-                    if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
-                        pickMultipleMediaLauncher?.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
+                    if (maxSelectionItems == 1) {
+                        pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                     } else {
-                        getContentLauncher.launch(IntentUtils.getImageGalleryIntent())
+                        pickMultipleMediaLauncher?.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                     }
+                } else {
+                    useCustomPhotoPicker()
                 }
             }
 
@@ -182,11 +161,25 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
         })
     }
 
+    private fun useCustomPhotoPicker() {
+        Matisse.from(this@MediaSelectionBottomSheet)
+            .choose(MimeType.ofImage())
+            .countable(true)
+            .maxSelectable(maxSelectionItems)
+            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            .thumbnailScale(0.85f)
+            .imageEngine(GlideEngine())
+            .showSingleMediaType(true)
+            .showPreview(false) // Default is `true`
+            .theme(R.style.photoPickerStyle)
+            .forResult(REQUEST_CODE_CHOOSE)
+    }
+
     private fun onCameraSelection() {
         (activity as BaseActivity).requestPermissions(PermissionUtils.cameraPermissions, object : PermissionHandler {
             override fun onPermissionGranted() {
                 if (context == null) {
-                    Logger.debugLog(ReportFragment.TAG, "Fragment detached from the activity")
+                    Logger.debugLog(TAG, "Fragment detached from the activity")
                     return
                 }
                 clickPicture()
@@ -196,6 +189,19 @@ class MediaSelectionBottomSheet : BaseBottomSheetDialogFragment() {
                 //NA
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_CHOOSE) {
+            if (resultCode == RESULT_OK) {
+                val uris = Matisse.obtainResult(data)
+                compressImage(uris)
+            } else {
+                context?.showToast(getString(R.string.no_image_selected), true)
+                dismiss()
+            }
+        }
     }
 
     private fun clickPicture() {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,12 +34,11 @@ class FullImagePreviewFragment : BaseFragment() {
             fullImagePreviewVP.adapter = fullImagePreviewAdapter
             thumbnailRCV.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            thumbnailAdapter = ThumbnailAdapter(requireContext()) { urlString ->
-                fullImagePreviewVP.currentItem = args.imagesList.indexOf(urlString)
+            thumbnailAdapter = ThumbnailAdapter(requireContext()) { index ->
+                fullImagePreviewVP.currentItem = index
             }
             thumbnailRCV.adapter = thumbnailAdapter
-            fullImagePreviewVP.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
+            fullImagePreviewVP.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     // update thumbnail border color
@@ -50,9 +50,11 @@ class FullImagePreviewFragment : BaseFragment() {
             close.setOnClickListener {
                 findNavController().navigateUp()
             }
+            val images = args.imagesList
+            thumbnailRCV.isVisible = images.size > 1
+            fullImagePreviewAdapter.addImages(images.toList())
+            thumbnailAdapter.addImages(images.toList())
         }
-        fullImagePreviewAdapter.addImages(args.imagesList.toList())
-        thumbnailAdapter.addImages(args.imagesList.toList())
     }
 
     override fun onDestroyView() {
