@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.humara.nagar.Logger
 
 object PermissionUtils {
     val storagePermissions = getStoragePermissions()
@@ -52,13 +53,15 @@ object PermissionUtils {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
+        val photoPickerAvailable = ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            permissions = if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
+            permissions = if (photoPickerAvailable) {
                 emptyArray()
             } else {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
+        Logger.debugLog("photo picker available: $photoPickerAvailable")
         return permissions
     }
 
