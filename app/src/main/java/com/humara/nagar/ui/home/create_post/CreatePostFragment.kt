@@ -2,15 +2,14 @@ package com.humara.nagar.ui.home.create_post
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
@@ -22,12 +21,19 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.esafirm.imagepicker.features.ImagePickerConfig
+import com.esafirm.imagepicker.features.ImagePickerMode
+import com.esafirm.imagepicker.features.ReturnMode
+import com.esafirm.imagepicker.features.registerImagePicker
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.adapter.PollOptionsPreviewAdapter
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentCreatePostBinding
+import com.humara.nagar.permissions.PermissionHandler
 import com.humara.nagar.ui.common.MediaSelectionBottomSheet
 import com.humara.nagar.ui.common.MediaSelectionListener
 import com.humara.nagar.ui.home.HomeFragment
@@ -68,11 +74,12 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         }
     }
 
-    private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        uri?.let {
-            onVideoSelection(it)
-        } ?: kotlin.run {
+    private val pickVideoLauncher = registerImagePicker { images ->
+        val uris = images.map { it.uri }
+        if (uris.isEmpty()) {
             context?.showToast(getString(R.string.no_video_selected))
+        } else {
+            onVideoSelection(uris[0])
         }
     }
 
@@ -170,7 +177,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
                 getContentLauncher.launch(IntentUtils.getOpenDocumentIntent())
             }
             btnAddVideo.setOnClickListener {
-                pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+                onVideoSelection()
             }
             btnAddPoll.setOnClickListener {
                 navController.navigate(CreatePostFragmentDirections.actionCreatePostFragmentToCreatePollFragment())
@@ -191,6 +198,41 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
                 }
             }
         }
+    }
+
+    private fun onVideoSelection() {
+        (activity as BaseActivity).requestPermissions(PermissionUtils.storagePermissions, object : PermissionHandler {
+            override fun onPermissionGranted() {
+                if (context == null) {
+                    Logger.debugLog(MediaSelectionBottomSheet.TAG, "fragment detached from the activity")
+                    return
+                }
+                useVideoPickerLauncher()
+            }
+
+            override fun onPermissionDenied(permissions: List<String>) {
+                //NA
+            }
+        })
+    }
+
+    private fun useVideoPickerLauncher() {
+        val config = ImagePickerConfig {
+            mode = ImagePickerMode.SINGLE // default is multi image mode
+            language = getAppPreference().appLanguage // Set image picker language
+            // set whether pick action or camera action should return immediate result or not. Only works in single mode for image picker
+            returnMode = ReturnMode.NONE
+            isFolderMode = false // set folder mode (false by default)
+            isIncludeVideo = true // include video (false by default)
+            isOnlyVideo = true // include video (false by default)
+            arrowColor = Color.WHITE // set toolbar arrow up color
+            imageTitle = getString(R.string.tap_to_select) // image selection title
+            doneButtonText = getString(R.string.done) // done button text
+            limit = 1 // max images can be selected (99 by default)
+            isShowCamera = false // show camera or not (true by default)
+            theme = R.style.ImagePickerTheme
+        }
+        pickVideoLauncher.launch(config)
     }
 
     private fun showImagePreview(uri: Uri?) {
@@ -241,7 +283,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
             uri?.let {
                 tvDocumentPreview.visibility = View.VISIBLE
                 tvDocumentPreview.text = FileUtils.getFileName(requireContext(), it)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (DeviceHelper.isMinSdk29) {
                     try {
                         ivImagePreview.visibility = View.VISIBLE
                         val thumbnail: Bitmap = requireContext().contentResolver.loadThumbnail(it, Size(640, 480), null)
@@ -263,7 +305,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         binding.videoPreview.run {
             uri?.let {
                 root.visibility = View.VISIBLE
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (DeviceHelper.isMinSdk29) {
                     try {
                         val thumbnail: Bitmap = requireContext().contentResolver.loadThumbnail(it, Size(1000, 1080), null)
                         ivThumbnail.setImageBitmap(thumbnail)

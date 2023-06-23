@@ -4,11 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.humara.nagar.Logger
 
 object PermissionUtils {
     val storagePermissions = getStoragePermissions()
@@ -19,7 +16,7 @@ object PermissionUtils {
 
     @JvmName("getNotificationPermissions1")
     private fun getNotificationPermissions(): Array<String> {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        return if (DeviceHelper.isMinSdk33) {
             arrayOf(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             arrayOf()
@@ -41,7 +38,7 @@ object PermissionUtils {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (DeviceHelper.isMinSdk29) {
             permissions = arrayOf(Manifest.permission.CAMERA)
         }
         return permissions
@@ -49,20 +46,13 @@ object PermissionUtils {
 
     @JvmName("getStoragePermissions1")
     private fun getStoragePermissions(): Array<String> {
-        var permissions = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        val photoPickerAvailable = ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            permissions = if (photoPickerAvailable) {
-                emptyArray()
-            } else {
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
+        return if (DeviceHelper.isMinSdk33) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+        } else if (DeviceHelper.isMinSdk29) {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
-        Logger.debugLog("photo picker available: $photoPickerAvailable")
-        return permissions
     }
 
     @JvmName("getSharePostPermissions1")
@@ -71,7 +61,7 @@ object PermissionUtils {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (DeviceHelper.isMinSdk29) {
             permissions = emptyArray()
         }
         return permissions

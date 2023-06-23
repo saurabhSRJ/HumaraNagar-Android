@@ -15,7 +15,7 @@ import java.util.*
  * Reference: https://developer.android.com/topic/performance/graphics/load-bitmap.html#load-bitmap
  * https://github.com/ShashankPednekar/ImagePicker-and-Compression
  */
-object StorageUtils {
+object ImageUtils {
     @Throws(IOException::class)
     fun Context.getBitmapFromUri(uri: Uri, options: BitmapFactory.Options? = null): Bitmap? {
         val parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")

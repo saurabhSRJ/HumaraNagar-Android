@@ -180,7 +180,6 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             }
             clContainer.setOnClickListener { hideKeyboard() }
             postLayout.run {
-                root.setOnClickListener { hideKeyboard() }
                 rvComments.apply {
                     setHasFixedSize(true)
                     adapter = postCommentsAdapter

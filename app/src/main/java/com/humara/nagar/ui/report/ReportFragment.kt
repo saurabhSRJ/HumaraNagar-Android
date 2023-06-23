@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -245,7 +244,7 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
             context?.showToast(getString(R.string.imagePickingLimit), true)
             return
         }
-        MediaSelectionBottomSheet.show(parentFragmentManager, this, maxImageAttachments)
+        MediaSelectionBottomSheet.show(parentFragmentManager, this, maxImageAttachments - reportViewModel.imageUris.size)
     }
 
     private fun checkForLocationPermission() {
@@ -277,7 +276,7 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
                     var addresses: List<Address>? = null
                     try {
                         val geocoder = Geocoder(requireContext(), Locale(getAppPreference().appLanguage, "IN"))
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        if (DeviceHelper.isMinSdk33) {
                             geocoder.getFromLocation(location.latitude, location.longitude, 1) {
                                 addresses = it
                             }

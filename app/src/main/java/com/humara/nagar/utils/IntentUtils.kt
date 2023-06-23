@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.FileProvider
@@ -49,7 +48,7 @@ object IntentUtils {
             putExtra(Intent.EXTRA_TEXT, text)
             bitmap?.let {
                 val filesDir: File = activity.applicationContext.filesDir
-                val imageFile = File(filesDir, "JPEG_${StorageUtils.getTimestampString()}.jpeg")
+                val imageFile = File(filesDir, "JPEG_${ImageUtils.getTimestampString()}.jpeg")
                 val os: OutputStream
                 try {
                     os = FileOutputStream(imageFile)
@@ -93,21 +92,21 @@ object IntentUtils {
     }
 
     private fun getGalleryIntent(mimetypes: Array<String>): Intent {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            val intent = Intent()
-            intent.action = Intent.ACTION_GET_CONTENT
-            intent.type = "*/*"
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            return Intent.createChooser(intent, "Select Images")
+        if (DeviceHelper.isMinSdk33) {
+            val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+            if (mimetypes.size == 1) {
+                // ACTION_PICK_IMAGES supports only two mimetypes.
+                intent.type = mimetypes[0]
+            }
+            return intent
         }
-        val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
-        if (mimetypes.size == 1) {
-            // ACTION_PICK_IMAGES supports only two mimetypes.
-            intent.type = mimetypes[0]
-        }
-        return intent
+        val intent = Intent()
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.type = "*/*"
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        return Intent.createChooser(intent, "Select Images")
     }
 
     /**

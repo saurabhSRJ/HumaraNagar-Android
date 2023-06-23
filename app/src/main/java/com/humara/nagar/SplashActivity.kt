@@ -2,7 +2,6 @@ package com.humara.nagar
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,6 +14,7 @@ import com.humara.nagar.databinding.ActivitySplashScreenBinding
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.OnBoardingActivity
+import com.humara.nagar.utils.DeviceHelper
 import com.humara.nagar.utils.NotificationUtils
 
 class SplashActivity : BaseActivity() {
@@ -38,7 +38,7 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (DeviceHelper.isMinSdk26) {
             NotificationUtils.setupDefaultNotificationChannel(this)
         }
         initViewModelObservers()
