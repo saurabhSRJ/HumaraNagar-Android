@@ -7,6 +7,6 @@ data class ProfileCreationRequest(
     @SerializedName("name") var name: String,
     @SerializedName("father_or_spouse_name") var fatherOrSpouseName: String,
     @SerializedName("date_of_birth") var dateOfBirth: String,
-    @SerializedName("gender") var gender: String,
-    @SerializedName("locality") var locality: String
+    @SerializedName("gender_id") var genderId: Int,
+    @SerializedName("ward_id") var wardId: Int
 )

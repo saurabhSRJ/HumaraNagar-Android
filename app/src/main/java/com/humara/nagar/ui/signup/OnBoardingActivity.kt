@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
+import com.humara.nagar.analytics.AnalyticsTracker
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.IntentKeyConstants
@@ -46,17 +47,11 @@ class OnBoardingActivity : BaseActivity() {
         setContentView(binding.root)
         initViewModelObservers()
         FluidContentResizer.listen(this)
+        showSignupOrLoginFragment(false)
     }
 
     private fun initViewModelObservers() {
         onBoardingViewModel.run {
-            isUserUnderAnExistingRegistrationProcessLiveData.observe(this@OnBoardingActivity) { isAlreadyUnderRegistrationProcess ->
-                if (isAlreadyUnderRegistrationProcess) {
-                    showProfileCreationFragment()
-                } else {
-                    showSignupOrLoginFragment(false)
-                }
-            }
             successfulUserCheckLiveData.observe(this@OnBoardingActivity) { isEligibleToLogin ->
                 if (isEligibleToLogin) {
                     showOtpFragment()
@@ -68,31 +63,29 @@ class OnBoardingActivity : BaseActivity() {
                 if (isNewUser) {
                     showProfileCreationFragment()
                 } else {
-                    fetchAppConfig()
+                    onUserOnBoard()
+                    appConfigViewModel.getAppConfigAndUserReferenceData()
                 }
             }
             successfulUserSignupLiveData.observe(this@OnBoardingActivity) {
                 onUserOnBoard()
+                appConfigViewModel.getAppConfig()
             }
-            showAddProfileImageScreenLiveData.observe(this@OnBoardingActivity) {
-                showUpdateProfileImageFragment()
-            }
-            showHomeScreenLiveData.observe(this@OnBoardingActivity) {
-                showHomeScreen()
-            }
-            checkIfUserIsUnderOngoingRegistrationProcess()
         }
         appConfigViewModel.run {
             observeProgress(this, false)
-            observeErrorAndException(this)
+            observeErrorAndException(this, errorAction = {}, dismissAction = {})
+            appConfigAndUserRefDataSuccessLiveData.observe(this@OnBoardingActivity) {
+                showHomeScreen()
+            }
             appConfigSuccessLiveData.observe(this@OnBoardingActivity) {
-                onBoardingViewModel.onUserOnBoard()
+                showUpdateProfileImageFragment()
             }
         }
     }
 
-    private fun fetchAppConfig() {
-        appConfigViewModel.getAppConfigAndUserReferenceData()
+    private fun onUserOnBoard() {
+        AnalyticsTracker.onUserOnBoard(this)
     }
 
     private fun showHomeScreen() {

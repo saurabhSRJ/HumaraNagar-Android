@@ -118,7 +118,6 @@ class FormInputWithHeader @JvmOverloads constructor(
                 )
             )
             tilInput.boxBackgroundColor = ContextCompat.getColor(context, if (isEnabled) R.color.primary_background else R.color.grey_F5F5F5)
-//            clInput.setBackgroundResource(if (isEnabled) R.drawable.rect_white_fill_grey_outline_5dp else R.drawable.rect_grey_fill_grey_outline_5dp)
         }
     }
 

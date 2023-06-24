@@ -93,14 +93,13 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
 
     private fun initViewModelObservers() {
         appConfigViewModel.run {
-            userLocalitiesLiveData.observe(viewLifecycleOwner) {
-                binding.inputLocality.setOptions(it.toTypedArray())
-            }
+//            wardDetailsLiveData.observe(viewLifecycleOwner) {
+//                binding.inputLocality.setOptions(it.toTypedArray())
+//            }
             complaintCategoriesLiveData.observe(viewLifecycleOwner) {
                 binding.inputCategory.setOptions(it.toTypedArray())
             }
             getComplaintCategories()
-            getUserLocalities()
         }
         reportViewModel.run {
             observeProgress(this, false)
@@ -171,12 +170,12 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
                     openComplaintsScreen()
                 }
             }
-            inputCategory.setUserInputListener {
-                reportViewModel.setCategory(it)
-            }
-            inputLocality.setUserInputListener {
-                reportViewModel.setLocality(it)
-            }
+//            inputCategory.setUserInputListener {
+//                reportViewModel.setCategory(it)
+//            }
+//            inputLocality.setUserInputListener {
+//                reportViewModel.setLocality(it)
+//            }
             inputLocation.apply {
                 switchToMultiLined(2)
                 setLayoutListener(true) {

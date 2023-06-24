@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_main"
@@ -105,7 +106,6 @@
                     android:id="@+id/toggle_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:checkedButton="@id/button_male"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_gender"
                     app:selectionRequired="true"
@@ -116,24 +116,31 @@
                         style="@style/GenderSelectionToggleButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/male" />
+                        tools:text="Male" />
 
                     <Button
                         android:id="@+id/button_female"
                         style="@style/GenderSelectionToggleButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/female" />
+                        tools:text="Female" />
+
+                    <Button
+                        android:id="@+id/button_other"
+                        style="@style/GenderSelectionToggleButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Others" />
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
-                    android:id="@+id/input_locality"
+                    android:id="@+id/input_ward"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:header="@string/locality"
-                    app:hint="@string/selectLocality"
+                    app:header="@string/ward_no"
+                    app:hint="@string/select_ward"
                     app:layout_constraintTop_toBottomOf="@id/toggle_gender" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

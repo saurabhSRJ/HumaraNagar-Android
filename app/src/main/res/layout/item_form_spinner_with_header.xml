@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -62,6 +63,7 @@
                 style="@style/OpenSansRegular14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:dropDownAnchor="@id/clContainer"
                 android:completionThreshold="0"
                 android:inputType="text"
                 android:paddingTop="10dp"

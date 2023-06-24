@@ -16,6 +16,7 @@ interface SharedPreferenceKeys {
             const val MOBILE_NUMBER = "MOBILE_NUMBER"
             const val USER_PROFILE = "USER_PROFILE"
             const val USER_ID = "USER_ID"
+            const val USER_NAME = "USER_NAME"
             const val HISTORY_TOOLTIP_COUNTER = "HISTORY_TOOLTIP_COUNTER"
             const val PASSCODE = "PASSCODE"
             const val TOKEN = "TOKEN"
@@ -26,7 +27,6 @@ interface SharedPreferenceKeys {
             const val FCM_TOKEN = "FCM_TOKEN"
             const val FCM_TOKE_UPDATED = "FCM_TOKE_UPDATED"
             const val WARD = "WARD"
-            const val WARD_ID = "WARD_ID"
             const val PROFILE_IMAGE = "PROFILE_IMAGE"
         }
     }

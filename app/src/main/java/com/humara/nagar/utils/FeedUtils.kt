@@ -2,8 +2,8 @@ package com.humara.nagar.utils
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager
-import com.humara.nagar.BuildConfig
 import com.humara.nagar.R
+import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.ui.common.GenericAlertDialog
 
 object FeedUtils {
@@ -15,6 +15,6 @@ object FeedUtils {
     }
 
     fun getDocumentUrl(url: String): String {
-        return "${BuildConfig.BASE_URL}/media/$url"
+        return NetworkConstants.NetworkAPIConstants.BASE_MEDIA_URL.plus(url)
     }
 }

@@ -124,7 +124,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 }
             }
             initialPostErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog(subtitle = it.message, ctaText = getString(R.string.retry), errorAction = { reloadFeed() }, dismissAction = { reloadFeed() })
+                showErrorDialog(subtitle = it.message, ctaText = getString(R.string.retry), errorAction = { reloadFeed() }, dismissAction = { })
             }
             loadMorePostErrorLiveData.observe(viewLifecycleOwner) {
                 showPaginationLoadError()
