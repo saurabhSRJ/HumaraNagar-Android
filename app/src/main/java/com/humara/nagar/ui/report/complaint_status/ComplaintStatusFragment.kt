@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.adapter.ComplaintStatusAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
@@ -53,7 +54,11 @@ class ComplaintStatusFragment : BaseFragment() {
         // result listener for getting the comment from dialog fragment
         setFragmentResultListener(COMMENT_RESULT_REQUEST) { _, bundle ->
             val comment = StringUtils.replaceWhitespaces(bundle.getString(COMMENT_KEY) ?: "")
-            complaintStatusViewModel.onUserCommentReceived(comment, getUserPreference().isAdminUser)
+            if (Role.isFromHumaraNagarTeam(getUserPreference().role?.id ?: 0)) {
+                context?.showToast("Action not allowed")
+                return@setFragmentResultListener
+            }
+            complaintStatusViewModel.onUserCommentReceived(comment, Role.isLocalAdmin(getUserPreference().role?.id ?: 0))
         }
     }
 
@@ -120,7 +125,7 @@ class ComplaintStatusFragment : BaseFragment() {
             categoryTV.setVisibilityAndText(response.category)
             localityTV.setVisibilityAndText(response.locality)
             locationTV.setVisibilityAndText(response.location)
-            if (getUserPreference().isAdminUser) {
+            if (Role.isAdmin(getUserPreference().role?.id ?: 0)) {
                 response.residentName?.let { name ->
                     complaintInitiatorDetailsLayout.visibility = View.VISIBLE
                     complaintInitiatorNameTV.text = name
@@ -157,7 +162,7 @@ class ComplaintStatusFragment : BaseFragment() {
             } else {
                 context?.showToast(getString(R.string.map_location_not_available_message))
             }
-            if (getUserPreference().isAdminUser) {
+            if (Role.isLocalAdmin(getUserPreference().role?.id ?: 0)) {
                 handleAdminResponse(response)
             } else {
                 handleUserResponse(response)

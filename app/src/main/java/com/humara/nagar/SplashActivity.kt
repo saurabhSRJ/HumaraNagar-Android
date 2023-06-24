@@ -48,7 +48,7 @@ class SplashActivity : BaseActivity() {
     private fun initViewModelObservers() {
         appConfigViewModel.run {
             observeErrorAndException(this)
-            appConfigSuccessLiveData.observe(this@SplashActivity) {
+            appConfigAndUserRefDataSuccessLiveData.observe(this@SplashActivity) {
                 launchNextScreen()
             }
         }

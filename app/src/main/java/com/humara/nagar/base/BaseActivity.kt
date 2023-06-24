@@ -72,7 +72,7 @@ abstract class BaseActivity : PermissionActivity() {
                 }
                 put(AnalyticsData.Parameters.PAGE_TYPE, getScreenName())
                 put(AnalyticsData.Parameters.LANGUAGE_CODE, getAppPreference().appLanguage)
-                put(AnalyticsData.Parameters.IS_ADMIN, getUserPreference().isAdminUser)
+                put(AnalyticsData.Parameters.ROLE, getUserPreference().role)
             } catch (e: JSONException) {
                 Logger.logException(getScreenName(), e, Logger.LogLevel.ERROR)
             }

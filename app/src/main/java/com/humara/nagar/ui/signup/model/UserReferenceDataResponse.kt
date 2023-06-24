@@ -1,30 +1,21 @@
 package com.humara.nagar.ui.signup.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class UserReferenceDataResponse(
-    @SerializedName("localities") val localities: ArrayList<LocalityDetails>,
-    @SerializedName("categories") val categories: ArrayList<CategoryDetails>
+    @SerializedName("roles") val roles: List<RoleDetails>,
+    @SerializedName("wards") val wards: List<WardDetails>,
+    @SerializedName("genders") val genders: List<GenderDetails>,
+    @SerializedName("categories") val categories: List<CategoryDetails>
 )
 
-@Entity(tableName = "localities")
-data class LocalityDetails(
-    @PrimaryKey
-    @SerializedName("id")
-    val id: Int,
-    @ColumnInfo(name = "name")
-    @SerializedName("name")
-    val name: String,
-    @ColumnInfo(name = "ward_id")
-    @SerializedName("ward_id")
-    val wardId: Int
-)
-
-@Entity(tableName = "categories")
-data class CategoryDetails(
+@Entity(tableName = "roles")
+data class RoleDetails(
     @PrimaryKey
     @SerializedName("id")
     val id: Int,
@@ -32,3 +23,40 @@ data class CategoryDetails(
     @SerializedName("name")
     val name: String
 )
+
+@Entity(tableName = "wards")
+@Parcelize
+data class WardDetails(
+    @PrimaryKey
+    @SerializedName("id")
+    val id: Int,
+    @ColumnInfo(name = "name")
+    @SerializedName("name")
+    val name: String
+): Parcelable {
+    override fun toString() = name
+}
+
+@Entity(tableName = "genders")
+@Parcelize
+data class GenderDetails(
+    @PrimaryKey
+    @SerializedName("id")
+    val id: Int,
+    @ColumnInfo(name = "name")
+    @SerializedName("name")
+    val name: String
+): Parcelable {
+    override fun toString() = name
+}
+
+@Entity(tableName = "categories")
+@Parcelize
+data class CategoryDetails(
+    @PrimaryKey
+    @SerializedName("id")
+    val id: Int,
+    @ColumnInfo(name = "name")
+    @SerializedName("name")
+    val name: String
+): Parcelable

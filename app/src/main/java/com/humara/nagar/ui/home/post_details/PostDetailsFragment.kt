@@ -343,9 +343,9 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
     private fun handlePostHeaderUI(postHeader: LayoutPostHeaderBinding, post: Post) {
         postHeader.apply {
             tvName.text = post.name
-            tvLocality.setVisibilityAndText(post.locality)
+            tvRoleAndWard.text = FeedUtils.getRoleAndWardText(requireContext())
             tvPostTime.text = DateTimeUtils.getRelativeDurationFromCurrentTime(requireContext(), post.createdAt)
-            ivOptions.isVisible = post.isCreatedByUser(requireContext())
+            ivOptions.isVisible = post.isEditableByUser(requireContext())
             ivOptions.setNonDuplicateClickListener {
                 showPostOptionMenu(post, it)
             }
@@ -452,7 +452,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
         postDetailsViewModel.postDetailsLiveData.value?.let { post ->
             postShareBinding.run {
                 tvName.text = post.name
-                tvLocality.setVisibilityAndText(post.locality)
+                tvRoleAndWard.text = FeedUtils.getRoleAndWardText(requireContext())
                 postContent.setVisibilityAndText(post.caption)
                 post.profileImage?.let {
                     Glide.with(requireContext())

@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.adapter.ComplaintsAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
@@ -28,7 +29,7 @@ class ComplaintsFragment : BaseFragment() {
     }
     private val navController: NavController by lazy { findNavController() }
     private val complaintsAdapter: ComplaintsAdapter by lazy {
-        ComplaintsAdapter(getUserPreference().isAdminUser) { complaintId ->
+        ComplaintsAdapter(Role.isLocalAdmin(getUserPreference().role?.id ?: 0)) { complaintId ->
             //Handle on click (Pass complain_id: String)
             val action = ComplaintsFragmentDirections.actionComplaintsToComplaintStatus(complaintId, getScreenName())
             navController.navigate(action)
@@ -44,7 +45,7 @@ class ComplaintsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController.previousBackStackEntry?.savedStateHandle?.set(IS_ADMIN, getUserPreference().isAdminUser)
+        navController.previousBackStackEntry?.savedStateHandle?.set(IS_ADMIN, Role.isLocalAdmin(getUserPreference().role?.id ?: 0))
         navController.currentBackStackEntry?.savedStateHandle?.run {
             getLiveData<Boolean>(RELOAD_COMPLAINTS_LIST).observe(viewLifecycleOwner) { shouldReload ->
                 if (shouldReload) {
@@ -89,7 +90,7 @@ class ComplaintsFragment : BaseFragment() {
     private fun initView() {
         binding.run {
             //Setting up the toolbar
-            includedToolbar.toolbarTitle.text = if (getUserPreference().isAdminUser) getString(R.string.all_complaints) else getString(R.string.past_complaints)
+            includedToolbar.toolbarTitle.text = if (Role.isLocalAdmin(getUserPreference().role?.id ?: 0)) getString(R.string.all_complaints) else getString(R.string.past_complaints)
             includedToolbar.rightIconTv.apply {
                 text = resources.getString(R.string.history)
                 visibility = View.VISIBLE

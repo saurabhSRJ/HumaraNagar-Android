@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.humara.nagar.base.BaseViewModel
-import com.humara.nagar.ui.signup.model.Gender
+import com.humara.nagar.ui.signup.model.GenderDetails
+import com.humara.nagar.ui.signup.model.WardDetails
 import com.humara.nagar.ui.signup.profile_creation.model.ProfileCreationRequest
 import com.humara.nagar.utils.DateTimeUtils
 import com.humara.nagar.utils.SingleLiveEvent
@@ -18,7 +19,7 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
         private const val PARENT_NAME_KEY = "parent"
         private const val DOB_KEY = "dob"
         private const val GENDER_KEY = "gender"
-        private const val LOCALITY_KEY = "locality"
+        private const val WARD_KEY = "ward"
         private const val SUBMIT_BUTTON_KEY = "submit"
     }
 
@@ -50,33 +51,33 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
 
     private fun getParentName(): String? = savedStateHandle[PARENT_NAME_KEY]
 
-    fun setLocality(locality: String) {
-        savedStateHandle[LOCALITY_KEY] = locality
+    fun setWard(ward: WardDetails) {
+        savedStateHandle[WARD_KEY] = ward
         updateSubmitButtonState()
     }
 
-    private fun getLocality(): String? = savedStateHandle[LOCALITY_KEY]
+    private fun getWard(): WardDetails? = savedStateHandle[WARD_KEY]
 
-    fun setGender(gender: String) {
+    fun setGender(gender: GenderDetails) {
         savedStateHandle[GENDER_KEY] = gender
+        updateSubmitButtonState()
     }
 
-    private fun getGender(): String = savedStateHandle[GENDER_KEY] ?: Gender.MALE.name
+    private fun getGender(): GenderDetails? = savedStateHandle[GENDER_KEY]
 
     fun getProfileCreationObjectWithCollectedData(): ProfileCreationRequest {
         return ProfileCreationRequest(
             userId = getUserPreference().userId,
             name = StringUtils.replaceWhitespaces(getUserName()!!.trim()),
             fatherOrSpouseName = StringUtils.replaceWhitespaces(getParentName()!!.trim()),
-            dateOfBirth = DateTimeUtils.
-            convertDateFormat(getDateOfBirth().value.toString(), "dd-MM-yyyy", "yyyy-MM-dd"),
-            gender = getGender(),
-            locality = getLocality()!!
+            dateOfBirth = DateTimeUtils.convertDateFormat(getDateOfBirth().value.toString(), "dd-MM-yyyy", "yyyy-MM-dd"),
+            genderId = getGender()!!.id,
+            wardId = getWard()!!.id
         )
     }
 
     private fun updateSubmitButtonState() {
-        val anyRequiredFieldEmpty = getUserName().isNullOrEmpty() || getDateOfBirth().value.isNullOrEmpty() || getParentName().isNullOrEmpty() || getLocality().isNullOrEmpty()
+        val anyRequiredFieldEmpty = getUserName().isNullOrEmpty() || getDateOfBirth().value.isNullOrEmpty() || getParentName().isNullOrEmpty() || getWard() == null || getGender() == null
         savedStateHandle[SUBMIT_BUTTON_KEY] = anyRequiredFieldEmpty.not()
     }
 

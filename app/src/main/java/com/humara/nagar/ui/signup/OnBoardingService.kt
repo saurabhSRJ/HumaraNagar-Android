@@ -10,7 +10,6 @@ import com.humara.nagar.ui.signup.signup_or_login.model.SendOtpRequest
 import com.humara.nagar.ui.signup.signup_or_login.model.SendOtpResponse
 import com.humara.nagar.ui.signup.signup_or_login.model.SignupResponse
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface OnBoardingService {
@@ -24,6 +23,6 @@ interface OnBoardingService {
     suspend fun signup(@Body request: ProfileCreationRequest): NetworkResponse<SignupResponse>
 
     @Multipart
-    @PUT(NetworkConstants.NetworkAPIConstants.UPDATE_IMAGE)
+    @PUT(NetworkConstants.NetworkAPIConstants.UPDATE_PROFILE_IMAGE)
     suspend fun updateProfileImage(@Part image: MultipartBody.Part): NetworkResponse<AppConfigResponse>
 }

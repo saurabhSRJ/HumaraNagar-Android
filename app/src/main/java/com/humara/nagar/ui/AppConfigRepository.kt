@@ -11,8 +11,8 @@ class AppConfigRepository(context: Application) : BaseRepository(context) {
     private val apiService = getRetrofit().create(AppConfigService::class.java)
     private val database: AppDatabase by lazy { AppDatabase.getDataBase(context) }
 
-    suspend fun getAppConfig(request: AppConfigRequest) = withContext(Dispatchers.IO) {
-        apiService.getAppConfig(request)
+    suspend fun getAppConfig() = withContext(Dispatchers.IO) {
+        apiService.getAppConfig()
     }
 
     suspend fun getUserReferenceDetails(request: UserReferenceDataRequest) = withContext(Dispatchers.IO) {
@@ -23,16 +23,28 @@ class AppConfigRepository(context: Application) : BaseRepository(context) {
         apiService.logout(request)
     }
 
-    suspend fun insertLocalities(localities: List<LocalityDetails>) = withContext(Dispatchers.IO) {
-        database.referenceDataDao().insertLocalities(localities)
+    suspend fun insertRoles(roles: List<RoleDetails>) = withContext(Dispatchers.IO) {
+        database.referenceDataDao().insertRoles(roles)
+    }
+
+    suspend fun insertWards(wards: List<WardDetails>) = withContext(Dispatchers.IO) {
+        database.referenceDataDao().insertWards(wards)
+    }
+
+    suspend fun insertGenders(genders: List<GenderDetails>) = withContext(Dispatchers.IO) {
+        database.referenceDataDao().insertGenders(genders)
     }
 
     suspend fun insertCategories(categories: List<CategoryDetails>) = withContext(Dispatchers.IO) {
         database.referenceDataDao().insertCategories(categories)
     }
 
-    suspend fun getUserLocalities(wardId: Int): List<LocalityDetails> = withContext(Dispatchers.IO) {
-        database.referenceDataDao().getLocalitiesByWardId(wardId)
+    suspend fun getAllWards() = withContext(Dispatchers.IO) {
+        database.referenceDataDao().getAllWards()
+    }
+
+    suspend fun getAllGenders() = withContext(Dispatchers.IO) {
+        database.referenceDataDao().getAllGenders()
     }
 
     suspend fun getComplaintCategories(): List<CategoryDetails> = withContext(Dispatchers.IO) {

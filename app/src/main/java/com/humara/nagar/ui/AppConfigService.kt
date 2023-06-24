@@ -4,11 +4,12 @@ import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.network.NetworkResponse
 import com.humara.nagar.ui.signup.model.*
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AppConfigService {
-    @POST(NetworkConstants.NetworkAPIConstants.CONFIG)
-    suspend fun getAppConfig(@Body request: AppConfigRequest): NetworkResponse<AppConfigResponse>
+    @GET(NetworkConstants.NetworkAPIConstants.CONFIG)
+    suspend fun getAppConfig(): NetworkResponse<AppConfigResponse>
 
     @POST(NetworkConstants.NetworkAPIConstants.REF_DATA)
     suspend fun getReferenceDetails(@Body request: UserReferenceDataRequest): NetworkResponse<UserReferenceDataResponse>

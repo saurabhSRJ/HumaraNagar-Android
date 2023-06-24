@@ -2,8 +2,8 @@ package com.humara.nagar.utils
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager
-import com.humara.nagar.BuildConfig
 import com.humara.nagar.R
+import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.ui.common.GenericAlertDialog
 
 object FeedUtils {
@@ -14,7 +14,13 @@ object FeedUtils {
         }
     }
 
+    fun getRoleAndWardText(context: Context): String {
+        val role = context.getUserSharedPreferences().role?.name
+        val ward = context.getString(R.string.ward_s, context.getUserSharedPreferences().ward)
+        return "$role $ward"
+    }
+
     fun getDocumentUrl(url: String): String {
-        return "${BuildConfig.BASE_URL}/media/$url"
+        return NetworkConstants.NetworkAPIConstants.BASE_MEDIA_URL.plus(url)
     }
 }

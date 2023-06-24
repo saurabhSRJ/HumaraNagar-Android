@@ -6,6 +6,7 @@ import com.humara.nagar.BuildConfig
 import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.constants.Constants
+import com.humara.nagar.constants.NetworkConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -43,6 +44,6 @@ object VideoUtils {
     }
 
     fun getVideoUrl(url: String): String {
-        return BuildConfig.BASE_URL.plus("/media/$url")
+        return NetworkConstants.NetworkAPIConstants.BASE_MEDIA_URL.plus(url)
     }
 }

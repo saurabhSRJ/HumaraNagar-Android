@@ -11,7 +11,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import at.blogc.android.views.ExpandableTextView
 import com.google.android.exoplayer2.Player
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.databinding.*
@@ -184,9 +183,9 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
     private fun handlePostHeaderUI(postHeader: LayoutPostHeaderBinding, post: Post) {
         postHeader.apply {
             tvName.text = post.name
-            tvLocality.setVisibilityAndText(post.locality)
+            tvRoleAndWard.text = FeedUtils.getRoleAndWardText(context)
             tvPostTime.text = DateTimeUtils.getRelativeDurationFromCurrentTime(context, post.createdAt)
-            ivOptions.isVisible = post.isCreatedByUser(context)
+            ivOptions.isVisible = post.isEditableByUser(context)
             ivOptions.setOnClickListener {
                 showPostOptionMenu(post, it)
             }
@@ -201,10 +200,8 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             setVisibilityAndText(post.caption)
             setOnClickListener {
                 if (isExpanded) {
-                    Logger.debugLog("open post detail")
                     it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(post.postId, source))
                 } else {
-                    Logger.debugLog("expand content")
                     expand()
                 }
             }

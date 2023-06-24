@@ -1,5 +1,7 @@
 package com.humara.nagar.constants
 
+import com.humara.nagar.BuildConfig
+
 interface NetworkConstants {
     interface NetworkHeaderConstants {
         companion object {
@@ -16,7 +18,7 @@ interface NetworkConstants {
             const val LOGIN = "/login"
             const val SIGNUP = "/signup"
             const val CONFIG = "/config"
-            const val UPDATE_IMAGE = "/profile"
+            const val UPDATE_PROFILE_IMAGE = "/profile/image"
             const val LOGOUT = "/logout"
             const val COMPLAINT = "/complaint"
             const val REF_DATA = "/ref-data"
@@ -40,6 +42,7 @@ interface NetworkConstants {
             const val PRIVACY_POLICY_URL = "https://humaranagar.in/views/privacy_policy.html"
             const val TERMS_CONDITION_URL = "https://humaranagar.in/views/terms_and_conditions.html"
             const val ABOUT_US_URL = "https://humaranagar.in"
+            const val BASE_MEDIA_URL = "${BuildConfig.BASE_URL}/media/"
         }
     }
 
