@@ -48,7 +48,7 @@ interface AnalyticsData {
             const val USER_NAME = "USER_NAME"
             const val MOBILE_NUMBER = "MOBILE_NUMBER"
             const val NOTIFICATION_DATA = "NOTIFICATION_DATA"
-            const val IS_ADMIN = "IS_ADMIN"
+            const val ROLE = "ROLE"
         }
     }
 

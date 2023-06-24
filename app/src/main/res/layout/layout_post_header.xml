@@ -39,7 +39,7 @@
             tools:text="User Name" />
 
         <TextView
-            android:id="@+id/tvLocality"
+            android:id="@+id/tvRoleAndWard"
             style="@style/OpenSansRegular10sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -56,10 +56,10 @@
             style="@style/OpenSansRegular10sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="8sp"
+            android:textSize="9sp"
             app:layout_constraintEnd_toEndOf="@id/tvName"
             app:layout_constraintStart_toStartOf="@id/tvName"
-            app:layout_constraintTop_toBottomOf="@id/tvLocality"
+            app:layout_constraintTop_toBottomOf="@id/tvRoleAndWard"
             tools:text="12 minutes ago" />
 
         <View

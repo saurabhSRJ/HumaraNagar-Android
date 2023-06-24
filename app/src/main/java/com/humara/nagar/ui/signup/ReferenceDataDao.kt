@@ -20,9 +20,6 @@ interface ReferenceDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategories(categories: List<CategoryDetails>)
 
-//    @Query("SELECT * FROM localities WHERE ward_id = :wardId")
-//    suspend fun getLocalitiesByWardId(wardId: Int): List<LocalityDetails>
-
     @Query("SELECT * FROM categories")
     suspend fun getAllCategories(): List<CategoryDetails>
 

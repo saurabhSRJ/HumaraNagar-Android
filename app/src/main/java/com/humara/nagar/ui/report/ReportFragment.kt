@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
 import com.humara.nagar.Logger
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.adapter.ImagePreviewAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
@@ -83,7 +84,7 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //if user is admin navigate to all complaints screen
-        if (getUserPreference().isAdminUser) {
+        if (Role.isLocalAdmin(getUserPreference().role?.id ?: 0)) {
             openComplaintsScreen()
         }
         initViewModelObservers()
@@ -213,7 +214,7 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
 
     private fun initHistoryTooltip() {
         val historyToolTipCounter = getUserPreference().historyToolTipCounter
-        if (getUserPreference().isAdminUser.not() && historyToolTipCounter < 3) {
+        if (Role.canRaiseComplaint(getUserPreference().role?.id ?: 0) && historyToolTipCounter < 3) {
             val balloon = Balloon.Builder(requireContext())
                 .setWidth(BalloonSizeSpec.WRAP)
                 .setHeight(BalloonSizeSpec.WRAP)

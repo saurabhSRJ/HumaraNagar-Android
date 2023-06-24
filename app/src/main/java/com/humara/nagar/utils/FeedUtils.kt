@@ -14,6 +14,12 @@ object FeedUtils {
         }
     }
 
+    fun getRoleAndWardText(context: Context): String {
+        val role = context.getUserSharedPreferences().role?.name
+        val ward = context.getString(R.string.ward_s, context.getUserSharedPreferences().ward)
+        return "$role $ward"
+    }
+
     fun getDocumentUrl(url: String): String {
         return NetworkConstants.NetworkAPIConstants.BASE_MEDIA_URL.plus(url)
     }

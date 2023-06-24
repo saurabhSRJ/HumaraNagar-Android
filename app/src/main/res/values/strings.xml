@@ -59,6 +59,7 @@
     <string name="anErrorOccurred">An error occurred, please try again</string>
     <string name="ward_no">Ward No.</string>
     <string name="select_ward">Select Ward</string>
+    <string name="ward_s">Ward %s</string>
     <!-- Report Status Values -->
     <string name="sent">Sent</string>
     <string name="inprogress">In Progress</string>

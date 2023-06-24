@@ -273,7 +273,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
         val postShareBinding = PostShareLayoutBinding.inflate(layoutInflater, binding.root as ViewGroup, true)
         postShareBinding.run {
             tvName.text = post.name
-            tvLocality.setVisibilityAndText(post.locality)
+            tvRoleAndWard.text = FeedUtils.getRoleAndWardText(requireContext())
             postContent.setVisibilityAndText(post.caption)
             post.profileImage?.let {
                 Glide.with(requireContext())

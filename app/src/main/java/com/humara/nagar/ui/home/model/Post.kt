@@ -2,6 +2,7 @@ package com.humara.nagar.ui.home.model
 
 import android.content.Context
 import com.google.gson.annotations.SerializedName
+import com.humara.nagar.Role
 import com.humara.nagar.utils.DateTimeUtils
 import com.humara.nagar.utils.getUserSharedPreferences
 
@@ -16,14 +17,13 @@ data class Post(
     @SerializedName("caption") val caption: String?,
     @SerializedName("user_id") val userId: Long,
     @SerializedName("name") val name: String,
-    @SerializedName("locality") val locality: String? = null,
     @SerializedName("image") val profileImage: String? = null,
     @SerializedName("info") val info: PostInfo?
 ) {
     fun hasUserLike(): Boolean = isLikedByUser != 0
 
-    fun isCreatedByUser(context: Context): Boolean {
-        return context.getUserSharedPreferences().userId == userId
+    fun isEditableByUser(context: Context): Boolean {
+        return (context.getUserSharedPreferences().userId == userId) || ((context.getUserSharedPreferences().role?.id ?: 0) == Role.HumaraNagarTeam.roleId)
     }
 }
 

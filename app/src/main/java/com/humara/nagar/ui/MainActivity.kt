@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
@@ -54,7 +55,7 @@ class MainActivity : BaseActivity() {
     private fun setUpBottomNavigation() {
         val navView: BottomNavigationView = binding.navView
         navView.itemIconTintList = null
-        if (getUserPreference().isAdminUser.not()) {
+        if (Role.isAdmin(getUserPreference().role?.id ?: 0).not()) {
             navView.menu.removeItem(R.id.residents_navigation)
         }
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
