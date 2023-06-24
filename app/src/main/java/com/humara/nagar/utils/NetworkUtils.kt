@@ -1,6 +1,8 @@
 package com.humara.nagar.utils
 
+import android.content.ContentResolver
 import android.net.Uri
+import com.humara.nagar.network.retrofit.ContentUriRequestBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -19,15 +21,20 @@ object NetworkUtils {
         return requestBody.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
     }
 
-    fun createDocumentMultiPart(uri: Uri, fieldName: String): MultipartBody.Part? {
-        val file = uri.path?.let { File(it) }
-        val requestBody = file?.asRequestBody("application/pdf".toMediaTypeOrNull())
-        return requestBody?.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
+    fun createDocumentMultiPart(contentResolver: ContentResolver, uri: Uri, fieldName: String): MultipartBody.Part {
+        return MultipartBody.Part.createFormData(
+            fieldName,
+            FileUtils.getFileName(contentResolver, uri),
+            ContentUriRequestBody(contentResolver, uri)
+        )
     }
 
-    fun createVideoMultiPart(uri: Uri, fieldName: String): MultipartBody.Part? {
-        val file = uri.path?.let { File(it) }
-        val requestBody = file?.asRequestBody("video/mp4".toMediaTypeOrNull())
-        return requestBody?.let { MultipartBody.Part.createFormData(fieldName, file.name, it) }
+    fun createVideoMultiPart(contentResolver: ContentResolver, uri: Uri, fieldName: String): MultipartBody.Part {
+        return MultipartBody.Part.createFormData(
+            fieldName,
+            FileUtils.getFileName(contentResolver, uri),
+            ContentUriRequestBody(contentResolver, uri)
+        )
     }
+
 }

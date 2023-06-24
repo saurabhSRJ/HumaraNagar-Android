@@ -48,9 +48,8 @@ object PermissionUtils {
     private fun getStoragePermissions(): Array<String> {
         return if (DeviceHelper.isMinSdk33) {
             arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
-        } else if (DeviceHelper.isMinSdk29) {
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
         } else {
+            //TODO: this should be changed to READ_EXTERNAL_STORAGE permission only
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
     }

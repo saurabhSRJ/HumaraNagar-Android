@@ -23,7 +23,7 @@ data class Post(
     fun hasUserLike(): Boolean = isLikedByUser != 0
 
     fun isEditableByUser(context: Context): Boolean {
-        return (context.getUserSharedPreferences().userId == userId) || ((context.getUserSharedPreferences().role?.id ?: 0) == Role.HumaraNagarTeam.roleId)
+        return (context.getUserSharedPreferences().userId == userId) || Role.isFromHumaraNagarTeam(context.getUserSharedPreferences().role?.id ?: 0)
     }
 }
 
