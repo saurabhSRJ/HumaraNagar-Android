@@ -12,6 +12,7 @@ import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.otp_verification.model.LoginRequest
 import com.humara.nagar.ui.signup.profile_creation.model.ProfileCreationRequest
 import com.humara.nagar.ui.signup.signup_or_login.model.SendOtpRequest
+import com.humara.nagar.utils.ImageUtils
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.UserDataValidator
 import kotlinx.coroutines.launch
@@ -101,6 +102,7 @@ class OnBoardingViewModel(application: Application) : BaseViewModel(application)
     fun updateProfileImage(imageUri: Uri) = viewModelScope.launch {
         val response = processCoroutine({ repository.updateProfileImage(imageUri) })
         response.onSuccess {
+            ImageUtils.deleteTempFile(imageUri)
             getUserPreference().profileImage = it.image
             _addProfileImageStatusLiveData.postValue(true)
         }.onError {

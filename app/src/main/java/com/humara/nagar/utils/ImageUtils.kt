@@ -17,7 +17,7 @@ import java.util.*
  */
 object ImageUtils {
     @Throws(IOException::class)
-    fun Context.getBitmapFromUri(uri: Uri, options: BitmapFactory.Options? = null): Bitmap? {
+    private fun Context.getBitmapFromUri(uri: Uri, options: BitmapFactory.Options? = null): Bitmap? {
         val parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")
         val fileDescriptor = parcelFileDescriptor?.fileDescriptor
         val image: Bitmap? = if (options != null)
@@ -29,7 +29,7 @@ object ImageUtils {
     }
 
     @Throws(IOException::class)
-    fun createImageFile(context: Context): File {
+    private fun createTempImageFile(context: Context): File {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         //save a temp file
         return File.createTempFile("JPEG_${getTimestampString()}", ".jpeg", storageDir)
@@ -38,6 +38,33 @@ object ImageUtils {
     // Create a unique image file name based on timestamp
     fun getTimestampString(): String {
         return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+    }
+
+    /**
+     * Deletes a temporary file specified by the file URI if it represents a local file.
+     * For content uris try using contentResolver
+     *
+     * @param fileUri The URI of the file to be deleted.
+     */
+    fun deleteTempFile(fileUri: Uri?) {
+        if (fileUri == null || fileUri.scheme != "file") {
+            // Invalid or non-local file URI, no action required
+            return
+        }
+        val filePath = fileUri.path ?: run {
+            // Invalid file path
+            return
+        }
+        try {
+            val file = File(filePath)
+            if (file.exists() && file.delete()) {
+                Logger.debugLog("deleted file: ${file.absolutePath}")
+            } else {
+                Logger.debugLog("error in deleting file: ${file.absolutePath}")
+            }
+        } catch (e: Exception) {
+            Logger.debugLog("error in deleting file: ${e.message}")
+        }
     }
 
     /**
@@ -56,7 +83,7 @@ object ImageUtils {
                 // Step 1: Decode and scale down the image file according to maxHeight and maxWidth
                 scaledBitmap = decodeSampleBitmapFromFile(context, uri, maxWidth, maxHeight)
                 // Step 2: Compress and save the image to the temporary file
-                val tmpFile = createImageFile(context)
+                val tmpFile = createTempImageFile(context)
                 val fos = FileOutputStream(tmpFile)
                 scaledBitmap?.compress(Bitmap.CompressFormat.JPEG, 90, fos)
                 fos.flush()

@@ -103,7 +103,6 @@
     <string name="voterid">Voter ID</string>
     <string name="search">Search</string>
     <string name="fellow_residents">Fellow Residents</string>
-    <string name="attachment_error_message">Something went wrong. Try another file.</string>
     <string name="review">Review</string>
     <string name="you_rated_this_service">You rated this service</string>
     <string name="details">Details</string>
@@ -160,7 +159,7 @@
     <string name="n_days_left">%dd left</string>
     <string name="n_hours_left">%dh left</string>
     <string name="completed">Completed</string>
-    <string name="share_post_caption">"Checkout this post by %1$s on Humara Nagar. %2$s</string>
+    <string name="share_post_caption">Checkout this post by %1$s on Humara Nagar. %2$s</string>
     <string name="no_document_selected">No document selected</string>
     <string name="document_file_size_error_message">Maximum file size should be %dMB</string>
     <string name="video_file_size_error_message">Maximum video size should be %dMB</string>

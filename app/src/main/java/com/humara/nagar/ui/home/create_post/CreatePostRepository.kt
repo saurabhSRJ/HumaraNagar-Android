@@ -21,7 +21,7 @@ class CreatePostRepository(application: Application) : BaseRepository(applicatio
             put(NetworkConstants.NetworkFormDataConstants.CAPTION, caption.createPartFromString())
         }
         val docPart = ArrayList<MultipartBody.Part>()
-        NetworkUtils.createDocumentMultiPart(documentUri, NetworkConstants.NetworkFormDataConstants.DOCUMENT)?.let {
+        NetworkUtils.createDocumentMultiPart(application.contentResolver, documentUri, NetworkConstants.NetworkFormDataConstants.DOCUMENT).let {
             docPart.add(it)
         }
         apiService.createDocumentPost(partMap, docPart)
@@ -43,7 +43,7 @@ class CreatePostRepository(application: Application) : BaseRepository(applicatio
             put(NetworkConstants.NetworkFormDataConstants.CAPTION, caption.createPartFromString())
         }
         val videoParts = ArrayList<MultipartBody.Part>()
-        NetworkUtils.createVideoMultiPart(uri, NetworkConstants.NetworkFormDataConstants.VIDEO)?.let {
+        NetworkUtils.createVideoMultiPart(application.contentResolver, uri, NetworkConstants.NetworkFormDataConstants.VIDEO).let {
             videoParts.add(it)
         }
         apiService.createVideoPost(partMap, videoParts)
