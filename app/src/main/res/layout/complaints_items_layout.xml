@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/categoryTV"
-                style="@style/OpenSansBold16sp"
+                style="@style/OpenSansSemiBold16sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"

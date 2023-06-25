@@ -25,6 +25,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humara.nagar.KohiiProvider
 import com.humara.nagar.Logger
 import com.humara.nagar.R
+import com.humara.nagar.adapter.FeedFiltersAdapter
 import com.humara.nagar.adapter.FeedItemClickListener
 import com.humara.nagar.adapter.PollOptionsPreviewAdapter
 import com.humara.nagar.adapter.PostAdapter
@@ -62,6 +63,13 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     }
     private val homeViewModel: HomeViewModel by viewModels {
         ViewModelFactory()
+    }
+    private val filterAdapter: FeedFiltersAdapter by lazy {
+        FeedFiltersAdapter { filter, position ->
+            homeViewModel.setFilterSelection(filter.id)
+            binding.rvFilters.smoothScrollToPosition(position)
+            reloadFeed()
+        }
     }
     private lateinit var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var kohii: Kohii
@@ -108,6 +116,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             observeErrorAndException(this, errorAction = {}, dismissAction = {})
             observeProgress(this)
             initialPostsLiveData.observe(viewLifecycleOwner) {
+                binding.rvPost.smoothScrollToPosition(0)
                 postAdapter.setData(it)
             }
             loadMorePostsLiveData.observe(viewLifecycleOwner) {
@@ -148,6 +157,9 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             postDetailsLiveData.observe(viewLifecycleOwner) {
                 postAdapter.updatePost(it)
             }
+            feedFiltersLiveData.observe(viewLifecycleOwner) {
+                filterAdapter.setData(it)
+            }
         }
     }
 
@@ -168,7 +180,8 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 }
                 addOnScrollListener(endlessRecyclerViewScrollListener)
                 setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-                    showHideBottomNavigationView(scrollY <= oldScrollY)
+                    val isVisible = scrollY <= oldScrollY
+                    showHideBottomNavigationView(isVisible)
                 }
             }
             swipeRefresh.setOnRefreshListener {
@@ -184,6 +197,11 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             }
             fabCreatePost.setNonDuplicateClickListener {
                 navController.navigate(HomeFragmentDirections.actionHomeFragmentToCreatePostFragment())
+            }
+            rvFilters.apply {
+                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                adapter = filterAdapter
+                setHasFixedSize(true)
             }
         }
     }
@@ -273,7 +291,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
         val postShareBinding = PostShareLayoutBinding.inflate(layoutInflater, binding.root as ViewGroup, true)
         postShareBinding.run {
             tvName.text = post.name
-            tvRoleAndWard.text = FeedUtils.getRoleAndWardText(requireContext())
+            tvRoleAndWard.text = FeedUtils.getRoleAndWardText(requireContext(), post.role, post.ward)
             postContent.setVisibilityAndText(post.caption)
             post.profileImage?.let {
                 Glide.with(requireContext())

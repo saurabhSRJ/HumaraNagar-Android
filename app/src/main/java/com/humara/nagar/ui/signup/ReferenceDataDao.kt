@@ -20,6 +20,9 @@ interface ReferenceDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategories(categories: List<CategoryDetails>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFeedFilters(filters: List<FeedFilter>)
+
     @Query("SELECT * FROM categories")
     suspend fun getAllCategories(): List<CategoryDetails>
 
@@ -28,4 +31,7 @@ interface ReferenceDataDao {
 
     @Query("SELECT * FROM genders")
     suspend fun getAllGenders(): List<GenderDetails>
+
+    @Query("SELECT * FROM feed_filters")
+    suspend fun getAllFilters(): List<FeedFilter>
 }

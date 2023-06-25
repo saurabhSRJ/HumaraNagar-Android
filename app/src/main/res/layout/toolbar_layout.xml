@@ -19,13 +19,12 @@
 
         <TextView
             android:id="@+id/toolbar_title"
+            style="@style/OpenSansSemiBold20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/open_sans_semibold"
             android:textColor="@color/dark_grey_333333"
-            android:textSize="20sp"
-            tools:text="Toolbar Title" />
+            tools:text="@string/settings" />
 
         <LinearLayout
             android:id="@+id/rightIcon"
@@ -49,12 +48,11 @@
 
             <TextView
                 android:id="@+id/rightIconTv"
+                style="@style/OpenSansSemiBold12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:fontFamily="@font/open_sans_semibold"
                 android:textColor="@color/grey_4F4F4F"
-                android:textSize="12sp"
                 tools:text="TextHere" />
 
         </LinearLayout>

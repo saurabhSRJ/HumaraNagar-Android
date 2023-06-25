@@ -140,6 +140,8 @@
                         android:drawablePadding="10dp"
                         android:foreground="?android:selectableItemBackground"
                         android:padding="10dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:textColor="@color/grey_555555"
                         android:visibility="gone"
                         app:drawableStartCompat="@drawable/ic_document"

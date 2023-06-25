@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/tv_pending_approval"
-            style="@style/OpenSansBold16sp"
+            style="@style/OpenSansSemiBold16sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/red_error"

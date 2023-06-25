@@ -2,6 +2,7 @@ package com.humara.nagar.ui.home
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.ApiError
@@ -11,6 +12,7 @@ import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.home.model.EditPostRequest
 import com.humara.nagar.ui.home.model.FeedResponse
 import com.humara.nagar.ui.home.model.Post
+import com.humara.nagar.ui.signup.model.FeedFilter
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
@@ -44,16 +46,33 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     val voteErrorLiveData: LiveData<ApiError> = _voteErrorLiveData
     private val _editPostSuccessLiveData: SingleLiveEvent<Boolean> by lazy { SingleLiveEvent() }
     val editPostSuccessLiveData: LiveData<Boolean> = _editPostSuccessLiveData
+    private val _feedFiltersLiveData: MutableLiveData<List<FeedFilter>> by lazy { SingleLiveEvent() }
+    val feedFiltersLiveData: LiveData<List<FeedFilter>> = _feedFiltersLiveData
+    private val _selectedFilterLiveData: MutableLiveData<Int> = MutableLiveData(1)
     private var currentPage: Int = 1
     private val limit = 10
     var canLoadMoreData = true
 
     init {
-        getPosts()
+        getFeedFilters()
+    }
+
+    private fun getFeedFilters() = viewModelScope.launch {
+        val filters = repository.getFeedFilters()
+        if (filters.isNotEmpty()) {
+            setFilterSelection(filters[0].id)
+            getPosts()
+        }
+        _feedFiltersLiveData.postValue(filters)
+    }
+
+    fun setFilterSelection(id: Int) {
+        _selectedFilterLiveData.value = id
     }
 
     fun getPosts() = viewModelScope.launch {
-        val response = processCoroutine({ repository.getPosts(currentPage, limit) }, progressLiveData = if (currentPage == 1) _initialPostProgressLiveData else _loadMorePostProgressLiveData)
+        val response = processCoroutine({ repository.getPosts(currentPage, limit, _selectedFilterLiveData.value ?: 1) }, progressLiveData = if (currentPage == 1) _initialPostProgressLiveData else
+            _loadMorePostProgressLiveData)
         response.onSuccess {
             if (currentPage == 1) processInitialResponse(it)
             else processLoadMoreResponse(it)

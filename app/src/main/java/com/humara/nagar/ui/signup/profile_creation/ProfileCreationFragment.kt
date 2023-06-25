@@ -5,10 +5,10 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.google.android.material.button.MaterialButton
 import com.humara.nagar.R
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
@@ -86,10 +86,12 @@ class ProfileCreationFragment : BaseFragment() {
     private fun addGenderButtons(genders: List<GenderDetails>) {
         binding.run {
             genders.forEachIndexed { index, genderDetails ->
-                (toggleGender[index] as? Button)?.apply {
+                val button = MaterialButton(requireContext(), null, R.attr.GenderButtons).apply {
                     text = genderDetails.name
+                    id = index
                     tag = genderDetails
                 }
+                toggleGender.addView(button)
             }
             toggleGender.check(toggleGender[0].id)
         }
@@ -116,7 +118,7 @@ class ProfileCreationFragment : BaseFragment() {
             }
             toggleGender.addOnButtonCheckedListener { _, checkedId, isChecked ->
                 if (!isChecked) return@addOnButtonCheckedListener
-                val tag = binding.toggleGender.findViewById<Button>(checkedId).tag as GenderDetails
+                val tag = binding.toggleGender.findViewById<MaterialButton>(checkedId).tag as GenderDetails
                 profileCreationViewModel.setGender(tag)
             }
             inputWard.setUserInputListener {

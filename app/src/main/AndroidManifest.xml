@@ -70,9 +70,6 @@
             </intent-filter>
             <nav-graph android:value="@navigation/home_navigation" />
         </activity>
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name="com.humara.nagar.ui.signup.OnBoardingActivity"

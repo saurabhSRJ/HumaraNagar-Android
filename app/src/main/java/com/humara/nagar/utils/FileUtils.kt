@@ -30,7 +30,7 @@ object FileUtils {
                 }
             }
         }
-        return StringUtils.showDotStringAfterLimitReached(MAX_FILE_NAME_LENGTH, result)
+        return result
     }
 
     fun getFileName(url: String?): String {
@@ -66,9 +66,9 @@ object FileUtils {
 
     fun openPdfUrl(context: Context, url: String) {
         try {
-            val pdfOpeningIntent = Intent(Intent.ACTION_VIEW)
-            pdfOpeningIntent.setDataAndType(Uri.parse(url), "application/pdf")
-            pdfOpeningIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            val pdfOpeningIntent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(Uri.parse(url), "application/pdf")
+            }
             context.startActivity(pdfOpeningIntent)
         } catch (ex: Exception) {
             context.showToast(context.getString(R.string.error_opening_file))

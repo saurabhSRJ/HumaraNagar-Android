@@ -11,6 +11,7 @@
     <attr name="minimumHeight" format="integer" />
     <attr name="maximumLength" format="integer" />
     <attr name="FilterChips" format="reference" />
+    <attr name="GenderButtons" format="reference" />
 
     <declare-styleable name="FormInputWithHeader">
         <attr name="header" />

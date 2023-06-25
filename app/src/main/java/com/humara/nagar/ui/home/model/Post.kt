@@ -18,6 +18,8 @@ data class Post(
     @SerializedName("user_id") val userId: Long,
     @SerializedName("name") val name: String,
     @SerializedName("image") val profileImage: String? = null,
+    @SerializedName("role") val role: String,
+    @SerializedName("ward") val ward: String,
     @SerializedName("info") val info: PostInfo?
 ) {
     fun hasUserLike(): Boolean = isLikedByUser != 0
@@ -29,7 +31,7 @@ data class Post(
 
 data class PostInfo(
     @SerializedName("medias") val medias: List<String>? = null, // image, video or document urls
-    @SerializedName("thumbnails") val thumbnails: List<String>? = null,
+    @SerializedName("thumbnails") val thumbnails: List<String>? = null, //video thumbnails
     @SerializedName("question") val question: String?,
     @SerializedName("total_votes") val totalVotes: Int,
     @SerializedName("expiry_time") val expiryTime: String,

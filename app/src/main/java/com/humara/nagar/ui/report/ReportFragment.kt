@@ -193,7 +193,6 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
                 setUserInputListener {
                     reportViewModel.setComment(it)
                 }
-                setHint(getString(R.string.comments_short_hint))
             }
             addImageLayout.setOnClickListener {
                 showMediaSelectionBottomSheet()

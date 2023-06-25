@@ -7,7 +7,11 @@ import retrofit2.http.*
 
 interface HomeService {
     @GET(NetworkConstants.NetworkAPIConstants.POSTS)
-    suspend fun getPosts(@Query(NetworkConstants.NetworkQueryConstants.PAGE) page: Int, @Query(NetworkConstants.NetworkQueryConstants.LIMIT) limit: Int): NetworkResponse<FeedResponse>
+    suspend fun getPosts(
+        @Query(NetworkConstants.NetworkQueryConstants.PAGE) page: Int,
+        @Query(NetworkConstants.NetworkQueryConstants.LIMIT) limit: Int,
+        @Query(NetworkConstants.NetworkQueryConstants.FILTER_ID) filterId: Int
+    ): NetworkResponse<FeedResponse>
 
     @GET(NetworkConstants.NetworkAPIConstants.CRUD_POST)
     suspend fun getPostDetails(@Path(NetworkConstants.NetworkQueryConstants.ID) id: Long): NetworkResponse<Post>

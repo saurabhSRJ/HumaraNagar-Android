@@ -10,7 +10,7 @@
     <string name="by_continuing_you_agree_to_our">By continuing, you agree to our</string>
     <string name="continue_text">Continue</string>
     <string name="country_code" translatable="false">+91</string>
-    <string name="phone_number">Phone Number</string>
+    <string name="phone_number">Mobile Number</string>
     <string name="we_notify">We Notify</string>
     <string name="we_connect">We Connect</string>
     <string name="we_solve">We Solve</string>
@@ -20,13 +20,14 @@
     <string name="enter_otp">Enter OTP</string>
     <string name="didn_t_receive_otp">Didn\'t receive OTP?</string>
     <string name="resend"><u>Resend</u></string>
-    <string name="timer_count">(0:%s)</string>
+    <string name="timer_count" translatable="false">(0:%s)</string>
     <string name="please_enter_a_valid_10_digit_mobile_number">Please enter a valid 10 digit mobile number</string>
     <string name="incorrect_otp_message">Incorrect OTP, Please Try again</string>
     <string name="almost_there">Almost There!</string>
-    <string name="provide_your_details_here">Provide your details here</string>
+    <string name="provide_your_details_here">Please provide your details here</string>
     <string name="asterisk" translatable="false">*</string>
     <string name="name">Name</string>
+    <string name="father_or_spouse_name">Father/Spouse’s Name</string>
     <string name="date_of_birth">Date of Birth</string>
     <string name="gender">Gender</string>
     <string name="ok">OK</string>
@@ -59,17 +60,15 @@
     <string name="anErrorOccurred">An error occurred, please try again</string>
     <string name="ward_no">Ward No.</string>
     <string name="select_ward">Select Ward</string>
-    <string name="ward_s">Ward %s</string>
-    <!-- Report Status Values -->
+    <string name="ward_s">Ward #%s</string>
     <string name="sent">Sent</string>
     <string name="inprogress">In Progress</string>
     <string name="resolved">Resolved</string>
-    <string name="resolvedOn">Resolved on</string>
-    <string name="resolutionExpectedBy">Resolution by</string>
+    <string name="resolvedOn">Resolved on %s</string>
+    <string name="resolutionExpectedBy">Resolution by %s</string>
     <string name="update">Update</string>
-
     <string name="pending_approval_message">You are not yet onboarded on Humara Nagar App. Please reach out to the municipal corporation of your ward to get you started.</string>
-    <string name="you_can_still_enter_location_manually">You permanently denied location permission. Please enter location manually</string>
+    <string name="you_can_still_enter_location_manually">Please enter location manually</string>
     <string name="please_provide_requested_permission">Please provide requested permission</string>
     <string name="camera_permission_denied_message">Please grant Camera permission to take photo</string>
     <string name="storage_permission_denied_message">Please grant Storage permission to choose file</string>
@@ -110,9 +109,9 @@
     <string name="complaint_successfully_withdrawn">Complaint withdrawn</string>
     <string name="complaint_acknowledgment_sent">Complaint acknowledgement sent</string>
     <string name="complaint_resolved">Complaint resolved</string>
-    <string name="no_complaints_message">Nothing to manage yet!\nStart by creating a new complaint</string>
+    <string name="no_complaints_message">Nothing to manage yet! Start by creating a new complaint</string>
     <string name="unauthorized_access">Unauthorized access</string>
-    <string name="map_location_not_available_message">Exact location not available. Please call the resident</string>
+    <string name="map_location_not_available_message">Exact location is not available. Please call the resident</string>
     <string name="rating_for_this_service">Rating for this service</string>
     <string name="no_rating_received">No rating received</string>
     <string name="language">Language</string>
@@ -169,6 +168,7 @@
     <string name="sponsor_ward_number">Ward 11</string>
     <string name="no_video_selected">No Video selected</string>
     <string name="tap_to_select">Tap to select</string>
+    <string name="auto_detect_my_location">Auto-detect my location</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

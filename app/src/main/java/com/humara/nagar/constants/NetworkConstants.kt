@@ -51,6 +51,7 @@ interface NetworkConstants {
             const val ID = "id"
             const val PAGE = "page"
             const val LIMIT = "limit"
+            const val FILTER_ID = "filter"
         }
     }
 

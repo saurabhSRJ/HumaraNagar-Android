@@ -39,6 +39,10 @@ class AppConfigRepository(context: Application) : BaseRepository(context) {
         database.referenceDataDao().insertCategories(categories)
     }
 
+    suspend fun insertFeedFilters(filters: List<FeedFilter>) = withContext(Dispatchers.IO) {
+        database.referenceDataDao().insertFeedFilters(filters)
+    }
+
     suspend fun getAllWards() = withContext(Dispatchers.IO) {
         database.referenceDataDao().getAllWards()
     }

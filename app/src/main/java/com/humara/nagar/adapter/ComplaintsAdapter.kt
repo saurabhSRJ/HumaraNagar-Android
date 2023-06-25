@@ -63,12 +63,11 @@ class ComplaintsAdapter(val isUserAdmin: Boolean, val listener: (String) -> Unit
                 localityTV.setVisibilityAndText(complaint.locality)
                 tvResidentName.setVisibilityAndText(complaint.residentName)
                 resolvedTV.apply {
-                    val resolvedText = StringBuilder()
                     text = if (!complaint.resolvedOn.isNullOrEmpty()) {
                         val resolvedOnDate = DateTimeUtils.convertIsoDateTimeFormat(complaint.resolvedOn!!, "dd MMMM, yyyy")
-                        resolvedText.append(resources.getString(R.string.resolvedOn)).append(" $resolvedOnDate").toString()
+                        resources.getString(R.string.resolvedOn, resolvedOnDate)
                     } else {
-                        resolvedText.append(resources.getString(R.string.resolutionExpectedBy)).append(" ${complaint.resolutionExpectedOn}").toString()
+                        resources.getString(R.string.resolutionExpectedBy, complaint.resolutionExpectedOn)
                     }
                 }
             }

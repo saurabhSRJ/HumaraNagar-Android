@@ -100,7 +100,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             binding.run {
                 handlePostHeaderUI(postHeader, item)
                 handleCommonPostContent(postContent, item)
-                handlePostFooterUI(postFooter, item, adapterPosition)
+                handlePostFooterUI(postFooter, item, bindingAdapterPosition)
             }
         }
     }
@@ -110,7 +110,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             binding.run {
                 handlePostHeaderUI(postHeader, item)
                 handleCommonPostContent(postContent, item)
-                handlePostFooterUI(postFooter, item, adapterPosition)
+                handlePostFooterUI(postFooter, item, bindingAdapterPosition)
                 item.info?.medias?.getOrNull(0)?.let { url ->
                     ivPostImage.visibility = View.VISIBLE
                     ivPostImage.loadUrl(url, R.drawable.ic_image_placeholder)
@@ -129,7 +129,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                 handleCommonPostContent(postContent, item)
                 pollLayout.root.visibility = View.VISIBLE
                 handlePollUI(pollLayout, item)
-                handlePostFooterUI(postFooter, item, adapterPosition)
+                handlePostFooterUI(postFooter, item, bindingAdapterPosition)
             }
         }
     }
@@ -146,7 +146,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                         FileUtils.openPdfUrl(context, FeedUtils.getDocumentUrl(url))
                     }
                 }
-                handlePostFooterUI(postFooter, item, adapterPosition)
+                handlePostFooterUI(postFooter, item, bindingAdapterPosition)
             }
         }
     }
@@ -160,7 +160,6 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                     val videoUrl = VideoUtils.getVideoUrl(url)
                     val videoUri = Uri.parse(videoUrl)
                     playerViewContainer.visibility = View.VISIBLE
-                    videoPreview.ivThumbnail.setImageResource(R.drawable.ic_image_placeholder)
                     kohii.setUp(videoUri) {
                         tag = videoUri
                         preload = true
@@ -171,7 +170,10 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                         it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToVideoPlayerFragment(videoUri, source))
                     }
                 }
-                handlePostFooterUI(postFooter, item, adapterPosition)
+                item.info?.thumbnails?.getOrNull(0)?.let {
+                    videoPreview.ivThumbnail.loadUrl(it, R.drawable.ic_image_placeholder)
+                }
+                handlePostFooterUI(postFooter, item, bindingAdapterPosition)
             }
         }
 
@@ -183,7 +185,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
     private fun handlePostHeaderUI(postHeader: LayoutPostHeaderBinding, post: Post) {
         postHeader.apply {
             tvName.text = post.name
-            tvRoleAndWard.text = FeedUtils.getRoleAndWardText(context)
+            tvRoleAndWard.text = FeedUtils.getRoleAndWardText(context, post.role, post.ward)
             tvPostTime.text = DateTimeUtils.getRelativeDurationFromCurrentTime(context, post.createdAt)
             ivOptions.isVisible = post.isEditableByUser(context)
             ivOptions.setOnClickListener {

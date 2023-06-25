@@ -42,6 +42,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
             repository.insertRoles(refData.roles)
             repository.insertWards(refData.wards)
             repository.insertGenders(refData.genders)
+            repository.insertFeedFilters(refData.feedFilters)
             appConfigResult.onSuccess {
                 getUserPreference().role = RoleDetails(it.roleId, it.role)
                 getUserPreference().profileImage = it.image
@@ -75,6 +76,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
             repository.insertRoles(refData.roles)
             repository.insertWards(refData.wards)
             repository.insertGenders(refData.genders)
+            repository.insertFeedFilters(refData.feedFilters)
             _userRefDataSuccessLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)

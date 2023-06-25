@@ -1,6 +1,7 @@
 package com.humara.nagar.utils
 
 import android.content.Context
+import android.net.Uri
 import androidx.fragment.app.FragmentManager
 import com.humara.nagar.R
 import com.humara.nagar.constants.NetworkConstants
@@ -14,10 +15,8 @@ object FeedUtils {
         }
     }
 
-    fun getRoleAndWardText(context: Context): String {
-        val role = context.getUserSharedPreferences().role?.name
-        val ward = context.getString(R.string.ward_s, context.getUserSharedPreferences().ward)
-        return "$role $ward"
+    fun getRoleAndWardText(context: Context, role: String, ward: String): String {
+        return "$role, ${context.getString(R.string.ward_s, ward)}"
     }
 
     fun getDocumentUrl(url: String): String {

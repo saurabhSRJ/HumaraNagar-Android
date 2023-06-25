@@ -43,7 +43,6 @@ class PollOptionsAdapter(val listener: (Int) -> Unit) : RecyclerView.Adapter<Pol
                     ivOption.visibility = View.VISIBLE
                     clContainer.isEnabled = true
                     clContainer.setNonDuplicateClickListener {
-                        clContainer.isEnabled = false
                         listener(item.optionId)
                     }
                     drawable.level = 0

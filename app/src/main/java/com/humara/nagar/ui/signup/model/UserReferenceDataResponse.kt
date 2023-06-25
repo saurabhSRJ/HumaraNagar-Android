@@ -11,7 +11,18 @@ data class UserReferenceDataResponse(
     @SerializedName("roles") val roles: List<RoleDetails>,
     @SerializedName("wards") val wards: List<WardDetails>,
     @SerializedName("genders") val genders: List<GenderDetails>,
-    @SerializedName("categories") val categories: List<CategoryDetails>
+    @SerializedName("categories") val categories: List<CategoryDetails>,
+    @SerializedName("feed_filters") val feedFilters: List<FeedFilter>
+)
+
+@Entity(tableName = "feed_filters")
+data class FeedFilter(
+    @PrimaryKey
+    @SerializedName("id")
+    val id: Int,
+    @ColumnInfo(name = "name")
+    @SerializedName("name")
+    val name: String
 )
 
 @Entity(tableName = "roles")

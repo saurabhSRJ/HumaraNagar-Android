@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_main"
@@ -68,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:header="Father/Spouse’s Name"
+                    app:header="@string/father_or_spouse_name"
                     app:layout_constraintTop_toBottomOf="@id/input_name" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
@@ -102,37 +101,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/input_dob" />
 
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggle_gender"
-                    android:layout_width="wrap_content"
+                <HorizontalScrollView
+                    android:id="@+id/svGender"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_gender"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
+                    app:layout_constraintTop_toBottomOf="@id/tv_gender">
 
-                    <Button
-                        android:id="@+id/button_male"
-                        style="@style/GenderSelectionToggleButton"
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggle_gender"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="Male" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:selectionRequired="true"
+                        app:singleSelection="true" />
 
-                    <Button
-                        android:id="@+id/button_female"
-                        style="@style/GenderSelectionToggleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="Female" />
-
-                    <Button
-                        android:id="@+id/button_other"
-                        style="@style/GenderSelectionToggleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="Others" />
-
-                </com.google.android.material.button.MaterialButtonToggleGroup>
+                </HorizontalScrollView>
 
                 <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
                     android:id="@+id/input_ward"
@@ -141,7 +124,7 @@
                     android:layout_marginTop="10dp"
                     app:header="@string/ward_no"
                     app:hint="@string/select_ward"
-                    app:layout_constraintTop_toBottomOf="@id/toggle_gender" />
+                    app:layout_constraintTop_toBottomOf="@id/svGender" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

@@ -12,6 +12,7 @@
         <item name="android:statusBarColor">@color/primary_background</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="FilterChips">@style/FilterChipStyle</item>
+        <item name="GenderButtons">@style/GenderSelectionToggleButton</item>
         <!-- Bottom sheet theme -->
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <item name="materialCardViewStyle">@style/MaterialCardViewStyle</item>

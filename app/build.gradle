@@ -121,12 +121,11 @@ dependencies {
     implementation 'com.github.esafirm:android-image-picker:3.0.0'
     // zoom image view
     implementation 'com.github.MikeOrtiz:TouchImageView:3.3'
-    // required ExoPlayer implementation.
+    //ToolTip -> Balloon
+    implementation "com.github.skydoves:balloon:1.5.2"
     //test dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
-    //ToolTip -> Balloon
-    implementation "com.github.skydoves:balloon:1.5.2"
 }
