@@ -1,156 +1,205 @@
 package com.humara.nagar.ui.residents
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.chip.Chip
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.R
-import com.humara.nagar.adapter.AllResidentsAdapter
+import com.humara.nagar.adapter.ResidentSearchAdapter
+import com.humara.nagar.adapter.ResidentsAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentResidentsBinding
-import com.humara.nagar.ui.residents.model.FiltersResponse
-import com.humara.nagar.ui.residents.model.Residents
-import com.humara.nagar.utils.StringUtils
+import com.humara.nagar.ui.common.EndlessRecyclerViewScrollListener
+import com.humara.nagar.utils.setNonDuplicateClickListener
+import com.humara.nagar.utils.textInputAsFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class ResidentsFragment : BaseFragment() {
-
     private var _binding: FragmentResidentsBinding? = null
-    private val residentsViewModel by viewModels<ResidentsViewModel> {
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+    private val residentsAdapter: ResidentsAdapter by lazy {
+        ResidentsAdapter { }
+    }
+    private val residentsViewModel: ResidentsViewModel by viewModels {
         ViewModelFactory()
     }
-    private lateinit var residentAdapter: AllResidentsAdapter
+    private val searchAdapter: ResidentSearchAdapter by lazy {
+        ResidentSearchAdapter { }
+    }
+    private lateinit var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentResidentsBinding.inflate(inflater, container, false)
-
-        initObservers()
-        initView()
-
-        handleSearchFilter()
-
         return binding.root
     }
 
-    private fun handleChipFilter(filtersResponse: FiltersResponse) {
-
-        //Create the chips dynamically from the filter response
-        for ((count, filter) in filtersResponse.filters.withIndex()) {
-            val newChip = Chip(requireContext(), null, R.attr.FilterChips)
-            newChip.text = filter
-            newChip.id = count
-            newChip.elevation = 2F
-            binding.chipGroupFilter.addView(newChip)
-        }
-
-        var previousFilterId = -1   //Saves the previous checkedID of chips
-        binding.chipGroupFilter.setOnCheckedStateChangeListener { group, checkedId ->
-
-            if (checkedId.isNotEmpty()) {
-                val cid = checkedId[0]
-                val chip: Chip? = group.findViewById(cid)
-                if (chip != null) {
-                    if (previousFilterId != -1) {
-                        //Somethings was checked before this, not the first time
-                        group.findViewById<Chip>(previousFilterId).isCloseIconVisible = false
-                    }
-                    //Check the current item and save the value
-                    chip.isCloseIconVisible = true
-                    previousFilterId = cid
-                } else {
-                    //Nothing is checked
-                }
-            } else {
-                //Enabled chip was disabled
-                group.findViewById<Chip>(previousFilterId).isCloseIconVisible = false
-                previousFilterId = -1
-            }
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModelObservers()
+        initView()
     }
 
-    private fun handleSearchFilter() {
-        binding.inputSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(p0: Editable?) {
-                val residentList = residentsViewModel.residentsResponse.value?.Residents
-                if (p0.toString().isNotEmpty()) {
-                    filter(StringUtils.toStringWithoutSpaces(p0.toString().lowercase()), residentList)
+    private fun initViewModelObservers() {
+        residentsViewModel.run {
+            observeProgress(this)
+            observeErrorAndException(this, errorAction = {}, dismissAction = {})
+            initialDataLiveData.observe(viewLifecycleOwner) {
+                residentsAdapter.setData(it)
+            }
+            loadMoreDataLiveData.observe(viewLifecycleOwner) {
+                residentsAdapter.addMoreData(it)
+            }
+            initialDataProgressLiveData.observe(viewLifecycleOwner) {
+                handleInitialProgress(it)
+            }
+            loadMoreDataProgressLiveData.observe(viewLifecycleOwner) { progress ->
+                if (progress) {
+                    showPaginationLoader()
                 } else {
-                    if (residentList != null) {
-                        residentAdapter.setData(residentList)
-                    }
+                    hidePaginationLoader()
                 }
             }
-        })
-    }
+            initialDataErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(subtitle = it.message, ctaText = getString(R.string.retry), errorAction = { reloadList() }, dismissAction = { })
+            }
+            loadMoreDataErrorLiveData.observe(viewLifecycleOwner) {
+                showPaginationLoadError()
+            }
+            searchResultLiveData.observe(viewLifecycleOwner) {
+                val list = it.first
+                val searchText = it.second
+                if (list.isEmpty()) {
+                    searchAdapter.setData(listOf("No Result"), searchText)
+                } else {
+                    searchAdapter.setData(list, searchText)
+                }
+            }
+            searchErrorLiveData.observe(viewLifecycleOwner) {
 
-    private fun filter(search: String, residentList: ArrayList<Residents>?) {
-        val filterList = mutableListOf<Residents>()
-        if (search.isNotEmpty()) {
-            if (residentList != null) {
-                for (current in residentList) {
-                    if (StringUtils.toStringWithoutSpaces(current.name!!.lowercase()).contains(search)) {
-                        filterList.add(current)
-                    }
-                }
             }
-            residentAdapter.setData(filterList)
-        } else
-            residentList?.let { residentAdapter.setData(it) }
+            isSearchingLiveData.observe(viewLifecycleOwner) {
+                binding.pbSearch.isVisible = it
+            }
+        }
     }
 
     private fun initView() {
-        binding.apply {
-            residentAdapter = AllResidentsAdapter(requireContext()) {
-                //Do something here onClick Card (it -> Residents)
+        binding.run {
+            rvResidents.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                setHasFixedSize(true)
+                adapter = residentsAdapter
+                endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!, 2) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                        if (residentsViewModel.canLoadMoreData) {
+                            residentsViewModel.getAllResidents()
+                        }
+                    }
+                }
+                addOnScrollListener(endlessRecyclerViewScrollListener)
             }
-            residentRCV.apply {
-                layoutManager = GridLayoutManager(requireContext(), 2)
-                setHasFixedSize(false)
-                adapter = residentAdapter
+            etSearch.textInputAsFlow()
+                .map {
+                    val searchBarIsEmpty = it.isNullOrEmpty()
+                    ivCancelSearch.isVisible = searchBarIsEmpty.not()
+                    rvSearchResults.isVisible = searchBarIsEmpty.not()
+                    rvResidents.isVisible = searchBarIsEmpty
+                    return@map it
+                }
+                .debounce(500)
+                .onEach {
+                    val searchText = it.toString().trim()
+                    if (searchText.isEmpty()) {
+                        searchAdapter.clearData()
+                    } else {
+                        residentsViewModel.searchResidentList(searchText)
+                    }
+                }
+                .launchIn(lifecycleScope)
+            ivCancelSearch.setOnClickListener {
+                hideKeyboard()
+                etSearch.setText("")
+                etSearch.clearFocus()
+                pbSearch.visibility = View.GONE
+                ivCancelSearch.visibility = View.GONE
+                rvResidents.visibility = View.VISIBLE
+                rvSearchResults.visibility = View.GONE
+            }
+            rvSearchResults.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                setHasFixedSize(true)
+                adapter = searchAdapter
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                            hideKeyboard()
+                        }
+                    }
+                })
+            }
+            swipeRefresh.setOnRefreshListener {
+                lifecycleScope.launch {
+                    reloadList()
+                    swipeRefresh.isRefreshing = false
+                }
+            }
+            swipeRefresh.setColorSchemeResources(R.color.primary_color, R.color.stroke_green, R.color.stroke_yellow, R.color.stroke_red)
+            paginationLoader.retry.setNonDuplicateClickListener {
+                residentsViewModel.getAllResidents()
             }
         }
     }
 
-    private fun initObservers() {
-        residentsViewModel.run {
-            observeProgress(this, false)
-            observeException(this)
+    private fun reloadList() {
+        endlessRecyclerViewScrollListener.resetState()
+        residentsViewModel.resetPaginationState()
+        residentsViewModel.getAllResidents()
+        binding.paginationLoader.retry.visibility = View.GONE
+    }
 
-            fetchAllFilters()
-            fetchAllResidents()
-
-            residentsResponse.observe(viewLifecycleOwner) {
-                residentAdapter.setData(it.Residents)
+    private fun handleInitialProgress(showProgress: Boolean) {
+        if (showProgress) {
+            binding.run {
+                showProgress(true)
+                rvResidents.visibility = View.GONE
             }
-            filtersResponse.observe(viewLifecycleOwner) {
-                handleChipFilter(it)
-            }
-            residentErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog(resources.getString(R.string.anErrorOccurred), it.message.toString())
-            }
-            chipFilterErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog(resources.getString(R.string.anErrorOccurred), it.message.toString())
+        } else {
+            binding.run {
+                hideProgress()
+                rvResidents.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun showPaginationLoader() {
+        binding.paginationLoader.apply {
+            progress.visibility = View.VISIBLE
+            retry.visibility = View.GONE
+        }
+    }
+
+    private fun hidePaginationLoader() {
+        binding.paginationLoader.apply {
+            progress.visibility = View.GONE
+            retry.visibility = View.GONE
+        }
+    }
+
+    private fun showPaginationLoadError() {
+        binding.paginationLoader.retry.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

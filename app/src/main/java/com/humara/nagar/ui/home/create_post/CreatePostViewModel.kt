@@ -60,7 +60,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     }
 
     private fun createImagePost() = viewModelScope.launch {
-        val response = processCoroutine({ repository.createImagePost(StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: ""), imageUriLiveData.value!!) })
+        val response = processCoroutine({ repository.createImagePost(StringUtils.replaceWhitespaces(captionLiveData.value ?: ""), imageUriLiveData.value!!) })
         response.onSuccess {
             ImageUtils.deleteTempFile(imageUriLiveData.value)
             _postCreationSuccessLiveData.postValue(true)
@@ -70,7 +70,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     }
 
     private fun createDocumentPost() = viewModelScope.launch {
-        val response = processCoroutine({ repository.createDocumentPost(StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: ""), documentUriLiveData.value!!) })
+        val response = processCoroutine({ repository.createDocumentPost(StringUtils.replaceWhitespaces(captionLiveData.value ?: ""), documentUriLiveData.value!!) })
         response.onSuccess {
             _postCreationSuccessLiveData.postValue(true)
         }.onError {
@@ -79,7 +79,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     }
 
     private fun createVideoPost() = viewModelScope.launch {
-        val response = processCoroutine({ repository.createVideoPost(StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: ""), videoUriLiveData.value!!) })
+        val response = processCoroutine({ repository.createVideoPost(StringUtils.replaceWhitespaces(captionLiveData.value ?: ""), videoUriLiveData.value!!) })
         response.onSuccess {
             _postCreationSuccessLiveData.postValue(true)
         }.onError {
@@ -89,7 +89,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
 
     private fun createPollPost() = viewModelScope.launch {
         val pollRequest = pollRequestLiveData.value!!.apply {
-            caption = StringUtils.replaceWhitespaces(captionLiveData.value?.trim() ?: "")
+            caption = StringUtils.replaceWhitespaces(captionLiveData.value ?: "")
         }
         val response = processCoroutine({ repository.createPollPost(pollRequest) })
         response.onSuccess {

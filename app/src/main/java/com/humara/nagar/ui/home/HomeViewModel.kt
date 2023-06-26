@@ -121,7 +121,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun editPost(id: Long, caption: String) = viewModelScope.launch {
-        val response = processCoroutine({ repository.editPost(id, EditPostRequest(StringUtils.replaceWhitespaces(caption.trim()))) })
+        val response = processCoroutine({ repository.editPost(id, EditPostRequest(StringUtils.replaceWhitespaces(caption))) })
         response.onSuccess {
             _editPostSuccessLiveData.postValue(true)
         }.onError {

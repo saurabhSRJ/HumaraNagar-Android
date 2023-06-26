@@ -44,7 +44,6 @@
     <string name="reportIssueTitle">Report Issue</string>
     <string name="selectCategory">Select Category</string>
     <string name="category">Category</string>
-    <string name="selectLocality">Select Locality</string>
     <string name="locality">Locality</string>
     <string name="location">Location</string>
     <string name="comment">Comments</string>
@@ -95,12 +94,9 @@
     <string name="provide_more_details">Provide more details</string>
     <string name="confirm">Confirm</string>
     <string name="call">Call</string>
-    <string name="spouse_name">Spouse Name</string>
-    <string name="fathers_name">Father\'s Name</string>
+    <string name="fathers_name">Parent</string>
     <string name="age">Age</string>
     <string name="house_no">House No</string>
-    <string name="voterid">Voter ID</string>
-    <string name="search">Search</string>
     <string name="fellow_residents">Fellow Residents</string>
     <string name="review">Review</string>
     <string name="you_rated_this_service">You rated this service</string>
@@ -169,6 +165,9 @@
     <string name="no_video_selected">No Video selected</string>
     <string name="tap_to_select">Tap to select</string>
     <string name="auto_detect_my_location">Auto-detect my location</string>
+    <string name="search_by_name">Search by name</string>
+    <string name="n_years">%d years</string>
+    <string name="no_results_found">No results found for \"%s\"</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

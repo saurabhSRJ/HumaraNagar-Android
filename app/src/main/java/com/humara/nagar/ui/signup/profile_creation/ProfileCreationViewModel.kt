@@ -10,7 +10,7 @@ import com.humara.nagar.ui.signup.model.WardDetails
 import com.humara.nagar.ui.signup.profile_creation.model.ProfileCreationRequest
 import com.humara.nagar.utils.DateTimeUtils
 import com.humara.nagar.utils.SingleLiveEvent
-import com.humara.nagar.utils.StringUtils
+import com.humara.nagar.utils.StringUtils.convertToLowerCase
 import com.humara.nagar.utils.UserDataValidator
 
 class ProfileCreationViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
@@ -68,8 +68,8 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
     fun getProfileCreationObjectWithCollectedData(): ProfileCreationRequest {
         return ProfileCreationRequest(
             userId = getUserPreference().userId,
-            name = StringUtils.replaceWhitespaces(getUserName()!!.trim()),
-            fatherOrSpouseName = StringUtils.replaceWhitespaces(getParentName()!!.trim()),
+            name = getUserName()?.convertToLowerCase() ?: "",
+            fatherOrSpouseName = getParentName()?.convertToLowerCase() ?: "",
             dateOfBirth = DateTimeUtils.convertDateFormat(getDateOfBirth().value.toString(), "dd-MM-yyyy", "yyyy-MM-dd"),
             genderId = getGender()!!.id,
             wardId = getWard()!!.id

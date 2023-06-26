@@ -106,9 +106,9 @@
         <item quantity="other">%d वोट</item>
     </plurals>
     <string name="please_provide_requested_permission">कृपया अनुरोधित अनुमति प्रदान करें</string>
-    <string name="location_detection_error_message">लोकेशन का स्वत: पता लगाने में त्रुटि. कृपया लोकेशन खुद से टाइप करें</string>
-    <string name="comments_short_hint">हमें सब कुछ बताएं और हम अपनी पूरी कोशिश करेंगे कि सब कुछ सही करने की</string>
-    <string name="no_image_clicked">कोई फोटो क्लिक नहीं किया</string>
+    <string name="location_detection_error_message">लोकेशन का स्वत: पता लगाने में त्रुटि। कृपया लोकेशन खुद से टाइप करें</string>
+    <string name="comments_short_hint">हमें सब कुछ बताएं और हम अपनी पूरी कोशिश करेंगे कि इसे सही करने की</string>
+    <string name="no_image_clicked">कोई फोटो क्लिक नहीं किया गया</string>
     <string name="complaint_raised">शिकायत दर्ज की गई है</string>
     <string name="complaint_raised_subtitle">हम अपनी सर्वोत्तम कोशिश करेंगे कि समस्या हल हो जाये</string>
     <string name="track">ट्रैक करें</string>
@@ -117,11 +117,9 @@
     <string name="provide_more_details">थोड़ी और जानकारी प्रदान करें</string>
     <string name="confirm">कन्फर्म करें</string>
     <string name="call">कॉल</string>
-    <string name="fathers_name">अभिभावक का नाम</string>
+    <string name="fathers_name">अभिभावक</string>
     <string name="age">आयु</string>
     <string name="house_no">मकान नंबर</string>
-    <string name="voterid">वोटर आईडी</string>
-    <string name="search">सर्च करें</string>
     <string name="fellow_residents">साथी निवासी</string>
     <string name="review">रिव्यु</string>
     <string name="you_rated_this_service">आपने इस सर्विस को रेट किया है</string>
@@ -132,7 +130,7 @@
     <string name="complaint_resolved">शिकायत का समाधान हो गया</string>
     <string name="no_complaints_message">अभी तक दिखाने के लिए कुछ भी नहीं है! एक नई शिकायत बनाकर शुरुआत करें</string>
     <string name="unauthorized_access">अनधिकृत प्रवेश</string>
-    <string name="map_location_not_available_message">सटीक लोकेशन उपलब्ध नहीं है. कृपया निवासी को कॉल करें</string>
+    <string name="map_location_not_available_message">सटीक लोकेशन उपलब्ध नहीं है। कृपया निवासी को कॉल करें</string>
     <string name="rating_for_this_service">इस सर्विस के लिए रेटिंग</string>
     <string name="no_rating_received">कोई रेटिंग प्राप्त नहीं हुई</string>
     <string name="language">भाषा</string>
@@ -180,7 +178,10 @@
     <string name="document_file_size_error_message">अधिकतम %dMB की फ़ाइल होनी चाहिए</string>
     <string name="video_file_size_error_message">अधिकतम %dMB की वीडियो होनी चाहिए</string>
     <string name="error_opening_file">फ़ाइल खोलने में त्रुटि</string>
-    <string name="no_video_selected">कोई वीडियो नहीं चुना गयां</string>
+    <string name="no_video_selected">कोई वीडियो नहीं चुना गया</string>
     <string name="tap_to_select">चुनने के लिए टैप करें</string>
     <string name="auto_detect_my_location">मेरी लोकेशन ढूंढें</string>
+    <string name="search_by_name">नाम से खोजें</string>
+    <string name="n_years">%d साल</string>
+    <string name="no_results_found">\"%s\" के लिए कोई रिजल्ट नहीं मिला</string>
 </resources>

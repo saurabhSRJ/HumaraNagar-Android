@@ -27,6 +27,7 @@
     <color name="grey_F5F5F5">#F5F5F5</color>
     <color name="translucent_background">#80D1CDCD</color>
     <color name="green_138808">#138808</color>
+    <color name="light_blue_CFE6FF">#CFE6FF</color>
     <!--Stroke Button Colors-->
     <color name="stroke_red">#CF0A0A</color>
     <color name="stroke_yellow">#FF9E0D</color>

@@ -10,8 +10,8 @@
 
         <ImageView
             android:id="@+id/image_preview"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             app:layout_constraintStart_toStartOf="parent"
