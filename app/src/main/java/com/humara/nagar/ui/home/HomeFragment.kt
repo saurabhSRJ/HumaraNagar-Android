@@ -326,7 +326,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     }
 
     private fun addImagePostShareData(post: Post, binding: PostShareLayoutBinding) {
-        val url = post.info?.medias?.getOrNull(0)
+        val url = post.info?.mediaDetails?.getOrNull(0)?.media
         url?.let {
             binding.ivPostImage.visibility = View.VISIBLE
             Glide.with(requireContext())
@@ -373,7 +373,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
 
     private fun addVideoPostShareData(post: Post, binding: PostShareLayoutBinding) {
         binding.videoThumbnail.run {
-            val url = post.info?.thumbnails?.getOrNull(0)
+            val url = post.info?.mediaDetails?.getOrNull(0)?.thumbnailUrl
             url?.let {
                 root.visibility = View.VISIBLE
                 Glide.with(requireContext())

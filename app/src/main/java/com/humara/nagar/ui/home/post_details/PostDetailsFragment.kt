@@ -259,11 +259,11 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             handlePostHeaderUI(postHeader, post)
             handleCommonPostContent(postContent, post.caption)
             handlePostFooterUI(postFooter, post)
-            post.info?.medias?.getOrNull(0)?.let { url ->
+            post.info?.mediaDetails?.getOrNull(0)?.media?.let { url ->
                 ivPostImage.visibility = View.VISIBLE
                 ivPostImage.loadUrl(url, R.drawable.ic_image_placeholder)
                 ivPostImage.setNonDuplicateClickListener {
-                    navController.navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToFullImagePreviewFragment(post.info.medias.toTypedArray(), getScreenName()))
+                    navController.navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToFullImagePreviewFragment(arrayOf(url), getScreenName()))
                 }
             }
         }
@@ -284,7 +284,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             handlePostHeaderUI(postHeader, post)
             handleCommonPostContent(postContent, post.caption)
             handlePostFooterUI(postFooter, post)
-            post.info?.medias?.getOrNull(0)?.let { url ->
+            post.info?.mediaDetails?.getOrNull(0)?.media?.let { url ->
                 tvDocumentPreview.visibility = View.VISIBLE
                 tvDocumentPreview.text = FileUtils.getFileName(url)
                 tvDocumentPreview.setNonDuplicateClickListener {
@@ -299,7 +299,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             handlePostHeaderUI(postHeader, post)
             handleCommonPostContent(postContent, post.caption)
             handlePostFooterUI(postFooter, post)
-            post.info?.medias?.getOrNull(0)?.let { url ->
+            post.info?.mediaDetails?.getOrNull(0)?.media?.let { url ->
                 val videoUrl = VideoUtils.getVideoUrl(url)
                 val videoUri = Uri.parse(videoUrl)
                 playerViewContainer.visibility = View.VISIBLE
@@ -488,7 +488,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
     }
 
     private fun addImagePostShareData(post: Post, binding: PostShareLayoutBinding) {
-        val url = post.info?.medias?.getOrNull(0)
+        val url = post.info?.mediaDetails?.getOrNull(0)?.media
         url?.let {
             binding.ivPostImage.visibility = View.VISIBLE
             Glide.with(requireContext())
@@ -536,7 +536,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
 
     private fun addVideoPostShareData(post: Post, binding: PostShareLayoutBinding) {
         binding.videoThumbnail.run {
-            val url = post.info?.thumbnails?.getOrNull(0)
+            val url = post.info?.mediaDetails?.getOrNull(0)?.thumbnailUrl
             url?.let {
                 root.visibility = View.VISIBLE
                 Glide.with(requireContext())
