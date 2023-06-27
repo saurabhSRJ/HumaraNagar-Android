@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,7 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentResidentsBinding
+import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.common.EndlessRecyclerViewScrollListener
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.textInputAsFlow
@@ -33,6 +35,9 @@ class ResidentsFragment : BaseFragment() {
         ResidentsAdapter { }
     }
     private val residentsViewModel: ResidentsViewModel by viewModels {
+        ViewModelFactory()
+    }
+    private val appConfigViewModel: AppConfigViewModel by viewModels {
         ViewModelFactory()
     }
     private val searchAdapter: ResidentSearchAdapter by lazy {
@@ -53,7 +58,6 @@ class ResidentsFragment : BaseFragment() {
 
     private fun initViewModelObservers() {
         residentsViewModel.run {
-            observeProgress(this)
             observeErrorAndException(this, errorAction = {}, dismissAction = {})
             initialDataLiveData.observe(viewLifecycleOwner) {
                 residentsAdapter.setData(it)
@@ -86,9 +90,6 @@ class ResidentsFragment : BaseFragment() {
                     searchAdapter.setData(list, searchText)
                 }
             }
-            searchErrorLiveData.observe(viewLifecycleOwner) {
-
-            }
             isSearchingLiveData.observe(viewLifecycleOwner) {
                 binding.pbSearch.isVisible = it
             }
@@ -118,7 +119,7 @@ class ResidentsFragment : BaseFragment() {
                     rvResidents.isVisible = searchBarIsEmpty
                     return@map it
                 }
-                .debounce(500)
+                .debounce(800)
                 .onEach {
                     val searchText = it.toString().trim()
                     if (searchText.isEmpty()) {
@@ -150,6 +151,12 @@ class ResidentsFragment : BaseFragment() {
                     }
                 })
             }
+            etSearch.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    hideKeyboard()
+                }
+                false
+            }
             swipeRefresh.setOnRefreshListener {
                 lifecycleScope.launch {
                     reloadList()
@@ -173,12 +180,12 @@ class ResidentsFragment : BaseFragment() {
     private fun handleInitialProgress(showProgress: Boolean) {
         if (showProgress) {
             binding.run {
-                showProgress(true)
+                progressBar.visibility = View.VISIBLE
                 rvResidents.visibility = View.GONE
             }
         } else {
             binding.run {
-                hideProgress()
+                progressBar.visibility = View.GONE
                 rvResidents.visibility = View.VISIBLE
             }
         }

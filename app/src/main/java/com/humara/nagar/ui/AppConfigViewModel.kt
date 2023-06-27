@@ -11,8 +11,10 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.*
 import com.humara.nagar.utils.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppConfigViewModel(application: Application) : BaseViewModel(application) {
     private val repository = AppConfigRepository(application)
@@ -84,18 +86,18 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     }
 
     fun getWards() = viewModelScope.launch {
-        val wards = repository.getAllWards()
-        _wardDetailsLiveData.postValue(wards)
+        val wards = async { repository.getAllWards() }
+        _wardDetailsLiveData.postValue(wards.await())
     }
 
     fun getGenders() = viewModelScope.launch {
-        val genders = repository.getAllGenders()
-        _genderDetailsLiveData.postValue(genders)
+        val genders = async { repository.getAllGenders() }
+        _genderDetailsLiveData.postValue(genders.await())
     }
 
     fun getComplaintCategories() = viewModelScope.launch {
-        val categories = repository.getComplaintCategories()
-        _complaintCategoriesLiveData.postValue(categories.map { it.name })
+        val categories = async { repository.getComplaintCategories() }
+        _complaintCategoriesLiveData.postValue(categories.await().map { it.name })
     }
 
     fun logout() = viewModelScope.launch {

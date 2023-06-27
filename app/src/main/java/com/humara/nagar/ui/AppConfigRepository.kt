@@ -47,6 +47,10 @@ class AppConfigRepository(context: Application) : BaseRepository(context) {
         database.referenceDataDao().getAllWards()
     }
 
+    suspend fun getWardId(ward: String) = withContext(Dispatchers.IO) {
+        database.referenceDataDao().getWardId(ward)
+    }
+
     suspend fun getAllGenders() = withContext(Dispatchers.IO) {
         database.referenceDataDao().getAllGenders()
     }

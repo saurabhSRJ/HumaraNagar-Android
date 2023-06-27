@@ -29,6 +29,9 @@ interface ReferenceDataDao {
     @Query("SELECT * FROM wards")
     suspend fun getAllWards(): List<WardDetails>
 
+    @Query("SELECT id FROM wards where name = :ward")
+    suspend fun getWardId(ward: String): Int
+
     @Query("SELECT * FROM genders")
     suspend fun getAllGenders(): List<GenderDetails>
 

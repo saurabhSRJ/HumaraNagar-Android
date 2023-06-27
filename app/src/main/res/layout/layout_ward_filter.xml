@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="2dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llFilter"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/resident_filter_bg_selector"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_filter" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <ImageView
+            android:id="@+id/ivCross"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/ic_primary_color_dot"
+            android:padding="2dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/llFilter"
+            app:layout_constraintEnd_toEndOf="@id/llFilter"
+            app:layout_constraintStart_toEndOf="@id/llFilter"
+            app:layout_constraintTop_toTopOf="@id/llFilter"
+            app:srcCompat="@drawable/ic_cross"
+            app:tint="@color/white" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

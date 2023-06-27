@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.databinding.ResidentLayoutItemBinding
 import com.humara.nagar.ui.residents.model.ResidentDetails
@@ -62,25 +61,14 @@ class ResidentsViewHolder(
                 }
             }
             resident.fathersName?.let { name ->
-                if (isSearchResult) {
-                    val matchIndex = name.indexOf(searchText, 0, true)
-                    if (matchIndex != -1) {
-                        tvFatherNameData.text = StringUtils.getStringWithBackgroundColor(
-                            name,
-                            ContextCompat.getColor(root.context, R.color.light_blue_CFE6FF),
-                            matchIndex,
-                            name.length.coerceAtMost(matchIndex + searchText.length)
-                        )
-                    } else {
-                        tvFatherNameData.text = name
-                    }
-                } else {
-                    tvFatherNameData.text = name
-                }
+                tvFatherNameData.text = name
             }
-            tvAgeData.text = root.context.getString(R.string.n_years, resident.age)
+            resident.dateOfBirth?.let {
+                val age = DateTimeUtils.getAgeInYearsFromIsoDate(it)
+                tvAgeData.text = root.context.getString(R.string.n_years, age)
+            }
             resident.image?.let { url ->
-                ivUserPhoto.loadUrl(root.context.getUserSharedPreferences().profileImage, R.drawable.man_user_icon)
+                ivUserPhoto.loadUrl(url, R.drawable.man_user_icon)
             }
             tvRoleAndWard.text = resident.role.plus(": ").plus(root.context.getString(R.string.ward_s, resident.ward))
             rootLayout.setNonDuplicateClickListener {

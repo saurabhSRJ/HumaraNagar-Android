@@ -150,4 +150,11 @@ object DateTimeUtils {
         val currentInstant = Instant.now()
         return instant.isBefore(currentInstant)
     }
+
+    fun getAgeInYearsFromIsoDate(dob: String): Int {
+        val instant = Instant.parse(dob)
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val period = Period.between(dateTime.toLocalDate(), LocalDate.now())
+        return period.years
+    }
 }

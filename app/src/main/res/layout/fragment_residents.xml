@@ -17,7 +17,7 @@
             android:background="@color/primary_color"
             android:gravity="center"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="40dp"
+            android:paddingVertical="30dp"
             android:text="@string/fellow_residents"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -26,10 +26,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilSearch"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="12dp"
             app:boxBackgroundColor="@color/primary_background"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="5dp"
@@ -38,7 +39,10 @@
             app:boxCornerRadiusTopStart="5dp"
             app:boxStrokeWidth="1dp"
             app:hintEnabled="false"
+            app:layout_constraintEnd_toStartOf="@id/filterWard"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvHeader"
+            app:layout_goneMarginEnd="16dp"
             app:startIconDrawable="@drawable/ic_person_search">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -50,12 +54,23 @@
                 android:hint="@string/search_by_name"
                 android:imeOptions="actionSearch"
                 android:inputType="textCapSentences"
-                android:maxLength="20"
+                android:maxLength="25"
                 android:maxLines="1"
                 android:paddingVertical="8dp"
                 android:textColor="@color/grey_696969" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <include
+            android:id="@+id/filterWard"
+            layout="@layout/layout_ward_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tilSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tilSearch" />
 
         <ImageButton
             android:id="@+id/ivCancelSearch"
@@ -110,6 +125,16 @@
             app:layout_constraintBottom_toTopOf="@id/paginationLoader"
             app:layout_constraintTop_toBottomOf="@id/tilSearch"
             tools:listitem="@layout/resident_layout_item" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             android:id="@+id/paginationLoader"
