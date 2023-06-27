@@ -243,12 +243,6 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         }
     }
 
-    private fun onVideoSelection(uri: Uri) {
-        if (VideoUtils.isValidVideoSize(requireContext(), uri)) {
-            createPostViewModel.setVideoUri(uri)
-        }
-    }
-
     private fun showPdfPreview(uri: Uri?) {
         binding.run {
             uri?.let {
@@ -273,22 +267,18 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         }
     }
 
+    private fun onVideoSelection(uri: Uri) {
+        if (VideoUtils.isValidVideoSize(requireContext(), uri)) {
+            createPostViewModel.setVideoUri(uri)
+        }
+    }
+
     private fun showVideoPreview(uri: Uri?) {
         binding.videoPreview.run {
             uri?.let {
                 root.visibility = View.VISIBLE
-                if (DeviceHelper.isMinSdk29) {
-                    try {
-                        val thumbnail: Bitmap = requireContext().contentResolver.loadThumbnail(it, Size(1000, 1080), null)
-                        ivThumbnail.setImageBitmap(thumbnail)
-                    } catch (e: IOException) {
-                        ///ignore. Do not show thumbnail
-                    }
-                } else {
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .placeholder(R.drawable.ic_image_placeholder)
-                        .into(ivThumbnail)
+                VideoUtils.getVideoThumbnail(requireContext(), uri)?.let {
+                    ivThumbnail.setImageBitmap(it)
                 }
                 ivPlay.setNonDuplicateClickListener {
                     val action = CreatePostFragmentDirections.actionCreatePostFragmentToVideoPlayerFragment(uri, getScreenName())
@@ -360,7 +350,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
 
     private fun handleEditImagePost(post: Post) {
         binding.run {
-            post.info?.medias?.getOrNull(0)?.let { url ->
+            post.info?.mediaDetails?.getOrNull(0)?.media?.let { url ->
                 ivImagePreview.visibility = View.VISIBLE
                 ivImagePreview.loadUrl(url, R.drawable.ic_image_placeholder)
             } ?: run {
@@ -371,7 +361,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
 
     private fun handleEditDocumentPost(post: Post) {
         binding.run {
-            post.info?.medias?.getOrNull(0)?.let { url ->
+            post.info?.mediaDetails?.getOrNull(0)?.media?.let { url ->
                 tvDocumentPreview.visibility = View.VISIBLE
                 tvDocumentPreview.text = FileUtils.getFileName(url)
                 tvDocumentPreview.foreground = null
@@ -402,9 +392,9 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
 
     private fun handleEditVideoPost(post: Post) {
         binding.videoPreview.run {
-            post.info?.medias?.getOrNull(0)?.let {
+            post.info?.mediaDetails?.getOrNull(0)?.thumbnailUrl?.let { url ->
                 root.visibility = View.VISIBLE
-                ivThumbnail.setImageResource(R.drawable.ic_image_placeholder)
+                ivThumbnail.loadUrl(url, R.drawable.ic_image_placeholder)
             }
         }
     }

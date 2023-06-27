@@ -1,7 +1,10 @@
 package com.humara.nagar.utils
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.net.Uri
+import com.humara.nagar.Logger
 import com.humara.nagar.R
 import com.humara.nagar.constants.Constants
 import com.humara.nagar.constants.NetworkConstants
@@ -18,5 +21,16 @@ object VideoUtils {
 
     fun getVideoUrl(url: String): String {
         return NetworkConstants.NetworkAPIConstants.BASE_MEDIA_URL.plus(url)
+    }
+
+    fun getVideoThumbnail(context: Context, uri: Uri): Bitmap? {
+        try {
+            val mediaMetadataRetriever = MediaMetadataRetriever()
+            mediaMetadataRetriever.setDataSource(context, uri)
+            return mediaMetadataRetriever.getFrameAtTime(100000)
+        } catch (ex: Exception) {
+            Logger.debugLog("Error while getting video thumbnail")
+        }
+        return null
     }
 }

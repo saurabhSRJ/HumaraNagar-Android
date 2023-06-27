@@ -111,11 +111,11 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                 handlePostHeaderUI(postHeader, item)
                 handleCommonPostContent(postContent, item)
                 handlePostFooterUI(postFooter, item, bindingAdapterPosition)
-                item.info?.medias?.getOrNull(0)?.let { url ->
+                item.info?.mediaDetails?.getOrNull(0)?.media?.let { url ->
                     ivPostImage.visibility = View.VISIBLE
                     ivPostImage.loadUrl(url, R.drawable.ic_image_placeholder)
                     ivPostImage.setNonDuplicateClickListener {
-                        it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFullImagePreviewFragment(item.info.medias.toTypedArray(), source))
+                        it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFullImagePreviewFragment(arrayOf(url), source))
                     }
                 }
             }
@@ -139,7 +139,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             binding.run {
                 handlePostHeaderUI(postHeader, item)
                 handleCommonPostContent(postContent, item)
-                item.info?.medias?.getOrNull(0)?.let { url ->
+                item.info?.mediaDetails?.getOrNull(0)?.media?.let { url ->
                     tvDocumentPreview.visibility = View.VISIBLE
                     tvDocumentPreview.text = FileUtils.getFileName(url)
                     tvDocumentPreview.setNonDuplicateClickListener {
@@ -156,10 +156,11 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             binding.run {
                 handlePostHeaderUI(postHeader, item)
                 handleCommonPostContent(postContent, item)
-                item.info?.medias?.getOrNull(0)?.let { url ->
-                    val videoUrl = VideoUtils.getVideoUrl(url)
+                item.info?.mediaDetails?.getOrNull(0)?.let { detail ->
+                    val videoUrl = VideoUtils.getVideoUrl(detail.media)
                     val videoUri = Uri.parse(videoUrl)
                     playerViewContainer.visibility = View.VISIBLE
+                    videoPreview.ivThumbnail.loadUrl(detail.thumbnailUrl, R.drawable.ic_image_placeholder)
                     kohii.setUp(videoUri) {
                         tag = videoUri
                         preload = true
@@ -169,9 +170,6 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                     playerViewContainer.setNonDuplicateClickListener {
                         it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToVideoPlayerFragment(videoUri, source))
                     }
-                }
-                item.info?.thumbnails?.getOrNull(0)?.let {
-                    videoPreview.ivThumbnail.loadUrl(it, R.drawable.ic_image_placeholder)
                 }
                 handlePostFooterUI(postFooter, item, bindingAdapterPosition)
             }

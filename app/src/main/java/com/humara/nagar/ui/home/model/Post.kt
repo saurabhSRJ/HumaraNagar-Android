@@ -30,8 +30,7 @@ data class Post(
 }
 
 data class PostInfo(
-    @SerializedName("medias") val medias: List<String>? = null, // image, video or document urls
-    @SerializedName("thumbnails") val thumbnails: List<String>? = null, //video thumbnails
+    @SerializedName("medias") val mediaDetails: List<MediaDetail>? = null, // image, video or document url and thumbnails
     @SerializedName("question") val question: String?,
     @SerializedName("total_votes") val totalVotes: Int,
     @SerializedName("expiry_time") val expiryTime: String,
@@ -44,6 +43,11 @@ data class PostInfo(
 
     fun getOptionsText(): List<String> = options.map { it.option }
 }
+
+data class MediaDetail(
+    @SerializedName("media") val media: String,
+    @SerializedName("thumbnail_path") val thumbnailUrl: String
+)
 
 data class PollOption(
     @SerializedName("option_id") val optionId: Int,
