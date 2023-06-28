@@ -7,194 +7,114 @@
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        app:cardCornerRadius="5dp"
-        app:cardUseCompatPadding="true">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:shadowColor="@color/green_138808"
+        app:cardCornerRadius="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="5dp"
-            android:paddingVertical="8dp">
+            android:padding="12dp">
 
-            <TextView
-                android:id="@+id/nameDataTV"
-                style="@style/OpenSansSemiBold12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textColor="@color/primary_color"
+            <ImageView
+                android:id="@+id/ivUserPhoto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/man_user_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Name User" />
+                app:layout_constraintTop_toTopOf="@id/clDetails" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2"
-                android:layout_width="wrap_content"
+                android:id="@+id/clDetails"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                app:layout_constraintStart_toStartOf="@+id/nameDataTV"
-                app:layout_constraintTop_toBottomOf="@+id/nameDataTV">
+                android:layout_marginHorizontal="20dp"
+                app:layout_constraintEnd_toStartOf="@id/iv_arrow"
+                app:layout_constraintStart_toEndOf="@id/ivUserPhoto"
+                app:layout_constraintTop_toTopOf="@id/ivUserPhoto">
 
                 <TextView
-                    android:id="@+id/fathernameTV"
-                    style="@style/OpenSansRegular10sp"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvName"
+                    style="@style/OpenSansSemiBold14sp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/fathers_name"
-                    android:textSize="8sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/grey_40404F"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="User Name" />
 
                 <TextView
-                    android:id="@+id/fatherNameDataTV"
-                    style="@style/OpenSansSemiBold10sp"
+                    android:id="@+id/tvFatherNameData"
+                    style="@style/OpenSansRegular12sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    tools:text="@string/name"
-                    android:textColor="@color/black"
-                    android:textSize="8sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/fathernameTV"
-                    app:layout_constraintStart_toEndOf="@+id/fathernameTV"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/grey_555555"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvName"
+                    tools:text="Father's name" />
 
                 <TextView
-                    android:id="@+id/ageTV"
-                    style="@style/OpenSansRegular10sp"
+                    android:id="@+id/tvAgeData"
+                    style="@style/OpenSansRegular12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/age"
-                    android:textSize="8sp"
-                    app:layout_constraintStart_toStartOf="@+id/fathernameTV"
-                    app:layout_constraintTop_toBottomOf="@+id/fathernameTV" />
-
-                <TextView
-                    android:id="@+id/ageDataTV"
-                    style="@style/OpenSansSemiBold10sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    tools:text="@string/age"
-                    android:textColor="@color/black"
-                    android:textSize="8sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/ageTV"
-                    app:layout_constraintStart_toStartOf="@+id/fatherNameDataTV"
-                    app:layout_constraintTop_toBottomOf="@+id/fatherNameDataTV" />
-
-                <TextView
-                    android:id="@+id/houseNoTV"
-                    style="@style/OpenSansRegular10sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/house_no"
-                    android:textSize="8sp"
-                    app:layout_constraintStart_toStartOf="@+id/ageTV"
-                    app:layout_constraintTop_toBottomOf="@+id/ageTV" />
-
-                <TextView
-                    android:id="@+id/houseNoDataTV"
-                    style="@style/OpenSansSemiBold10sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    tools:text="@string/house_no"
-                    android:textColor="@color/black"
-                    android:textSize="8sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/houseNoTV"
-                    app:layout_constraintStart_toStartOf="@+id/ageDataTV"
-                    app:layout_constraintTop_toBottomOf="@+id/ageDataTV" />
-
-                <TextView
-                    android:id="@+id/localityTV"
-                    style="@style/OpenSansRegular10sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/locality"
-                    android:textSize="8sp"
-                    app:layout_constraintStart_toStartOf="@+id/houseNoTV"
-                    app:layout_constraintTop_toBottomOf="@+id/houseNoTV" />
-
-                <TextView
-                    android:id="@+id/localityDataTV"
-                    style="@style/OpenSansSemiBold10sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    tools:text="@string/locality"
-                    android:textColor="@color/black"
-                    android:textSize="8sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/localityTV"
-                    app:layout_constraintStart_toStartOf="@+id/houseNoDataTV"
-                    app:layout_constraintTop_toBottomOf="@+id/houseNoDataTV" />
-
-                <TextView
-                    android:id="@+id/votedIdTV"
-                    style="@style/OpenSansRegular10sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/voterid"
-                    android:textSize="8sp"
-                    app:layout_constraintStart_toStartOf="@+id/localityTV"
-                    app:layout_constraintTop_toBottomOf="@+id/localityTV" />
-
-                <TextView
-                    android:id="@+id/votedIdDataTV"
-                    style="@style/OpenSansSemiBold10sp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    tools:text="@string/voterid"
-                    android:textColor="@color/black"
-                    android:textSize="8sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/votedIdTV"
-                    app:layout_constraintStart_toStartOf="@+id/localityDataTV"
-                    app:layout_constraintTop_toBottomOf="@+id/localityDataTV" />
+                    android:textColor="@color/grey_555555"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvFatherNameData"
+                    tools:text="30 years" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
-                android:id="@+id/genderIconIV"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
-                android:layout_marginStart="2dp"
-                app:layout_constraintEnd_toEndOf="@+id/callComplaintInitiatorCard"
-                app:layout_constraintStart_toStartOf="@+id/callComplaintInitiatorCard"
-                app:layout_constraintTop_toTopOf="@+id/nameDataTV"
-                app:srcCompat="@drawable/man_user_icon" />
+                android:id="@+id/iv_arrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_grey_circle_hollow"
+                android:padding="6dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ivUserPhoto"
+                app:srcCompat="@drawable/ic_arrow" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/callComplaintInitiatorCard"
+            <TextView
+                android:id="@+id/tvRoleAndWard"
+                style="@style/OpenSansSemiBold12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:shadowColor="@color/grey_AEAEAE"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="2dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:textColor="@color/green_138808"
+                app:layout_constraintBottom_toBottomOf="@id/cvCall"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/cvCall"
+                tools:text="Resident: Ward #10" />
 
-                <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cvCall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/primary_color"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/clDetails">
+
+                <TextView
+                    style="@style/OpenSansSemiBold14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="6dp">
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        app:srcCompat="@drawable/ic_call" />
-
-                </LinearLayout>
+                    android:drawablePadding="4dp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/call"
+                    android:textColor="@color/white"
+                    app:drawableStartCompat="@drawable/ic_call"
+                    app:drawableTint="@color/white" />
 
             </com.google.android.material.card.MaterialCardView>
 

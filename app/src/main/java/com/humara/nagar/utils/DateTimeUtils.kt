@@ -150,4 +150,23 @@ object DateTimeUtils {
         val currentInstant = Instant.now()
         return instant.isBefore(currentInstant)
     }
+
+    fun getAgeInYearsFromIsoDate(dob: String): Int {
+        val instant = Instant.parse(dob)
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val period = Period.between(dateTime.toLocalDate(), LocalDate.now())
+        return period.years
+    }
+
+    /**
+     * Calculates the time difference in minutes between the given start time and the current time.
+     *
+     * @param startTime The start time in milliseconds since January 1, 1970 (Unix timestamp).
+     * @return The time difference in minutes between the start time and the current time.
+     */
+    fun getDifferenceInMinutes(startTime: Long): Long {
+        val currentTime = System.currentTimeMillis()
+        val diffInMs = currentTime - startTime
+        return TimeUnit.MILLISECONDS.toMinutes(diffInMs)
+    }
 }

@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.edit
 import androidx.core.view.children
+import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
@@ -30,6 +32,8 @@ import com.humara.nagar.R
 import com.humara.nagar.constants.Constants
 import com.humara.nagar.shared_pref.AppPreference
 import com.humara.nagar.shared_pref.UserPreference
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import java.util.*
 
 fun Context.showToast(message: String, shortToast: Boolean = true) {
@@ -72,6 +76,13 @@ fun ImageView.loadUrlWithoutCrop(url: String?, @DrawableRes placeholder: Int) {
             .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(this)
     }
+}
+
+fun EditText.textInputAsFlow() = callbackFlow {
+    val watcher: TextWatcher = doOnTextChanged { textInput: CharSequence?, _, _, _ ->
+        trySend(textInput)
+    }
+    awaitClose { this@textInputAsFlow.removeTextChangedListener(watcher) }
 }
 
 fun View.requestFocusAndShowKeyboard(inputMethodManager: InputMethodManager) {

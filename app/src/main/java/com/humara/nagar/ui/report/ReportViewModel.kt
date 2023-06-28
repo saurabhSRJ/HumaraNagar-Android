@@ -106,7 +106,7 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
 
     private fun getComplaintObjectWithCollectedData(): PostComplaintRequest {
         return PostComplaintRequest(category = categoryData.value!!, locality = localityData.value!!, user_id = getUserPreference().userId,
-            location = StringUtils.replaceWhitespaces(locationData.value!!.trim()), comments = StringUtils.replaceWhitespaces(commentData.value!!.trim()),
+            location = StringUtils.replaceWhitespaces(locationData.value!!), comments = StringUtils.replaceWhitespaces(commentData.value!!),
             location_latitude = latitudeData.value, location_longitude = longitudeData.value)
     }
 }

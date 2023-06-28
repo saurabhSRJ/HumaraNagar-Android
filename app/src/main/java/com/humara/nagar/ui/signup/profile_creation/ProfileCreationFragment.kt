@@ -17,6 +17,7 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentProfileCreationBinding
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.common.DatePickerDialogFragment
+import com.humara.nagar.ui.common.DateSelectionListener
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.model.GenderDetails
 import com.humara.nagar.ui.signup.model.WardDetails
@@ -29,7 +30,7 @@ class ProfileCreationFragment : BaseFragment() {
     private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
         ViewModelFactory()
     }
-    private val profileCreationViewModel by activityViewModels<ProfileCreationViewModel> {
+    private val profileCreationViewModel by viewModels<ProfileCreationViewModel> {
         ViewModelFactory()
     }
     private val appConfigViewModel by viewModels<AppConfigViewModel> {
@@ -64,8 +65,6 @@ class ProfileCreationFragment : BaseFragment() {
             getUserReferenceData()
         }
         profileCreationViewModel.run {
-            observeProgress(this, false)
-            observeErrorAndException(this, errorAction = { handleBack() }, dismissAction = { handleBack() })
             getDateOfBirth().observe(viewLifecycleOwner) { dob ->
                 binding.inputDob.setInput(dob)
                 binding.inputWard.requestFocus()
@@ -114,7 +113,7 @@ class ProfileCreationFragment : BaseFragment() {
             }
             inputPhoneNumber.setInput(Utils.getMobileNumberWithCountryCode(getUserPreference().mobileNumber))
             inputDob.setLayoutListener(false) {
-                DatePickerDialogFragment().show(childFragmentManager, DatePickerDialogFragment.TAG)
+                openDatePickerDialog()
             }
             toggleGender.addOnButtonCheckedListener { _, checkedId, isChecked ->
                 if (!isChecked) return@addOnButtonCheckedListener
@@ -124,6 +123,7 @@ class ProfileCreationFragment : BaseFragment() {
             inputWard.setUserInputListener {
                 if (it is WardDetails) {
                     profileCreationViewModel.setWard(it)
+                    hideKeyboard()
                 }
             }
             btnSubmit.setNonDuplicateClickListener {
@@ -133,6 +133,14 @@ class ProfileCreationFragment : BaseFragment() {
             clHeader.setOnClickListener { hideKeyboard() }
             clForm.setOnClickListener { hideKeyboard() }
         }
+    }
+
+    private fun openDatePickerDialog() {
+        DatePickerDialogFragment.show(parentFragmentManager, object : DateSelectionListener {
+            override fun onDateSelection(dob: String) {
+                profileCreationViewModel.setDateOfBirth(dob)
+            }
+        })
     }
 
     private fun handleBack() {

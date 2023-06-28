@@ -31,7 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="12dp"
-                android:paddingTop="20dp"
                 android:paddingBottom="20dp">
 
                 <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
@@ -108,7 +107,7 @@
                         style="@style/OpenSansSemiBold16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="4dp"
                         android:text="@string/asterisk"
                         android:textColor="@color/red_asterisk_D31717"
                         app:layout_constraintStart_toEndOf="@+id/textView"
@@ -119,7 +118,7 @@
                         style="@style/OpenSansSemiBold12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="2dp"
                         android:text="@string/uploadImageDescription"
                         android:textColor="@color/grey_828282"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -132,7 +131,7 @@
                     android:id="@+id/imagePreviewItemRCV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="12dp"
                     android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@+id/addImageLayout"
                     tools:itemCount="2"

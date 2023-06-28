@@ -4,19 +4,25 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import java.util.*
 
 object StringUtils {
     /**
      * Function which returns a modified string with consecutive whitespace characters like space, tab and enter replaced by a single space for [input] string.
      */
     fun replaceWhitespaces(input: String): String {
-        return input.replace("\\s+".toRegex(), " ")
+        return input.trim().replace("\\s+".toRegex(), " ")
+    }
+
+    fun String.convertToLowerCase(): String {
+        return replaceWhitespaces(this).lowercase()
     }
 
     fun toStringWithoutSpaces(inputString: String): String {
@@ -29,6 +35,10 @@ object StringUtils {
         } else {
             input
         }
+    }
+
+    fun String.capitalizeEachWord(): String {
+        return this.split(' ').joinToString(" ") { word -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
     }
 
     /**
@@ -111,5 +121,19 @@ object StringUtils {
         builder.append(string ?: text).append("  ")
         builder.append(" ", ImageSpan(drawable!!), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         text = builder
+    }
+
+    /**
+     * Method to set a background span on textView from start to end index
+     * @param text
+     * @param color
+     * @param start
+     * @param end
+     * @return
+     */
+    fun getStringWithBackgroundColor(text: String?, color: Int, start: Int, end: Int): Spannable {
+        val spannable = SpannableString(text)
+        spannable.setSpan(BackgroundColorSpan(color), start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        return spannable
     }
 }

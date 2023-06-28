@@ -9,6 +9,7 @@ import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -18,7 +19,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
 import com.esafirm.imagepicker.features.ImagePickerConfig
 import com.esafirm.imagepicker.features.ImagePickerMode
 import com.esafirm.imagepicker.features.ReturnMode
@@ -32,6 +32,7 @@ import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentCreatePostBinding
 import com.humara.nagar.permissions.PermissionHandler
+import com.humara.nagar.ui.common.GenericAlertDialog
 import com.humara.nagar.ui.common.MediaSelectionBottomSheet
 import com.humara.nagar.ui.common.MediaSelectionListener
 import com.humara.nagar.ui.home.HomeFragment
@@ -40,7 +41,6 @@ import com.humara.nagar.ui.home.create_post.model.PollRequest
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.utils.*
-import java.io.IOException
 
 class CreatePostFragment : BaseFragment(), MediaSelectionListener {
     companion object {
@@ -77,6 +77,13 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
             context?.showToast(getString(R.string.no_video_selected))
         } else {
             onVideoSelection(uris[0])
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            showExitConfirmationDialog()
         }
     }
 
@@ -150,7 +157,7 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         binding.run {
             toolbar.apply {
                 btnCross.setOnClickListener {
-                    navController.navigateUp()
+                    showExitConfirmationDialog()
                 }
             }
             clContainer.setOnClickListener { hideKeyboard() }
@@ -188,6 +195,13 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
                     createPostViewModel.setCaption(caption)
                 }
             }
+        }
+    }
+
+    private fun showExitConfirmationDialog() {
+        GenericAlertDialog.show(parentFragmentManager, getString(R.string.sure_you_want_to_exit), getString(R.string.user_exit_confirmation_message), isCancelable = true,
+            getString(R.string.exit), getString(R.string.stay)) {
+            navController.navigateUp()
         }
     }
 

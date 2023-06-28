@@ -63,7 +63,6 @@
                 style="@style/OpenSansRegular14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dropDownAnchor="@id/clContainer"
                 android:completionThreshold="0"
                 android:inputType="text"
                 android:paddingTop="10dp"

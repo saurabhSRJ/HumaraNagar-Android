@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="30dp"
+        android:paddingTop="50dp">
+
+        <TextView
+            android:id="@+id/tv_otp_sent_to"
+            style="@style/OpenSansRegular14sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/otp_sent_to_s"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_enter_otp"
+            style="@style/OpenSansRegular16sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="@string/enter_otp"
+            android:textAllCaps="true"
+            android:textColor="@color/dark_grey_333333"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_otp_sent_to" />
+
+        <com.chaos.view.PinView
+            android:id="@+id/otp_view"
+            style="@style/PinWidget.PinView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:cursorVisible="true"
+            android:imeOptions="actionGo"
+            android:inputType="number"
+            android:textAppearance="@style/OpenSansRegular16sp"
+            android:textColor="@color/dark_grey_333333"
+            app:cursorWidth="2dp"
+            app:hideLineWhenFilled="false"
+            app:itemCount="@integer/otp_length"
+            app:itemSpacing="12dp"
+            app:itemWidth="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_enter_otp"
+            app:lineWidth="3dp"
+            app:viewType="line" />
+
+        <TextView
+            android:id="@+id/tv_otp_error_message"
+            style="@style/OpenSansRegular14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/didn_t_receive_otp"
+            android:textColor="@color/grey_828282"
+            app:layout_constraintEnd_toStartOf="@id/tv_resend"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/otp_view" />
+
+        <TextView
+            android:id="@+id/tv_resend"
+            style="@style/OpenSansRegular14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="6dp"
+            android:enabled="false"
+            android:text="@string/resend"
+            android:textColor="@color/grey_AEAEAE"
+            app:layout_constraintEnd_toStartOf="@id/tv_timer"
+            app:layout_constraintStart_toEndOf="@id/tv_otp_error_message"
+            app:layout_constraintTop_toTopOf="@id/tv_otp_error_message" />
+
+        <TextView
+            android:id="@+id/tv_timer"
+            style="@style/OpenSansRegular14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/timer_count"
+            android:textColor="@color/primary_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_resend"
+            app:layout_constraintTop_toTopOf="@id/tv_otp_error_message" />
+
+        <Button
+            android:id="@+id/btn_continue"
+            style="@style/primary_blue_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:enabled="false"
+            android:text="@string/continue_text"
+            app:layout_constraintTop_toBottomOf="@id/tv_otp_error_message" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

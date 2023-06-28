@@ -7,5 +7,15 @@
     <fragment
         android:id="@+id/residentsFragment"
         android:name="com.humara.nagar.ui.residents.ResidentsFragment"
-        android:label="ResidentsFragment" />
+        android:label="ResidentsFragment">
+        <action
+            android:id="@+id/action_residentsFragment_to_add_user_navigation"
+            app:destination="@id/add_user_navigation"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+    </fragment>
+
+    <include app:graph="@navigation/add_user_navigation" />
 </navigation>
