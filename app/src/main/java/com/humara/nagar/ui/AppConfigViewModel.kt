@@ -11,8 +11,10 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.*
 import com.humara.nagar.utils.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppConfigViewModel(application: Application) : BaseViewModel(application) {
     private val repository = AppConfigRepository(application)
@@ -23,6 +25,8 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     val appConfigSuccessLiveData: LiveData<Boolean> = _appConfigSuccessLiveData
     private val _userRefDataSuccessLiveData: MutableLiveData<Boolean> by lazy { (MutableLiveData()) }
     val userRefDataSuccessLiveData: LiveData<Boolean> = _userRefDataSuccessLiveData
+    private val _roleDetailsLiveData: MutableLiveData<List<RoleDetails>> by lazy { SingleLiveEvent() }
+    val roleDetailsLiveData: LiveData<List<RoleDetails>> = _roleDetailsLiveData
     private val _wardDetailsLiveData: MutableLiveData<List<WardDetails>> by lazy { SingleLiveEvent() }
     val wardDetailsLiveData: LiveData<List<WardDetails>> = _wardDetailsLiveData
     private val _genderDetailsLiveData: MutableLiveData<List<GenderDetails>> by lazy { SingleLiveEvent() }
@@ -83,19 +87,24 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         }
     }
 
+    fun getRoles() = viewModelScope.launch {
+        val roles = async { repository.getAllRoles() }
+        _roleDetailsLiveData.postValue(roles.await())
+    }
+
     fun getWards() = viewModelScope.launch {
-        val wards = repository.getAllWards()
-        _wardDetailsLiveData.postValue(wards)
+        val wards = async { repository.getAllWards() }
+        _wardDetailsLiveData.postValue(wards.await())
     }
 
     fun getGenders() = viewModelScope.launch {
-        val genders = repository.getAllGenders()
-        _genderDetailsLiveData.postValue(genders)
+        val genders = async { repository.getAllGenders() }
+        _genderDetailsLiveData.postValue(genders.await())
     }
 
     fun getComplaintCategories() = viewModelScope.launch {
-        val categories = repository.getComplaintCategories()
-        _complaintCategoriesLiveData.postValue(categories.map { it.name })
+        val categories = async { repository.getComplaintCategories() }
+        _complaintCategoriesLiveData.postValue(categories.await().map { it.name })
     }
 
     fun logout() = viewModelScope.launch {

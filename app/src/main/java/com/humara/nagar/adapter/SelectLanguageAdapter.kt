@@ -33,7 +33,7 @@ class SelectLanguageAdapter(context: Context, private val list: Array<AppLanguag
                 tvLanguage.text = item.lang
                 if (selectedPosition == adapterPosition) {
                     ivCheck.setImageResource(R.drawable.ic_radio_checked)
-                    clRoot.setBackgroundResource(R.drawable.rect_blue_fill_blue_outline_5dp)
+                    clRoot.setBackgroundResource(R.drawable.rect_seconday_bg_fill_primary_color_outline_5dp)
                 } else {
                     ivCheck.setImageResource(R.drawable.ic_radio_unchecked)
                     clRoot.setBackgroundResource(R.drawable.rect_white_fill_grey_outline_5dp)

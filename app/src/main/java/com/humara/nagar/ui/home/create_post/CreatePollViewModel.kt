@@ -59,7 +59,7 @@ class CreatePollViewModel(application: Application, private val savedStateHandle
 
     fun getPollRequestObjectWithCollectedData() {
         val request = PollRequest(
-            question = StringUtils.replaceWhitespaces(pollQuestionLiveData.value!!.trim()),
+            question = StringUtils.replaceWhitespaces(pollQuestionLiveData.value!!),
             options = getPollOptions(),
             expiryTime = DateTimeUtils.getFutureDateTimeInIsoFormat(pollDurationLiveData.value!!)
         )
@@ -72,9 +72,9 @@ class CreatePollViewModel(application: Application, private val savedStateHandle
     }
 
     private fun getPollOptions(): List<String> {
-        return mutableListOf(StringUtils.replaceWhitespaces(firstOptionLiveData.value!!.trim()), StringUtils.replaceWhitespaces(secondOptionLiveData.value!!.trim())).apply {
-            thirdOptionLiveData.value?.let { add(StringUtils.replaceWhitespaces(it.trim())) }
-            fourthOptionLiveData.value?.let { add(StringUtils.replaceWhitespaces(it.trim())) }
+        return mutableListOf(StringUtils.replaceWhitespaces(firstOptionLiveData.value!!), StringUtils.replaceWhitespaces(secondOptionLiveData.value!!)).apply {
+            thirdOptionLiveData.value?.let { add(StringUtils.replaceWhitespaces(it)) }
+            fourthOptionLiveData.value?.let { add(StringUtils.replaceWhitespaces(it)) }
         }
     }
 }

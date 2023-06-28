@@ -43,8 +43,16 @@ class AppConfigRepository(context: Application) : BaseRepository(context) {
         database.referenceDataDao().insertFeedFilters(filters)
     }
 
+    suspend fun getAllRoles() = withContext(Dispatchers.IO) {
+        database.referenceDataDao().getAllRoles()
+    }
+
     suspend fun getAllWards() = withContext(Dispatchers.IO) {
         database.referenceDataDao().getAllWards()
+    }
+
+    suspend fun getWardId(ward: String) = withContext(Dispatchers.IO) {
+        database.referenceDataDao().getWardId(ward)
     }
 
     suspend fun getAllGenders() = withContext(Dispatchers.IO) {

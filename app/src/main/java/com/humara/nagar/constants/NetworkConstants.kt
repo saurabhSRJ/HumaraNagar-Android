@@ -39,6 +39,9 @@ interface NetworkConstants {
             const val TEXT_POST = "/posts/text"
             const val POLL_POST = "/posts/poll"
             const val VIDEO_POST = "/posts/video"
+            const val RESIDENTS = "/residents"
+            const val USER_OTP = "/user/otp"
+            const val USER_SIGNUP = "/user/"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in/views/privacy_policy.html"
             const val TERMS_CONDITION_URL = "https://humaranagar.in/views/terms_and_conditions.html"
             const val ABOUT_US_URL = "https://humaranagar.in"
@@ -52,6 +55,7 @@ interface NetworkConstants {
             const val PAGE = "page"
             const val LIMIT = "limit"
             const val FILTER_ID = "filter"
+            const val SEARCH = "search"
         }
     }
 

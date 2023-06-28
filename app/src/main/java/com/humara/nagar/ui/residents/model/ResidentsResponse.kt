@@ -3,8 +3,8 @@ package com.humara.nagar.ui.residents.model
 import com.google.gson.annotations.SerializedName
 
 data class ResidentsResponse(
-    @SerializedName("totalPages") var totalPages: Int? = null,
-    @SerializedName("nextPage") var nextPage: Int? = null,
-    @SerializedName("previousPage") var previousPage: Int? = null,
-    @SerializedName("Residents") var Residents: ArrayList<Residents> = arrayListOf()
+    @SerializedName("total_pages") val totalPages: Int,
+    @SerializedName("total_count") val totalCount: Int,
+    @SerializedName("page") val page: Int,
+    @SerializedName("residents") val residentDetails: List<ResidentDetails> = listOf()
 )
