@@ -79,6 +79,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_grey_circle_hollow"
                 android:padding="6dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivUserPhoto"
                 app:srcCompat="@drawable/ic_arrow" />

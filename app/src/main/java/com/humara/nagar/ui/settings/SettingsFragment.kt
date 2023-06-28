@@ -42,7 +42,7 @@ class SettingsFragment : BaseFragment() {
             getUserPreference().profileImage?.let { url ->
                 ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
-            tvName.text = getUserPreference().userProfile?.name
+            tvName.text = getUserPreference().userName
             ivProfilePhoto.setNonDuplicateClickListener {
                 openUpdateProfileImageFragment()
             }

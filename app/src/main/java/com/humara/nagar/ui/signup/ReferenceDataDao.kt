@@ -23,6 +23,9 @@ interface ReferenceDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFeedFilters(filters: List<FeedFilter>)
 
+    @Query("SELECT * FROM roles")
+    suspend fun getAllRoles(): List<RoleDetails>
+
     @Query("SELECT * FROM categories")
     suspend fun getAllCategories(): List<CategoryDetails>
 

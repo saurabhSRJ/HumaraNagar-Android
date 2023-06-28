@@ -11,15 +11,12 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onException
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.AppConfigRepository
-import com.humara.nagar.ui.residents.model.EmptyRequestBody
 import com.humara.nagar.ui.residents.model.GetResidentsRequest
 import com.humara.nagar.ui.residents.model.ResidentDetails
 import com.humara.nagar.ui.residents.model.ResidentsResponse
 import com.humara.nagar.utils.StringUtils.convertToLowerCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ResidentsViewModel(application: Application) : BaseViewModel(application) {
     private val repository = ResidentsRepository(application)
@@ -47,11 +44,11 @@ class ResidentsViewModel(application: Application) : BaseViewModel(application) 
     var canLoadMoreData = true
 
     init {
-        getAllWards()
+        initWardFilter()
     }
 
     fun getAllResidents() = viewModelScope.launch {
-        val request = if (wardFilter.isEmpty()) EmptyRequestBody() else GetResidentsRequest(wardFilter)
+        val request = GetResidentsRequest(wardFilter)
         val response = processCoroutine(
             { repository.getAllResidents(currentPage, limit, request) },
             progressLiveData = if (currentPage == 1) _initialDataProgressLiveData else _loadMoreDataProgressLiveData
@@ -68,7 +65,7 @@ class ResidentsViewModel(application: Application) : BaseViewModel(application) 
     }
 
     fun searchResidentList(searchText: String) = viewModelScope.launch {
-        val request = if (wardFilter.isEmpty()) EmptyRequestBody() else GetResidentsRequest(wardFilter)
+        val request = GetResidentsRequest(wardFilter)
         val response = processCoroutine({ repository.searchResidentList(searchText.convertToLowerCase(), request) }, progressLiveData = _isSearchingLiveData)
         response.onSuccess {
             _searchResultLiveData.postValue(Pair(it.residentDetails, searchText))
@@ -77,14 +74,15 @@ class ResidentsViewModel(application: Application) : BaseViewModel(application) 
         }
     }
 
-    private fun getAllWards() = viewModelScope.launch {
+    private fun initWardFilter() = viewModelScope.launch {
         if (Role.shouldShowResidentsFromAllWards(getUserPreference().role?.id ?: 0)) {
             wardFilter.clear()
+            getAllResidents()
         } else {
             val wardId = async { appConfigRepository.getWardId(getUserPreference().ward!!) }
             wardFilter.add(wardId.await())
+            getAllResidents()
         }
-        getAllResidents()
     }
 
     private fun processInitialResponse(response: ResidentsResponse) {

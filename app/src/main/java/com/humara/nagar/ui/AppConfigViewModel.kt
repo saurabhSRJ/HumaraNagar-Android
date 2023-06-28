@@ -25,6 +25,8 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     val appConfigSuccessLiveData: LiveData<Boolean> = _appConfigSuccessLiveData
     private val _userRefDataSuccessLiveData: MutableLiveData<Boolean> by lazy { (MutableLiveData()) }
     val userRefDataSuccessLiveData: LiveData<Boolean> = _userRefDataSuccessLiveData
+    private val _roleDetailsLiveData: MutableLiveData<List<RoleDetails>> by lazy { SingleLiveEvent() }
+    val roleDetailsLiveData: LiveData<List<RoleDetails>> = _roleDetailsLiveData
     private val _wardDetailsLiveData: MutableLiveData<List<WardDetails>> by lazy { SingleLiveEvent() }
     val wardDetailsLiveData: LiveData<List<WardDetails>> = _wardDetailsLiveData
     private val _genderDetailsLiveData: MutableLiveData<List<GenderDetails>> by lazy { SingleLiveEvent() }
@@ -83,6 +85,11 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         }.onError {
             errorLiveData.postValue(it)
         }
+    }
+
+    fun getRoles() = viewModelScope.launch {
+        val roles = async { repository.getAllRoles() }
+        _roleDetailsLiveData.postValue(roles.await())
     }
 
     fun getWards() = viewModelScope.launch {

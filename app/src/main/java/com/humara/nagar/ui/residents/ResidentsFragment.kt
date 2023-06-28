@@ -8,6 +8,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.R
@@ -17,7 +19,6 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.databinding.FragmentResidentsBinding
-import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.common.EndlessRecyclerViewScrollListener
 import com.humara.nagar.utils.setNonDuplicateClickListener
 import com.humara.nagar.utils.textInputAsFlow
@@ -37,13 +38,16 @@ class ResidentsFragment : BaseFragment() {
     private val residentsViewModel: ResidentsViewModel by viewModels {
         ViewModelFactory()
     }
-    private val appConfigViewModel: AppConfigViewModel by viewModels {
+    private val residentsManagementViewModel by navGraphViewModels<ResidentsManagementViewModel>(R.id.residents_navigation) {
         ViewModelFactory()
     }
     private val searchAdapter: ResidentSearchAdapter by lazy {
         ResidentSearchAdapter { }
     }
     private lateinit var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener
+    private val navController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentResidentsBinding.inflate(inflater, container, false)
@@ -93,6 +97,9 @@ class ResidentsFragment : BaseFragment() {
             isSearchingLiveData.observe(viewLifecycleOwner) {
                 binding.pbSearch.isVisible = it
             }
+        }
+        residentsManagementViewModel.userAdditionSuccessLiveData.observe(viewLifecycleOwner) {
+            reloadList()
         }
     }
 
@@ -156,6 +163,10 @@ class ResidentsFragment : BaseFragment() {
                     hideKeyboard()
                 }
                 false
+            }
+            btnBack.setOnClickListener { navController.navigateUp() }
+            btnAddUser.setNonDuplicateClickListener {
+                navController.navigate(ResidentsFragmentDirections.actionResidentsFragmentToAddUserNavigation())
             }
             swipeRefresh.setOnRefreshListener {
                 lifecycleScope.launch {

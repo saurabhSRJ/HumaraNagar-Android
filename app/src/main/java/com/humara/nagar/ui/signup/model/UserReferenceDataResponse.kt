@@ -26,6 +26,7 @@ data class FeedFilter(
 )
 
 @Entity(tableName = "roles")
+@Parcelize
 data class RoleDetails(
     @PrimaryKey
     @SerializedName("id")
@@ -33,7 +34,9 @@ data class RoleDetails(
     @ColumnInfo(name = "name")
     @SerializedName("name")
     val name: String
-)
+) : Parcelable {
+    override fun toString() = name
+}
 
 @Entity(tableName = "wards")
 @Parcelize
@@ -44,7 +47,7 @@ data class WardDetails(
     @ColumnInfo(name = "name")
     @SerializedName("name")
     val name: String
-): Parcelable {
+) : Parcelable {
     override fun toString() = name
 }
 
@@ -57,7 +60,7 @@ data class GenderDetails(
     @ColumnInfo(name = "name")
     @SerializedName("name")
     val name: String
-): Parcelable {
+) : Parcelable {
     override fun toString() = name
 }
 
@@ -70,4 +73,6 @@ data class CategoryDetails(
     @ColumnInfo(name = "name")
     @SerializedName("name")
     val name: String
-): Parcelable
+) : Parcelable {
+    override fun toString() = name
+}

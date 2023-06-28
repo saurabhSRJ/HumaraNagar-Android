@@ -9,20 +9,52 @@
         android:background="@color/secondary_background"
         tools:context="com.humara.nagar.ui.report.ReportFragment">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvHeader"
-            style="@style/OpenSansSemiBold20sp"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clHeader"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_color"
-            android:gravity="center"
+            android:background="@drawable/rect_primary_color_bottom_curved_bg"
             android:paddingHorizontal="20dp"
             android:paddingVertical="30dp"
-            android:text="@string/fellow_residents"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintBottom_toBottomOf="@id/btnAddUser"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnAddUser"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/tvHeader"
+                style="@style/OpenSansSemiBold20sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:gravity="center"
+                android:text="@string/fellow_residents"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/btnAddUser"
+                app:layout_constraintEnd_toStartOf="@id/btnAddUser"
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintTop_toTopOf="@id/btnAddUser" />
+
+            <ImageButton
+                android:id="@+id/btnAddUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_add_user"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilSearch"
@@ -41,7 +73,7 @@
             app:hintEnabled="false"
             app:layout_constraintEnd_toStartOf="@id/filterWard"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHeader"
+            app:layout_constraintTop_toBottomOf="@+id/clHeader"
             app:layout_goneMarginEnd="16dp"
             app:startIconDrawable="@drawable/ic_person_search">
 

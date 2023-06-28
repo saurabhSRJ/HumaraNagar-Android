@@ -71,9 +71,6 @@ class ResidentsViewHolder(
                 ivUserPhoto.loadUrl(url, R.drawable.man_user_icon)
             }
             tvRoleAndWard.text = resident.role.plus(": ").plus(root.context.getString(R.string.ward_s, resident.ward))
-            rootLayout.setNonDuplicateClickListener {
-                listener(resident)
-            }
             cvCall.setNonDuplicateClickListener {
                 resident.phoneNumber?.let { number ->
                     root.context.startActivity(IntentUtils.getCallIntent(number))

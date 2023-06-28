@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.humara.nagar.ui.AppConfigViewModel
+import com.humara.nagar.ui.add_user.AddUserViewModel
 import com.humara.nagar.ui.common.MediaSelectionViewModel
 import com.humara.nagar.ui.home.HomeViewModel
 import com.humara.nagar.ui.home.create_post.CreatePollViewModel
@@ -14,6 +15,7 @@ import com.humara.nagar.ui.home.post_details.PostDetailsViewModel
 import com.humara.nagar.ui.report.ReportViewModel
 import com.humara.nagar.ui.report.complaint_status.ComplaintStatusViewModel
 import com.humara.nagar.ui.report.complaints.ComplaintsViewModel
+import com.humara.nagar.ui.residents.ResidentsManagementViewModel
 import com.humara.nagar.ui.residents.ResidentsViewModel
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationViewModel
@@ -60,6 +62,12 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(MediaSelectionViewModel::class.java) -> {
                     MediaSelectionViewModel(application)
+                }
+                isAssignableFrom(AddUserViewModel::class.java) -> {
+                    AddUserViewModel(application, extras.createSavedStateHandle())
+                }
+                isAssignableFrom(ResidentsManagementViewModel::class.java) -> {
+                    ResidentsManagementViewModel(application)
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }

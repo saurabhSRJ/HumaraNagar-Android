@@ -2,7 +2,6 @@ package com.humara.nagar.ui.residents
 
 import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.network.NetworkResponse
-import com.humara.nagar.ui.residents.model.EmptyRequestBody
 import com.humara.nagar.ui.residents.model.GetResidentsRequest
 import com.humara.nagar.ui.residents.model.ResidentsResponse
 import retrofit2.http.Body
@@ -14,12 +13,12 @@ interface ResidentsService {
     suspend fun getAllResidents(
         @Query(NetworkConstants.NetworkQueryConstants.PAGE) page: Int,
         @Query(NetworkConstants.NetworkQueryConstants.LIMIT) limit: Int,
-        @Body request: EmptyRequestBody
+        @Body request: GetResidentsRequest
     ): NetworkResponse<ResidentsResponse>
 
     @POST(NetworkConstants.NetworkAPIConstants.RESIDENTS)
     suspend fun searchResidentList(
         @Query(NetworkConstants.NetworkQueryConstants.SEARCH) search: String,
-        @Body request: EmptyRequestBody
+        @Body request: GetResidentsRequest
     ): NetworkResponse<ResidentsResponse>
 }

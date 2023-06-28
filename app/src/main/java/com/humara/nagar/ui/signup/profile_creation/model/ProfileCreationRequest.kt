@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class ProfileCreationRequest(
     @SerializedName("user_id") val userId: Long,
-    @SerializedName("name") var name: String,
-    @SerializedName("father_or_spouse_name") var fatherOrSpouseName: String,
-    @SerializedName("date_of_birth") var dateOfBirth: String,
-    @SerializedName("gender_id") var genderId: Int,
-    @SerializedName("ward_id") var wardId: Int
+    @SerializedName("name") val name: String,
+    @SerializedName("father_or_spouse_name") val fatherOrSpouseName: String,
+    @SerializedName("date_of_birth") val dateOfBirth: String,
+    @SerializedName("gender_id") val genderId: Int,
+    @SerializedName("ward_id") val wardId: Int
 )
