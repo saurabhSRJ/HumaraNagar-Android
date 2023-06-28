@@ -169,6 +169,7 @@
     <string name="no_video_selected">No Video selected</string>
     <string name="tap_to_select">Tap to select</string>
     <string name="auto_detect_my_location">Auto-detect my location</string>
+    <string name="change_image">Change Image</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
