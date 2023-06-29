@@ -406,8 +406,8 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
 
     private fun handleEditVideoPost(post: Post) {
         binding.videoPreview.run {
+            root.visibility = View.VISIBLE
             post.info?.mediaDetails?.getOrNull(0)?.thumbnailUrl?.let { url ->
-                root.visibility = View.VISIBLE
                 ivThumbnail.loadUrl(url, R.drawable.ic_image_placeholder)
             }
         }

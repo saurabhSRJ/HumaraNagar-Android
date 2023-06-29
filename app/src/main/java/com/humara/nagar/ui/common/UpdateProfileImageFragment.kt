@@ -74,6 +74,7 @@ class UpdateProfileImageFragment : BaseFragment(), MediaSelectionListener {
             if (isEditFlow) {
                 btnBack.visibility = View.VISIBLE
                 btnContinue.visibility = View.GONE
+                tvTitle.visibility = View.INVISIBLE
                 btnContinue.text = getString(R.string.done)
             } else {
                 btnBack.visibility = View.GONE

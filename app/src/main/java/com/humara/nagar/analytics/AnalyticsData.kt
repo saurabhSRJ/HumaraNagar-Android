@@ -29,6 +29,7 @@ interface AnalyticsData {
             const val VIDEO_PLAYER_FRAGMENT = "VIDEO_PLAYER_FRAGMENT"
             const val ADD_USER_MOBILE_VERIFICATION_FRAGMENT = "ADD_USER_MOBILE_VERIFICATION_FRAGMENT"
             const val ADD_USER_DETAILS_FRAGMENT = "ADD_USER_DETAILS_FRAGMENT"
+            const val USER_PROFILE_FRAGMENT = "USER_PROFILE_FRAGMENT"
         }
     }
 

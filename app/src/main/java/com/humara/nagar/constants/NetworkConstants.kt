@@ -42,6 +42,7 @@ interface NetworkConstants {
             const val RESIDENTS = "/residents"
             const val USER_OTP = "/user/otp"
             const val USER_SIGNUP = "/user/"
+            const val USER_PROFILE = "/profile/{id}"
             const val PRIVACY_POLICY_URL = "https://humaranagar.in/views/privacy_policy.html"
             const val TERMS_CONDITION_URL = "https://humaranagar.in/views/terms_and_conditions.html"
             const val ABOUT_US_URL = "https://humaranagar.in"

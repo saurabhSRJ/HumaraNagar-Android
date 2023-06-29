@@ -91,10 +91,6 @@ class ComplaintsFragment : BaseFragment() {
         binding.run {
             //Setting up the toolbar
             includedToolbar.toolbarTitle.text = if (Role.isLocalAdmin(getUserPreference().role?.id ?: 0)) getString(R.string.all_complaints) else getString(R.string.past_complaints)
-            includedToolbar.rightIconTv.apply {
-                text = resources.getString(R.string.history)
-                visibility = View.VISIBLE
-            }
             includedToolbar.leftIcon.setOnClickListener {
                 navController.navigateUp()
             }
