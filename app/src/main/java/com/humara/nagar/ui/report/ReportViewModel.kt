@@ -46,10 +46,10 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
     fun postComplaint() = viewModelScope.launch {
         val complaintsRequest = getComplaintObjectWithCollectedData()
         val response = processCoroutine({ repository.postComplaint(complaintsRequest, imageUris) })
+        for (uri in imageUris) {
+            ImageUtils.deleteTempFile(uri)
+        }
         response.onSuccess {
-            for (uri in imageUris) {
-                ImageUtils.deleteTempFile(uri)
-            }
             _postComplaintStatusLiveData.postValue(true)
         }.onError {
             _postComplaintStatusLiveData.postValue(false)
@@ -88,6 +88,7 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
     }
 
     fun deleteImage(index: Int) {
+        ImageUtils.deleteTempFile(imageUris[index])
         imageUris.removeAt(index)
         savedStateHandle[IMAGES_KEY] = imageUris
         updateSubmitButtonState()

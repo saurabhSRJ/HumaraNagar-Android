@@ -140,4 +140,27 @@ object ImageUtils {
         Logger.debugLog("inSampleSize: $inSampleSize")
         return inSampleSize
     }
+
+    suspend fun saveBitmapToFile(context: Context, bitmap: Bitmap): Uri? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val tmpFile = createTempImageFile(context)
+                val fos = FileOutputStream(tmpFile)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos)
+                fos.flush()
+                fos.close()
+                // Step 3: Check if the compressed file was successfully created
+                if (tmpFile.exists() && tmpFile.length() > 0) {
+                    Logger.debugLog("final image size in KB: ${tmpFile.length() / 1024}")
+                    return@withContext Uri.fromFile(tmpFile)
+                } else {
+                    Logger.debugLog("Failed to create compressed image file")
+                    return@withContext null
+                }
+            } catch (e: Throwable) {
+                Logger.debugLog("Failed to compress image: ${e.message}")
+                return@withContext null
+            }
+        }
+    }
 }

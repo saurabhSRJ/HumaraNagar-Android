@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -41,6 +42,7 @@ import com.humara.nagar.ui.home.create_post.model.PollRequest
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.home.model.PostType
 import com.humara.nagar.utils.*
+import kotlinx.coroutines.launch
 
 class CreatePostFragment : BaseFragment(), MediaSelectionListener {
     companion object {
@@ -291,7 +293,12 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
         binding.videoPreview.run {
             uri?.let {
                 root.visibility = View.VISIBLE
-                VideoUtils.getVideoThumbnail(requireContext(), uri)?.let {
+                val thumbnail = VideoUtils.getVideoThumbnail(requireContext(), uri)
+                thumbnail?.let {
+                    lifecycleScope.launch {
+                        val thumbnailUri = ImageUtils.saveBitmapToFile(requireContext(), thumbnail)
+                        createPostViewModel.setThumbnailUri(thumbnailUri)
+                    }
                     ivThumbnail.setImageBitmap(it)
                 }
                 ivPlay.setNonDuplicateClickListener {
