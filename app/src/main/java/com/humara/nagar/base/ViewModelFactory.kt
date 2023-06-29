@@ -19,6 +19,7 @@ import com.humara.nagar.ui.residents.ResidentsManagementViewModel
 import com.humara.nagar.ui.residents.ResidentsViewModel
 import com.humara.nagar.ui.signup.OnBoardingViewModel
 import com.humara.nagar.ui.signup.profile_creation.ProfileCreationViewModel
+import com.humara.nagar.ui.user_profile.UserProfileViewModel
 
 class ViewModelFactory : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
@@ -68,6 +69,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(ResidentsManagementViewModel::class.java) -> {
                     ResidentsManagementViewModel(application)
+                }
+                isAssignableFrom(UserProfileViewModel::class.java) -> {
+                    UserProfileViewModel(application, extras.createSavedStateHandle())
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }

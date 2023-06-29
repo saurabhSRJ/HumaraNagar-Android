@@ -117,6 +117,8 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                     ivPostImage.setNonDuplicateClickListener {
                         it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFullImagePreviewFragment(arrayOf(url), source))
                     }
+                } ?: kotlin.run {
+                    ivPostImage.visibility = View.GONE
                 }
             }
         }
@@ -145,6 +147,8 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                     tvDocumentPreview.setNonDuplicateClickListener {
                         FileUtils.openPdfUrl(context, FeedUtils.getDocumentUrl(url))
                     }
+                } ?: kotlin.run {
+                    tvDocumentPreview.visibility = View.GONE
                 }
                 handlePostFooterUI(postFooter, item, bindingAdapterPosition)
             }
@@ -160,7 +164,11 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                     val videoUrl = VideoUtils.getVideoUrl(detail.media)
                     val videoUri = Uri.parse(videoUrl)
                     playerViewContainer.visibility = View.VISIBLE
-                    videoPreview.ivThumbnail.loadUrl(detail.thumbnailUrl, R.drawable.ic_image_placeholder)
+                    detail.thumbnailUrl?.let {
+                        videoPreview.ivThumbnail.loadUrl(detail.thumbnailUrl, R.drawable.ic_image_placeholder)
+                    } ?: kotlin.run {
+                        videoPreview.ivThumbnail.setImageResource(R.drawable.ic_image_placeholder)
+                    }
                     kohii.setUp(videoUri) {
                         tag = videoUri
                         preload = true
@@ -191,6 +199,8 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             }
             post.profileImage?.let { url ->
                 ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
+            } ?: kotlin.run {
+                ivProfilePhoto.setImageResource(R.drawable.ic_user_image_placeholder)
             }
         }
     }

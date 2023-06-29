@@ -31,7 +31,7 @@ class SelectLanguageAdapter(context: Context, private val list: Array<AppLanguag
         fun bind(item: AppLanguage) {
             binding.run {
                 tvLanguage.text = item.lang
-                if (selectedPosition == adapterPosition) {
+                if (selectedPosition == bindingAdapterPosition) {
                     ivCheck.setImageResource(R.drawable.ic_radio_checked)
                     clRoot.setBackgroundResource(R.drawable.rect_seconday_bg_fill_primary_color_outline_5dp)
                 } else {
@@ -40,7 +40,7 @@ class SelectLanguageAdapter(context: Context, private val list: Array<AppLanguag
                 }
                 root.setOnClickListener {
                     val prevPosition = selectedPosition
-                    selectedPosition = adapterPosition
+                    selectedPosition = bindingAdapterPosition
                     notifyItemChanged(selectedPosition)
                     notifyItemChanged(prevPosition)
                     clickListener.invoke(item)

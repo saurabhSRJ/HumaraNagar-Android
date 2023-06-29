@@ -1,5 +1,6 @@
 package com.humara.nagar.utils
 
+import android.util.Patterns
 import com.humara.nagar.constants.Constants
 import java.time.LocalDate
 import java.time.Period
@@ -21,6 +22,11 @@ class UserDataValidator {
             val currentDate = LocalDate.now()
             val age = Period.between(dateOfBirth, currentDate).years
             return age >= Constants.MIN_AGE_REQUIREMENT
+        }
+
+        fun isValidEmail(email: String?): Boolean {
+            if (email.isNullOrEmpty()) return false
+            return Patterns.EMAIL_ADDRESS.matcher(email).matches()
         }
     }
 }

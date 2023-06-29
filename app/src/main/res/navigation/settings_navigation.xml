@@ -22,8 +22,15 @@
             android:id="@+id/action_settingsFragment_to_selectLanguageBottomSheet"
             app:destination="@id/selectLanguageBottomSheet" />
         <action
-            android:id="@+id/action_settingsFragment_to_updateProfileImageFragment"
-            app:destination="@id/updateProfileImageFragment" />
+            android:id="@+id/action_settingsFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_settingsFragment_to_fullImagePreviewFragment"
+            app:destination="@id/fullImagePreviewFragment" />
     </fragment>
     <fragment
         android:id="@+id/webViewFragment"
@@ -70,5 +77,29 @@
         <argument
             android:name="is_edit"
             app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.humara.nagar.ui.user_profile.UserProfileFragment"
+        android:label="UserProfileFragment">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_updateProfileImageFragment"
+            app:destination="@id/updateProfileImageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullImagePreviewFragment"
+        android:name="com.humara.nagar.ui.common.FullImagePreviewFragment"
+        android:label="FullImagePreviewFragment">
+        <argument
+            android:name="imagesList"
+            app:argType="string[]" />
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -88,7 +88,7 @@ class FormInputWithHeader @JvmOverloads constructor(
     fun switchToMultiLined(maxLine: Int) {
         binding.run {
             etInput.isSingleLine = false
-            etInput.inputType =  InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            etInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             etInput.maxLines = maxLine
             etInput.gravity = Gravity.START or Gravity.TOP
         }
@@ -174,10 +174,25 @@ class FormInputWithHeader @JvmOverloads constructor(
         binding.etInput.doAfterTextChanged {
             val input = it.toString().trim()
             listener.invoke(input)
+            clearError()
         }
     }
 
     fun isInputEmpty(): Boolean = binding.etInput.text?.isEmpty() == true
+
+    fun setError(error: String) {
+        binding.run {
+            tilInput.isErrorEnabled = true
+            tilInput.error = error
+        }
+    }
+
+    fun clearError() {
+        binding.run {
+            tilInput.isErrorEnabled = false
+            tilInput.error = null
+        }
+    }
 
     /**
      * In order to save the state of a custom view in case of configuration changes or process death below steps are needed.

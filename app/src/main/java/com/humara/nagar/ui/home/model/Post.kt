@@ -46,7 +46,7 @@ data class PostInfo(
 
 data class MediaDetail(
     @SerializedName("media") val media: String,
-    @SerializedName("thumbnail_path") val thumbnailUrl: String
+    @SerializedName("thumbnail_path") val thumbnailUrl: String?
 )
 
 data class PollOption(

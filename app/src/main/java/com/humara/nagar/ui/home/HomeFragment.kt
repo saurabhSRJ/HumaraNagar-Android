@@ -168,6 +168,10 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             getUserPreference().profileImage?.let { url ->
                 ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
+            ivProfilePhoto.setNonDuplicateClickListener {
+                val action = HomeFragmentDirections.actionHomeFragmentToUserProfileFragment2(getScreenName())
+                navController.navigate(action)
+            }
             rvPost.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = postAdapter

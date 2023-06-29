@@ -178,6 +178,17 @@
     <string name="exit">Exit</string>
     <string name="stay">Stay</string>
     <string name="user_successfully_added">User successfully added.</string>
+    <string name="change_image">Change Image</string>
+    <string name="tell_us_a_bit_about_yourself">Tell us a bit about yourself</string>
+    <string name="about_me">About Me</string>
+    <string name="view_profile">View Profile</string>
+    <string name="profile">Profile</string>
+    <string name="added_by_s">Added by: %s</string>
+    <string name="self">Self</string>
+    <string name="email">Email</string>
+    <string name="joined_in_s">Joined in: %s</string>
+    <string name="invalid_email_id">Invalid email id</string>
+    <string name="user_profile_updated">User Profile updated</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
