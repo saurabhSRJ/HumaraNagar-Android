@@ -12,12 +12,9 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.adapter.ComplaintStatusAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
@@ -57,7 +54,11 @@ class ComplaintStatusFragment : BaseFragment() {
         // result listener for getting the comment from dialog fragment
         setFragmentResultListener(COMMENT_RESULT_REQUEST) { _, bundle ->
             val comment = StringUtils.replaceWhitespaces(bundle.getString(COMMENT_KEY) ?: "")
-            complaintStatusViewModel.onUserCommentReceived(comment, getUserPreference().isAdminUser)
+            if (Role.isFromHumaraNagarTeam(getUserPreference().role?.id ?: 0)) {
+                context?.showToast("Action not allowed")
+                return@setFragmentResultListener
+            }
+            complaintStatusViewModel.onUserCommentReceived(comment, Role.isLocalAdmin(getUserPreference().role?.id ?: 0))
         }
     }
 
@@ -77,7 +78,7 @@ class ComplaintStatusFragment : BaseFragment() {
             acknowledgementSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_acknowledgment_sent))
                 setComplaintsListReload()
-                navController.navigateUp()
+                getComplaintStatus(args.complaintId)
             }
             acknowledgementErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(errorAction = {}, dismissAction = {})
@@ -85,7 +86,7 @@ class ComplaintStatusFragment : BaseFragment() {
             finishComplaintSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_resolved))
                 setComplaintsListReload()
-                navController.navigateUp()
+                getComplaintStatus(args.complaintId)
             }
             finishComplaintErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(errorAction = {}, dismissAction = {})
@@ -124,7 +125,7 @@ class ComplaintStatusFragment : BaseFragment() {
             categoryTV.setVisibilityAndText(response.category)
             localityTV.setVisibilityAndText(response.locality)
             locationTV.setVisibilityAndText(response.location)
-            if (getUserPreference().isAdminUser) {
+            if (Role.isAdmin(getUserPreference().role?.id ?: 0)) {
                 response.residentName?.let { name ->
                     complaintInitiatorDetailsLayout.visibility = View.VISIBLE
                     complaintInitiatorNameTV.text = name
@@ -135,13 +136,7 @@ class ComplaintStatusFragment : BaseFragment() {
             complaintStatusAdapter.setData(response.trackingInfo)
             val images = StringUtils.convertToList(response.images)
             if (images.isNotEmpty()) {
-                Glide.with(this@ComplaintStatusFragment)
-                    .load(GlideUtil.getUrlWithHeaders(images[0], root.context))
-                    .placeholder(R.drawable.ic_image_placeholder)
-                    .error(R.drawable.ic_image_placeholder)
-                    .transform(CenterCrop(), RoundedCorners(12))
-                    .transition(DrawableTransitionOptions.withCrossFade(1000))
-                    .into(imageView)
+                imageView.loadUrl(images[0], R.drawable.ic_image_placeholder)
                 val shakeAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.wobble)
                 imageContainer.startAnimation(shakeAnimation)
                 imageView.setNonDuplicateClickListener {
@@ -156,16 +151,18 @@ class ComplaintStatusFragment : BaseFragment() {
                 }
             }
             if (response.latitude != null && response.longitude != null) {
-                val mapIntent = IntentUtils.getGoogleMapIntent(response.latitude.toDouble(), response.longitude.toDouble())
-                if (IntentUtils.hasIntent(requireContext(), mapIntent)) {
-                    locationTV.setNonDuplicateClickListener {
+                locationTV.setNonDuplicateClickListener {
+                    val mapIntent = IntentUtils.getGoogleMapIntent(response.latitude.toDouble(), response.longitude.toDouble())
+                    if (IntentUtils.hasIntent(requireContext(), mapIntent)) {
                         context?.startActivity(mapIntent)
+                    } else {
+                        context?.showToast(getString(R.string.map_location_not_available_message))
                     }
                 }
             } else {
                 context?.showToast(getString(R.string.map_location_not_available_message))
             }
-            if (getUserPreference().isAdminUser) {
+            if (Role.isLocalAdmin(getUserPreference().role?.id ?: 0)) {
                 handleAdminResponse(response)
             } else {
                 handleUserResponse(response)

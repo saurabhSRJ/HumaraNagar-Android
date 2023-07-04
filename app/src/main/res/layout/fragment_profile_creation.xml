@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/light_blue_EEF4FF">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blue_4285F4"
+            android:background="@drawable/rect_primary_color_bottom_curved_bg"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="40dp"
+            android:paddingVertical="30dp"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:header="Father/Spouse’s Name"
+                    app:header="@string/father_or_spouse_name"
                     app:layout_constraintTop_toBottomOf="@id/input_name" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
@@ -101,40 +101,30 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/input_dob" />
 
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggle_gender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:checkedButton="@id/button_male"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_gender"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
-
-                    <Button
-                        android:id="@+id/button_male"
-                        style="@style/GenderSelectionToggleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/male" />
-
-                    <Button
-                        android:id="@+id/button_female"
-                        style="@style/GenderSelectionToggleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/female" />
-
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
-                    android:id="@+id/input_locality"
+                <HorizontalScrollView
+                    android:id="@+id/svGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:header="@string/locality"
-                    android:layout_marginTop="10dp"
-                    app:hint="@string/selectLocality"
-                    app:layout_constraintTop_toBottomOf="@id/toggle_gender"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_gender">
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggle_gender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:selectionRequired="true"
+                        app:singleSelection="true" />
+
+                </HorizontalScrollView>
+
+                <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
+                    android:id="@+id/input_ward"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:header="@string/ward_no"
+                    app:hint="@string/select_ward"
+                    app:layout_constraintTop_toBottomOf="@id/svGender" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

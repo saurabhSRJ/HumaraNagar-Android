@@ -21,6 +21,15 @@ interface AnalyticsData {
             const val IMAGE_PREVIEW_FRAGMENT = "IMAGE_PREVIEW_FRAGMENT"
             const val WEB_VIEW_ACTIVITY = "WEB_VIEW_ACTIVITY"
             const val LOGOUT_BOTTOM_SHEET = "LOGOUT_BOTTOM_SHEET"
+            const val POST_DETAILS_FRAGMENT = "POST_DETAILS_FRAGMENT"
+            const val CREATE_POST_FRAGMENT = "CREATE_POST_FRAGMENT"
+            const val CREATE_POLL_FRAGMENT = "CREATE_POLL_FRAGMENT"
+            const val ADD_PROFILE_PHOTO_FRAGMENT = "ADD_PROFILE_PHOTO_FRAGMENT"
+            const val MEDIA_SELECTION_BOTTOM_SHEET = "MEDIA_SELECTION_BOTTOM_SHEET"
+            const val VIDEO_PLAYER_FRAGMENT = "VIDEO_PLAYER_FRAGMENT"
+            const val ADD_USER_MOBILE_VERIFICATION_FRAGMENT = "ADD_USER_MOBILE_VERIFICATION_FRAGMENT"
+            const val ADD_USER_DETAILS_FRAGMENT = "ADD_USER_DETAILS_FRAGMENT"
+            const val USER_PROFILE_FRAGMENT = "USER_PROFILE_FRAGMENT"
         }
     }
 
@@ -42,7 +51,7 @@ interface AnalyticsData {
             const val USER_NAME = "USER_NAME"
             const val MOBILE_NUMBER = "MOBILE_NUMBER"
             const val NOTIFICATION_DATA = "NOTIFICATION_DATA"
-            const val IS_ADMIN = "IS_ADMIN"
+            const val ROLE = "ROLE"
         }
     }
 

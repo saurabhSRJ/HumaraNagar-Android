@@ -9,6 +9,7 @@ import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.report.model.PostComplaintRequest
+import com.humara.nagar.utils.ImageUtils
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
@@ -46,6 +47,9 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
         val complaintsRequest = getComplaintObjectWithCollectedData()
         val response = processCoroutine({ repository.postComplaint(complaintsRequest, imageUris) })
         response.onSuccess {
+            for (uri in imageUris) {
+                ImageUtils.deleteTempFile(uri)
+            }
             _postComplaintStatusLiveData.postValue(true)
         }.onError {
             _postComplaintStatusLiveData.postValue(false)
@@ -79,7 +83,7 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
 
     fun addImages(imageList: List<Uri>) {
         imageUris.addAll(imageList)
-        savedStateHandle[IMAGES_KEY] = imageUris
+        savedStateHandle[IMAGES_KEY] = imageList
         updateSubmitButtonState()
     }
 
@@ -102,7 +106,7 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
 
     private fun getComplaintObjectWithCollectedData(): PostComplaintRequest {
         return PostComplaintRequest(category = categoryData.value!!, locality = localityData.value!!, user_id = getUserPreference().userId,
-            location = StringUtils.replaceWhitespaces(locationData.value!!.trim()), comments = StringUtils.replaceWhitespaces(commentData.value!!.trim()),
+            location = StringUtils.replaceWhitespaces(locationData.value!!), comments = StringUtils.replaceWhitespaces(commentData.value!!),
             location_latitude = latitudeData.value, location_longitude = longitudeData.value)
     }
 }

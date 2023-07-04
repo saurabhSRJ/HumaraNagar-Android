@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="OpenSansRegular10sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/hindi_regular</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansRegular12sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/hindi_regular</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansRegular14sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/hindi_regular</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansRegular16sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/hindi_regular</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansRegular18sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/hindi_regular</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansSemiBold10sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/hindi_semi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansSemiBold12sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/hindi_semi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansSemiBold14sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/hindi_semi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansSemiBold16sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/hindi_semi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansSemiBold18sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/hindi_semi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansSemiBold20sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/hindi_semi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansBold10sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/hindi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansBold12sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/hindi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansBold14sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/hindi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansBold16sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/hindi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansBold18sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/hindi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="OpenSansBold20sp" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/hindi_bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+</resources>

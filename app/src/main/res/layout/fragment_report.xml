@@ -11,9 +11,9 @@
         <!--Toolbar-->
         <include
             android:id="@+id/includedToolbar"
+            layout="@layout/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/toolbar_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="12dp"
-                android:paddingTop="20dp"
                 android:paddingBottom="20dp">
 
                 <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
@@ -47,8 +46,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:header="@string/locality"
-                    app:hint="@string/selectLocality"
+                    app:header="@string/ward_no"
+                    app:hint="@string/select_ward"
                     app:layout_constraintTop_toBottomOf="@id/input_category" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
@@ -58,22 +57,26 @@
                     android:layout_marginTop="12dp"
                     app:endIcon="@drawable/ic_location"
                     app:header="@string/location"
-                    app:layout_constraintTop_toBottomOf="@id/input_locality" />
+                    app:hint="@string/auto_detect_my_location"
+                    app:layout_constraintTop_toBottomOf="@id/input_locality"
+                    app:maximumLength="70" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader
                     android:id="@+id/input_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     app:header="@string/comment"
+                    app:hint="@string/comments_short_hint"
                     app:layout_constraintTop_toBottomOf="@id/input_location"
-                    app:minimumHeight="300" />
+                    app:maximumLength="200"
+                    app:minimumHeight="200"
+                    tools:layout_editor_absoluteX="12dp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/addImageLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintStart_toStartOf="@+id/input_comment"
                     app:layout_constraintTop_toBottomOf="@+id/input_comment">
 
@@ -88,13 +91,12 @@
 
                     <TextView
                         android:id="@+id/textView"
+                        style="@style/OpenSansSemiBold16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:fontFamily="@font/open_sans_bold"
+                        android:layout_marginStart="12dp"
                         android:text="@string/addImage"
                         android:textColor="@color/grey_4F4F4F"
-                        android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/add_btn"
@@ -105,21 +107,20 @@
                         style="@style/OpenSansSemiBold16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
                         android:text="@string/asterisk"
-                        android:layout_marginStart="5dp"
                         android:textColor="@color/red_asterisk_D31717"
                         app:layout_constraintStart_toEndOf="@+id/textView"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/textView_subtitle"
+                        style="@style/OpenSansSemiBold12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/open_sans_semibold"
+                        android:layout_marginTop="2dp"
                         android:text="@string/uploadImageDescription"
                         android:textColor="@color/grey_828282"
-                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/textView"
                         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -130,11 +131,11 @@
                     android:id="@+id/imagePreviewItemRCV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="12dp"
                     android:nestedScrollingEnabled="false"
                     app:layout_constraintTop_toBottomOf="@+id/addImageLayout"
-                    tools:listitem="@layout/image_preview_recyclerview_item"
-                    tools:itemCount="2" />
+                    tools:itemCount="2"
+                    tools:listitem="@layout/image_preview_recyclerview_item" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

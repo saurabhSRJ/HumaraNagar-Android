@@ -2,13 +2,11 @@ package com.humara.nagar
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.bumptech.glide.Glide
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
@@ -16,6 +14,7 @@ import com.humara.nagar.databinding.ActivitySplashScreenBinding
 import com.humara.nagar.ui.AppConfigViewModel
 import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.OnBoardingActivity
+import com.humara.nagar.utils.DeviceHelper
 import com.humara.nagar.utils.NotificationUtils
 
 class SplashActivity : BaseActivity() {
@@ -39,8 +38,7 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Glide.with(this).asGif().load(R.drawable.splash_screen_gif).into(binding.animatedView)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (DeviceHelper.isMinSdk26) {
             NotificationUtils.setupDefaultNotificationChannel(this)
         }
         initViewModelObservers()
@@ -50,22 +48,38 @@ class SplashActivity : BaseActivity() {
     private fun initViewModelObservers() {
         appConfigViewModel.run {
             observeErrorAndException(this)
-            appConfigSuccessLiveData.observe(this@SplashActivity) {
-                MainActivity.startActivity(this@SplashActivity, getScreenName())
-                finish()
+            appConfigAndUserRefDataSuccessLiveData.observe(this@SplashActivity) {
+                launchNextScreen()
             }
         }
     }
 
+    /* Note: When implicit deeplink is clicked system back button exits the app and goes back to previous app. However navigation up button works as expected
+        https://stackoverflow.com/questions/69482684/navigation-component-implicit-deep-link-back-press-exits-the-app
+     */
+    private fun launchNextScreen() {
+        val launchIntent = Intent(this, MainActivity::class.java).apply {
+            data = intent.data
+            Logger.debugLog("intent data: $data")
+        }
+        startActivity(launchIntent)
+        finish()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Logger.debugLog("onNewIntent called")
+    }
+
     private fun initConfig() {
-        if (getUserPreference().isUserLoggedIn) {
-            appConfigViewModel.getAppConfigAndUserReferenceData()
-        } else {
-            Handler(Looper.getMainLooper()).postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (getUserPreference().isUserLoggedIn) {
+                appConfigViewModel.getAppConfigAndUserReferenceData()
+            } else {
                 OnBoardingActivity.startActivity(this, getScreenName())
                 finish()
-            }, 1000)
-        }
+            }
+        }, 1000)
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.SPLASH_ACTIVITY

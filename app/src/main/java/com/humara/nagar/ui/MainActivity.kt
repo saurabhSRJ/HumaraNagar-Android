@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseActivity
 import com.humara.nagar.base.ViewModelFactory
@@ -53,6 +54,10 @@ class MainActivity : BaseActivity() {
 
     private fun setUpBottomNavigation() {
         val navView: BottomNavigationView = binding.navView
+        navView.itemIconTintList = null
+        if (Role.isAdmin(getUserPreference().role?.id ?: 0).not()) {
+            navView.menu.removeItem(R.id.residents_navigation)
+        }
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
         //the state of each menu item (i.e. bottom nav destinations) is saved and restored when you use setupWithNavController
@@ -70,7 +75,7 @@ class MainActivity : BaseActivity() {
 
     private fun checkAndRequestNotificationPermission() {
         if (NotificationManagerCompat.from(this).areNotificationsEnabled().not()) {
-            PermissionUtils.askPermissions(supportFragmentManager, PermissionUtils.notificationPermissions, object : PermissionHandler {
+            requestPermissions(PermissionUtils.notificationPermissions, object : PermissionHandler {
                 override fun onPermissionGranted() {
                     setUpPushNotificationToken()
                 }

@@ -39,7 +39,8 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
      */
     suspend fun <T> processCoroutine(
         call: suspend () -> NetworkResponse<T>,
-        updateProgress: Boolean = true
+        updateProgress: Boolean = true,
+        progressLiveData: MutableLiveData<Boolean> = this.progressLiveData
     ): NetworkResponse<T> {
         if (updateProgress) progressLiveData.postValue(true)
         val response = call.invoke()

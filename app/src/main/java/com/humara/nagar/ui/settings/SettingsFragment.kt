@@ -12,6 +12,7 @@ import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.constants.NetworkConstants
 import com.humara.nagar.databinding.FragmentSettingsBinding
+import com.humara.nagar.utils.loadUrl
 import com.humara.nagar.utils.setNonDuplicateClickListener
 
 class SettingsFragment : BaseFragment() {
@@ -38,7 +39,17 @@ class SettingsFragment : BaseFragment() {
                 toolbarTitle.text = getString(R.string.settings)
                 leftIcon.setOnClickListener { navController.navigateUp() }
             }
-            tvName.text = getUserPreference().userProfile?.name
+            getUserPreference().profileImage?.let { url ->
+                ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
+                ivProfilePhoto.setNonDuplicateClickListener {
+                    val action = SettingsFragmentDirections.actionSettingsFragmentToFullImagePreviewFragment(arrayOf(url), getScreenName())
+                    navController.navigate(action)
+                }
+            }
+            tvName.text = getUserPreference().userName
+            btnViewProfile.setNonDuplicateClickListener {
+                navController.navigate(SettingsFragmentDirections.actionSettingsFragmentToUserProfileFragment(getScreenName()))
+            }
             languageItem.apply {
                 tvTitle.text = getString(R.string.language)
                 root.setNonDuplicateClickListener {

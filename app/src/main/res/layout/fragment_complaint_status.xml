@@ -29,6 +29,7 @@
             android:layout_height="0dp"
             android:fillViewport="true"
             android:visibility="gone"
+            android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@id/cl_bottom"
             app:layout_constraintTop_toBottomOf="@+id/divider1"
             tools:visibility="visible">
@@ -69,7 +70,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/categoryTV"
                         tools:text="@string/locality" />
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardTickedID"
                         android:layout_width="45dp"
                         android:layout_height="35dp"
@@ -87,7 +88,7 @@
                             android:textColor="@color/grey_4F4F4F"
                             tools:text="E12" />
 
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <RelativeLayout
                         android:id="@+id/imageContainer"
@@ -100,8 +101,8 @@
 
                         <ImageView
                             android:id="@+id/imageView"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:padding="4dp"
                             tools:src="@drawable/ic_image_placeholder" />
 
@@ -170,12 +171,11 @@
                         app:layout_constraintTop_toTopOf="@+id/complaintInitiatorIV"
                         tools:text="@string/name" />
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/callComplaintInitiatorCard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="12dp"
                         app:cardUseCompatPadding="true"
                         app:layout_constraintBottom_toBottomOf="@+id/complaintInitiatorNameTV"
@@ -193,8 +193,7 @@
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginVertical="10dp"
-                                app:srcCompat="@drawable/ic_call"
-                                app:tint="@color/blue_4285F4" />
+                                app:srcCompat="@drawable/ic_call" />
 
                             <TextView
                                 style="@style/OpenSansSemiBold14sp"
@@ -202,11 +201,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="4dp"
                                 android:text="@string/call"
-                                android:textColor="@color/blue_4285F4" />
+                                android:textColor="@color/primary_color" />
 
                         </LinearLayout>
 
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -235,7 +234,7 @@
             android:id="@+id/cl_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/primary_background"
             android:paddingHorizontal="16dp"
             android:paddingVertical="20dp"
             app:layout_constraintBottom_toBottomOf="parent">

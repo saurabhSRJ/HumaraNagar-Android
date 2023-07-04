@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_blue_EEF4FF"
+        android:background="@color/secondary_background"
         tools:context=".ui.report.complaints.ComplaintsFragment">
 
         <!--Toolbar-->
@@ -54,8 +54,8 @@
                 style="@style/OpenSansSemiBold16sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginTop="4dp"
+                android:gravity="center"
                 android:text="@string/no_complaints_message"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

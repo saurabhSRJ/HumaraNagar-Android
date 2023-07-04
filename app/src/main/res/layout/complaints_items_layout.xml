@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@color/white"
-        app:cardBackgroundColor="@color/white"
+        android:layout_marginBottom="16dp"
         app:cardCornerRadius="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,12 +41,12 @@
 
             <TextView
                 android:id="@+id/categoryTV"
-                style="@style/OpenSansBold16sp"
+                style="@style/OpenSansSemiBold16sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:textColor="@color/grey_4F4F4F"
                 android:includeFontPadding="false"
+                android:textColor="@color/grey_4F4F4F"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toTopOf="@+id/imageView"
@@ -59,24 +57,39 @@
                 style="@style/OpenSansSemiBold14sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/grey_828282"
                 android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="@+id/categoryTV"
-                app:layout_constraintStart_toStartOf="@+id/categoryTV"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/categoryTV"
                 tools:text="Deep Chand Mandi" />
+
+            <TextView
+                android:id="@+id/tvResidentName"
+                style="@style/OpenSansRegular12sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/grey_4F4F4F"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/localityTV"
+                tools:text="Resident Name" />
 
             <TextView
                 android:id="@+id/resolvedTV"
                 style="@style/OpenSansRegular12sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/grey_4F4F4F"
-                app:layout_constraintEnd_toEndOf="@+id/localityTV"
-                app:layout_constraintStart_toStartOf="@+id/localityTV"
-                app:layout_constraintTop_toBottomOf="@+id/localityTV"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@id/tvResidentName"
                 tools:text="Resolution expected by 24th june" />
 
             <Button
@@ -84,9 +97,9 @@
                 style="@style/primary_blue_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:enabled="true"
                 android:padding="10dp"
-                android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/state_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/resolvedTV"
@@ -95,6 +108,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </layout>
