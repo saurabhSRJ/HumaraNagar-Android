@@ -11,6 +11,7 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.report.model.ComplaintStatus
 import com.humara.nagar.ui.report.model.StatusResponse
+import com.humara.nagar.ui.report.model.UpdateComplaintRequest
 import com.humara.nagar.utils.ComplaintsUtils
 import com.humara.nagar.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -66,20 +67,20 @@ class ComplaintStatusViewModel(application: Application, private val savedStateH
         savedStateHandle[RATING_KEY] = rating
     }
 
-    fun onUserCommentReceived(comment: String, isUserAdmin: Boolean) {
+    fun onUserCommentReceived(updateRequest: UpdateComplaintRequest, isUserAdmin: Boolean) {
         if (isUserAdmin && state == ComplaintsUtils.ComplaintState.SENT.currentState) {
-            acknowledgeComplaint(comment)
+            acknowledgeComplaint(updateRequest)
         } else if (isUserAdmin && state == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState) {
-            finishComplaint(comment)
+            finishComplaint(updateRequest.comment)
         } else if (isUserAdmin.not() && (state == ComplaintsUtils.ComplaintState.SENT.currentState || state == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState)) {
-            withdrawComplaint(comment)
+            withdrawComplaint(updateRequest.comment)
         } else if (isUserAdmin.not() && rating > 0) {
-            rateComplaintService(comment)
+            rateComplaintService(updateRequest.comment)
         }
     }
 
-    private fun acknowledgeComplaint(comment: String) = viewModelScope.launch {
-        val response = processCoroutine({ repository.acknowledgeComplaint(complaintId, comment) })
+    private fun acknowledgeComplaint(updateRequest: UpdateComplaintRequest) = viewModelScope.launch {
+        val response = processCoroutine({ repository.acknowledgeComplaint(complaintId, updateRequest) })
         response.onSuccess {
             _acknowledgementSuccessLiveData.postValue(it)
         }.onError {

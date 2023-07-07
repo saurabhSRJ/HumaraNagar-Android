@@ -49,6 +49,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     private val _feedFiltersLiveData: MutableLiveData<List<FeedFilter>> by lazy { SingleLiveEvent() }
     val feedFiltersLiveData: LiveData<List<FeedFilter>> = _feedFiltersLiveData
     private val _selectedFilterLiveData: MutableLiveData<Int> = MutableLiveData(1)
+    val selectedFilterLiveData: LiveData<Int> = _selectedFilterLiveData
     private var currentPage: Int = 1
     private val limit = 10
     var canLoadMoreData = true

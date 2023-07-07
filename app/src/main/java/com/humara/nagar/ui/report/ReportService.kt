@@ -13,7 +13,12 @@ interface ReportService {
     suspend fun postComplaint(@PartMap partMap: MutableMap<String, RequestBody>, @Part image: ArrayList<MultipartBody.Part>): NetworkResponse<PostComplaintResponse>
 
     @GET(NetworkConstants.NetworkAPIConstants.COMPLAINT)
-    suspend fun getAllComplaints(): NetworkResponse<AllComplaintsResponse>
+    suspend fun getComplaints(
+        @Query(NetworkConstants.NetworkQueryConstants.PAGE) page: Int,
+        @Query(NetworkConstants.NetworkQueryConstants.LIMIT) limit: Int,
+        @Query(NetworkConstants.NetworkQueryConstants.WARD_ID) wardId: Int,
+        @Query(NetworkConstants.NetworkQueryConstants.FILTER_ID) filterId: Int
+    ): NetworkResponse<AllComplaintsResponse>
 
     @GET(NetworkConstants.NetworkAPIConstants.COMPLAINT_DETAILS)
     suspend fun getComplaintStatus(@Path(NetworkConstants.NetworkQueryConstants.ID) id: String): NetworkResponse<ComplaintStatus>

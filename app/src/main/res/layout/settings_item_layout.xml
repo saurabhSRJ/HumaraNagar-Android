@@ -32,7 +32,7 @@
             app:layout_constraintBottom_toBottomOf="@id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvTitle"
-            app:tint="@color/grey_4F4F4F" />
+            app:tint="@color/grey_828282" />
 
         <View
             android:layout_width="match_parent"

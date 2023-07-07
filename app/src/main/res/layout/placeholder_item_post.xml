@@ -4,9 +4,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:elevation="4dp"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/rect_white_fill_grey_outline_5dp"
+        android:padding="16dp">
 
         <View
             android:id="@+id/iv_selfie"

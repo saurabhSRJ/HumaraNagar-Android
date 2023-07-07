@@ -34,6 +34,8 @@ import com.humara.nagar.ui.common.MediaSelectionBottomSheet
 import com.humara.nagar.ui.common.MediaSelectionListener
 import com.humara.nagar.ui.common.StatusData
 import com.humara.nagar.ui.report.complaints.ComplaintsFragment
+import com.humara.nagar.ui.signup.model.CategoryDetails
+import com.humara.nagar.ui.signup.model.WardDetails
 import com.humara.nagar.utils.*
 import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.Balloon
@@ -94,13 +96,14 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
 
     private fun initViewModelObservers() {
         appConfigViewModel.run {
-//            wardDetailsLiveData.observe(viewLifecycleOwner) {
-//                binding.inputLocality.setOptions(it.toTypedArray())
-//            }
+            wardDetailsLiveData.observe(viewLifecycleOwner) {
+                binding.inputWard.setOptions(it.toTypedArray())
+            }
             complaintCategoriesLiveData.observe(viewLifecycleOwner) {
                 binding.inputCategory.setOptions(it.toTypedArray())
             }
             getComplaintCategories()
+            getWards()
         }
         reportViewModel.run {
             observeProgress(this, false)
@@ -146,7 +149,7 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
     private fun resetComplaintForm() {
         binding.run {
             inputCategory.clearInput()
-            inputLocality.clearInput()
+            inputWard.clearInput()
             inputComment.setInput("")
             inputLocation.setInput("")
             reportViewModel.deleteAllImages()
@@ -171,12 +174,16 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
                     openComplaintsScreen()
                 }
             }
-//            inputCategory.setUserInputListener {
-//                reportViewModel.setCategory(it)
-//            }
-//            inputLocality.setUserInputListener {
-//                reportViewModel.setLocality(it)
-//            }
+            inputCategory.setUserInputListener {
+                if (it is CategoryDetails) {
+                    reportViewModel.setCategory(it)
+                }
+            }
+            inputWard.setUserInputListener {
+                if (it is WardDetails) {
+                    reportViewModel.setWard(it)
+                }
+            }
             inputLocation.apply {
                 switchToMultiLined(2)
                 setLayoutListener(true) {

@@ -7,11 +7,11 @@ data class ComplaintDetails(
     @SerializedName("complaint_id") val complaintId: String,
     @SerializedName("state") val state: String,
     @SerializedName("category") val category: String? = null,
-    @SerializedName("locality") val locality: String? = null,
     @SerializedName("resolved_on") val resolvedOn: String? = null,
     @SerializedName("resolution_expected_on") val resolutionExpectedOn: String? = null,
     @SerializedName("rating") val rating: Int? = null,
     @SerializedName("image") val image: String? = null,
+    @SerializedName("ward") val ward: String?,
     @SerializedName("resident_name") val residentName: String? = null
 ) {
     fun isRatingPresent(): Boolean {

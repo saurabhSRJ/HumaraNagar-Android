@@ -11,16 +11,16 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.signup.model.*
 import com.humara.nagar.utils.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AppConfigViewModel(application: Application) : BaseViewModel(application) {
     private val repository = AppConfigRepository(application)
     private val fcmRepository = FcmTokenUploadRepository(application)
     private val _appConfigAndUserRefDataSuccessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val appConfigAndUserRefDataSuccessLiveData: LiveData<Boolean> = _appConfigAndUserRefDataSuccessLiveData
+    private val _userRoleChangedLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val userRoleChangedLiveData: LiveData<Boolean> = _userRoleChangedLiveData
     private val _appConfigSuccessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val appConfigSuccessLiveData: LiveData<Boolean> = _appConfigSuccessLiveData
     private val _userRefDataSuccessLiveData: MutableLiveData<Boolean> by lazy { (MutableLiveData()) }
@@ -31,8 +31,8 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     val wardDetailsLiveData: LiveData<List<WardDetails>> = _wardDetailsLiveData
     private val _genderDetailsLiveData: MutableLiveData<List<GenderDetails>> by lazy { SingleLiveEvent() }
     val genderDetailsLiveData: LiveData<List<GenderDetails>> = _genderDetailsLiveData
-    private val _complaintCategoriesLiveData: MutableLiveData<List<String>> by lazy { SingleLiveEvent() }
-    val complaintCategoriesLiveData: LiveData<List<String>> = _complaintCategoriesLiveData
+    private val _complaintCategoriesLiveData: MutableLiveData<List<CategoryDetails>> by lazy { SingleLiveEvent() }
+    val complaintCategoriesLiveData: LiveData<List<CategoryDetails>> = _complaintCategoriesLiveData
     private val _logoutLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val logoutLiveData: LiveData<Boolean> = _logoutLiveData
 
@@ -48,10 +48,14 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
             repository.insertGenders(refData.genders)
             repository.insertFeedFilters(refData.feedFilters)
             appConfigResult.onSuccess {
-                getUserPreference().role = RoleDetails(it.roleId, it.role)
-                getUserPreference().profileImage = it.image
-                getUserPreference().userName = it.name
-                _appConfigAndUserRefDataSuccessLiveData.postValue(true)
+                if (getUserPreference().role == null || getUserPreference().role?.id == it.roleId) {
+                    getUserPreference().role = RoleDetails(it.roleId, it.role)
+                    getUserPreference().profileImage = it.image
+                    getUserPreference().userName = it.name
+                    _appConfigAndUserRefDataSuccessLiveData.postValue(true)
+                } else {
+                    _userRoleChangedLiveData.postValue(true)
+                }
             }.onError {
                 errorLiveData.postValue(it)
             }
@@ -104,7 +108,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
 
     fun getComplaintCategories() = viewModelScope.launch {
         val categories = async { repository.getComplaintCategories() }
-        _complaintCategoriesLiveData.postValue(categories.await().map { it.name })
+        _complaintCategoriesLiveData.postValue(categories.await())
     }
 
     fun logout() = viewModelScope.launch {

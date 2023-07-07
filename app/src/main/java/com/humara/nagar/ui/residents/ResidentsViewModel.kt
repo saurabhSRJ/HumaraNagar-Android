@@ -47,20 +47,21 @@ class ResidentsViewModel(application: Application) : BaseViewModel(application) 
         initWardFilter()
     }
 
-    fun getAllResidents() = viewModelScope.launch {
+    fun getAllResidents(isLoadMoreCall: Boolean = false) = viewModelScope.launch {
+        if (isLoadMoreCall) currentPage++ else resetPaginationState()
         val request = GetResidentsRequest(wardFilter)
         val response = processCoroutine(
             { repository.getAllResidents(currentPage, limit, request) },
-            progressLiveData = if (currentPage == 1) _initialDataProgressLiveData else _loadMoreDataProgressLiveData
+            progressLiveData = if (isLoadMoreCall) _loadMoreDataProgressLiveData else _initialDataProgressLiveData
         )
         response.onSuccess {
-            if (currentPage == 1) processInitialResponse(it)
-            else processLoadMoreResponse(it)
+            if (isLoadMoreCall) processLoadMoreResponse(it)
+            else processInitialResponse(it)
         }.onError {
-            if (currentPage == 1) _initialDataErrorLiveData.postValue(it)
-            else _loadMoreDataErrorLiveData.postValue(true)
+            if (isLoadMoreCall) _loadMoreDataErrorLiveData.postValue(true)
+            else _initialDataErrorLiveData.postValue(it)
         }.onException {
-            if (currentPage > 1) _loadMoreDataErrorLiveData.postValue(true)
+            if (isLoadMoreCall) _loadMoreDataErrorLiveData.postValue(true)
         }
     }
 
@@ -96,11 +97,10 @@ class ResidentsViewModel(application: Application) : BaseViewModel(application) 
     }
 
     private fun setPaginationState(response: ResidentsResponse) {
-        currentPage = response.page + 1
         canLoadMoreData = response.page < response.totalPages
     }
 
-    fun resetPaginationState() {
+    private fun resetPaginationState() {
         currentPage = 1
         canLoadMoreData = true
     }

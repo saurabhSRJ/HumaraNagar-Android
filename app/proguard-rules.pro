@@ -20,6 +20,19 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# Optimization and obfuscation options
+# (Commented out by default)
+
+-optimizationpasses 0
+-allowaccessmodification
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
+
+
 -keep class com.shockwave.**
 
 -dontwarn com.squareup.picasso.**
+
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**

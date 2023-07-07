@@ -57,15 +57,15 @@ interface NetworkConstants {
             const val LIMIT = "limit"
             const val FILTER_ID = "filter"
             const val SEARCH = "search"
+            const val WARD_ID = "ward_id"
         }
     }
 
     interface NetworkFormDataConstants {
         companion object {
-            const val USER_ID = "user_id"
             const val LOCATION = "location"
-            const val LOCALITY = "locality"
-            const val CATEGORY = "category"
+            const val WARD_ID = "ward_id"
+            const val CATEGORY_ID = "category_id"
             const val COMMENTS = "comments"
             const val IMAGE = "image"
             const val VIDEO = "video"

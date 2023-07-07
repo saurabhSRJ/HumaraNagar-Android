@@ -42,7 +42,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.humara.nagar.ui.custom_views.FormSpinnerWithHeader
-                    android:id="@+id/input_locality"
+                    android:id="@+id/input_ward"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -58,7 +58,7 @@
                     app:endIcon="@drawable/ic_location"
                     app:header="@string/location"
                     app:hint="@string/auto_detect_my_location"
-                    app:layout_constraintTop_toBottomOf="@id/input_locality"
+                    app:layout_constraintTop_toBottomOf="@id/input_ward"
                     app:maximumLength="70" />
 
                 <com.humara.nagar.ui.custom_views.FormInputWithHeader

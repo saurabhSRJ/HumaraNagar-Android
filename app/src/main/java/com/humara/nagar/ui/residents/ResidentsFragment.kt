@@ -112,7 +112,7 @@ class ResidentsFragment : BaseFragment() {
                 endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager!!, 2) {
                     override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                         if (residentsViewModel.canLoadMoreData) {
-                            residentsViewModel.getAllResidents()
+                            residentsViewModel.getAllResidents(true)
                         }
                     }
                 }
@@ -176,14 +176,13 @@ class ResidentsFragment : BaseFragment() {
             }
             swipeRefresh.setColorSchemeResources(R.color.primary_color, R.color.stroke_green, R.color.stroke_yellow, R.color.stroke_red)
             paginationLoader.retry.setNonDuplicateClickListener {
-                residentsViewModel.getAllResidents()
+                residentsViewModel.getAllResidents(true)
             }
         }
     }
 
     private fun reloadList() {
         endlessRecyclerViewScrollListener.resetState()
-        residentsViewModel.resetPaginationState()
         residentsViewModel.getAllResidents()
         binding.paginationLoader.retry.visibility = View.GONE
     }

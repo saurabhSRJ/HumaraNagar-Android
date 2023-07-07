@@ -66,9 +66,13 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
     }
     private val filterAdapter: FeedFiltersAdapter by lazy {
         FeedFiltersAdapter { filter, position ->
-            homeViewModel.setFilterSelection(filter.id)
             binding.rvFilters.smoothScrollToPosition(position)
-            reloadFeed()
+            if (homeViewModel.selectedFilterLiveData.value == filter.id) {
+                binding.rvPost.smoothScrollToPosition(0)
+            } else {
+                homeViewModel.setFilterSelection(filter.id)
+                reloadFeed()
+            }
         }
     }
     private lateinit var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener

@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Humara Nagar</string>
+    <string name="app_name_release">Humara Nagar</string>
+    <string name="app_name_qa" translatable="false">Nagar QA</string>
     <string name="title_home">Home</string>
     <string name="report">Report</string>
     <string name="residents">Residents</string>
@@ -44,7 +45,6 @@
     <string name="reportIssueTitle">Report Issue</string>
     <string name="selectCategory">Select Category</string>
     <string name="category">Category</string>
-    <string name="locality">Locality</string>
     <string name="location">Location</string>
     <string name="comment">Comments</string>
     <string name="addImage">Add Image</string>
@@ -167,9 +167,9 @@
     <string name="n_years">%d years</string>
     <string name="no_results_found">No results found for \"%s\"</string>
     <string name="add_user">Add User</string>
-    <string name="add_user_message">To continue, please fill the mobile number of the User</string>
+    <string name="add_user_message">To continue, please fill in the mobile number of the User</string>
     <string name="by_sharing_otp_user_agrees_to_our">By sharing OTP user agrees to our</string>
-    <string name="mobile_number_already_belong_to_a_user">Mobile number already belong to a user.\nPlease try again with a different number</string>
+    <string name="mobile_number_already_belong_to_a_user">Mobile number already belong to a user. Please try again with a different number</string>
     <string name="otp_expired_message">OTP expired. Resend OTP</string>
     <string name="role">Role</string>
     <string name="please_provide_user_details_here">Please provide user details here</string>
@@ -177,7 +177,7 @@
     <string name="user_exit_confirmation_message">All your progress would be lost</string>
     <string name="exit">Exit</string>
     <string name="stay">Stay</string>
-    <string name="user_successfully_added">User successfully added.</string>
+    <string name="user_successfully_added">User successfully added</string>
     <string name="change_image">Change Image</string>
     <string name="tell_us_a_bit_about_yourself">Tell us a bit about yourself</string>
     <string name="about_me">About Me</string>
@@ -187,8 +187,12 @@
     <string name="self">Self</string>
     <string name="email">Email</string>
     <string name="joined_in_s">Joined in: %s</string>
-    <string name="invalid_email_id">Invalid email id</string>
+    <string name="invalid_email_id">Invalid Email id</string>
     <string name="user_profile_updated">User Profile updated</string>
+    <string name="finished">Finished</string>
+    <string name="pending">Pending</string>
+    <string name="count_with_bracket" translatable="false">(%d)</string>
+    <string name="expected_resolution_days">Expected resolution days</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.R
 import com.humara.nagar.databinding.StepperItemBinding
 import com.humara.nagar.ui.report.model.TrackingInfo
+import com.humara.nagar.utils.DateTimeUtils
 import com.humara.nagar.utils.StringUtils.setStringWithTypeface
 
 class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewHolder>() {
@@ -34,18 +35,25 @@ class ComplaintStatusAdapter : RecyclerView.Adapter<ComplaintStatusAdapter.ViewH
         fun bind(item: TrackingInfo) {
             binding.run {
                 textTV.text = item.stateText
-                subTextTV.text = item.initialDate
+                item.initialDate?.let {
+                    subTextTV.text = DateTimeUtils.convertIsoDateTimeFormat(it, "EEE, dd MMMM")
+                }
                 setUIBasedOnState(binding, item.isFinished)
                 item.stateComment?.let {
                     commentTv.setStringWithTypeface(0, it.indexOf(":"), it, ResourcesCompat.getFont(root.context, R.font.open_sans_semibold))
                 }
-                updateDateTv.text = item.updateDate
-                if (adapterPosition < stepperList.size - 1 && stepperList[adapterPosition + 1].isFinished)
+                if (item.updateDate.isNullOrEmpty()) {
+                    updateDateTv.visibility = View.GONE
+                } else {
+                    updateDateTv.visibility = View.VISIBLE
+                    updateDateTv.text = DateTimeUtils.convertIsoDateTimeFormat(item.updateDate, "EEE, dd MMMM")
+                }
+                if (bindingAdapterPosition < stepperList.size - 1 && stepperList[bindingAdapterPosition + 1].isFinished)
                     barView.setImageResource(R.drawable.solid_complete_bar)
                 else
                     barView.setImageResource(R.drawable.stepper_dotted_bar)
                 //handle ui  for last item
-                if (adapterPosition == stepperList.size - 1) {
+                if (bindingAdapterPosition == stepperList.size - 1) {
                     barView.visibility = View.GONE
                     updateDateTv.visibility = View.GONE
                 } else {

@@ -16,6 +16,7 @@ import com.humara.nagar.ui.MainActivity
 import com.humara.nagar.ui.signup.OnBoardingActivity
 import com.humara.nagar.utils.DeviceHelper
 import com.humara.nagar.utils.NotificationUtils
+import com.humara.nagar.utils.showToast
 
 class SplashActivity : BaseActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
@@ -50,6 +51,11 @@ class SplashActivity : BaseActivity() {
             observeErrorAndException(this)
             appConfigAndUserRefDataSuccessLiveData.observe(this@SplashActivity) {
                 launchNextScreen()
+            }
+            userRoleChangedLiveData.observe(this@SplashActivity) {
+                // User role is different from the locally saved role. Please login again
+                this@SplashActivity.showToast(getString(R.string.session_expired_message))
+                logout()
             }
         }
     }

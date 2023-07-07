@@ -41,11 +41,15 @@ class FeedFiltersAdapter(val onFilterSelection: (FeedFilter, Int) -> Unit) : Rec
                 }
                 tvTitle.text = filter.name
                 clContainer.setNonDuplicateClickListener {
-                    val previousFilterPosition = selectedFilterPosition
-                    selectedFilterPosition = bindingAdapterPosition
-                    notifyItemChanged(previousFilterPosition)
-                    notifyItemChanged(selectedFilterPosition)
-                    onFilterSelection(filter, bindingAdapterPosition)
+                    if (selectedFilterPosition == bindingAdapterPosition) {
+                        onFilterSelection(filter, bindingAdapterPosition)
+                    } else {
+                        val previousFilterPosition = selectedFilterPosition
+                        selectedFilterPosition = bindingAdapterPosition
+                        notifyItemChanged(previousFilterPosition)
+                        notifyItemChanged(selectedFilterPosition)
+                        onFilterSelection(filter, bindingAdapterPosition)
+                    }
                 }
             }
         }

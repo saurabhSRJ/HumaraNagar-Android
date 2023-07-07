@@ -6,6 +6,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="10dp">
 
@@ -13,14 +14,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
-            android:paddingBottom="16dp"
-            tools:ignore="RtlSymmetry">
+            android:paddingVertical="16dp">
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="16dp"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/ic_image_placeholder" />
@@ -45,7 +44,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:includeFontPadding="false"
                 android:textColor="@color/grey_4F4F4F"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -53,30 +51,31 @@
                 tools:text="Garbage Disposal" />
 
             <TextView
-                android:id="@+id/localityTV"
+                android:id="@+id/tvWard"
                 style="@style/OpenSansSemiBold14sp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/grey_828282"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/categoryTV"
-                tools:text="Deep Chand Mandi" />
+                app:layout_constraintTop_toBottomOf="@id/categoryTV"
+                tools:text="Ward #1" />
 
             <TextView
                 android:id="@+id/tvResidentName"
-                style="@style/OpenSansRegular12sp"
+                style="@style/OpenSansSemiBold14sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
-                android:textColor="@color/grey_4F4F4F"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/grey_828282"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/localityTV"
+                app:layout_constraintStart_toEndOf="@id/tvWard"
+                app:layout_constraintTop_toBottomOf="@+id/categoryTV"
                 tools:text="Resident Name" />
 
             <TextView
@@ -91,6 +90,23 @@
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@id/tvResidentName"
                 tools:text="Resolution expected by 24th june" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:progressTint="@color/stroke_green"
+                android:stepSize="1"
+                app:layout_constraintStart_toStartOf="@id/categoryTV"
+                app:layout_constraintTop_toBottomOf="@id/resolvedTV"
+                tools:rating="3" />
 
             <Button
                 android:id="@+id/cta_button"

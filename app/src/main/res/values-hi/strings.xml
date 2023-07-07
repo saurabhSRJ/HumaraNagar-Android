@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">हमारा नगर</string>
+    <string name="app_name_release">हमारा नगर</string>
     <string name="submit">सबमिट</string>
     <string name="camera_permission">कैमरा</string>
     <string name="storage_permission">मेमोरी</string>
@@ -182,4 +182,30 @@
     <string name="search_by_name">नाम से खोजें</string>
     <string name="n_years">%d साल</string>
     <string name="no_results_found">\"%s\" के लिए कोई रिजल्ट नहीं मिला</string>
+    <string name="add_user">यूजर जोड़ें</string>
+    <string name="add_user_message">जारी रखने के लिए, कृपया यूजर का मोबाइल नंबर भरें</string>
+    <string name="by_sharing_otp_user_agrees_to_our">ओटीपी साझा करके, यूजर हमारी नीतियों से सहमत है</string>
+    <string name="mobile_number_already_belong_to_a_user">यह मोबाइल नंबर पहले से ही उपयोग में है। कृपया किसी अलग नंबर के साथ पुन: प्रयास करें।</string>
+    <string name="otp_expired_message">ओटीपी की समय सीमा समाप्त हो गयी है|</string>
+    <string name="role">रोल</string>
+    <string name="please_provide_user_details_here">कृपया यहां यूजर की जानकारी प्रदान करें</string>
+    <string name="sure_you_want_to_exit">क्या आप वाकई बाहर निकलना चाहते हैं?</string>
+    <string name="user_exit_confirmation_message">आपकी सारी प्रगति नष्ट हो जाएगी</string>
+    <string name="exit">बाहर निकले</string>
+    <string name="stay">रहें</string>
+    <string name="user_successfully_added">यूजर सफलतापूर्वक जोड़ा गया</string>
+    <string name="change_image">फोटो बदलें</string>
+    <string name="tell_us_a_bit_about_yourself">हमें अपने बारे में कुछ बताएं</string>
+    <string name="about_me">मेरे बारे में</string>
+    <string name="view_profile">प्रोफ़ाइल देखें</string>
+    <string name="profile">प्रोफ़ाइल</string>
+    <string name="added_by_s">%s द्वारा जोड़ा गया</string>
+    <string name="self">खुदके</string>
+    <string name="email">ईमेल</string>
+    <string name="joined_in_s">शामिल हुए: %s</string>
+    <string name="invalid_email_id">अमान्य ईमेल आईडी</string>
+    <string name="user_profile_updated">यूजर प्रोफ़ाइल अपडेट कर दी गई है</string>
+    <string name="finished">समाप्त</string>
+    <string name="pending">रुका हुआ</string>
+    <string name="expected_resolution_days">अपेक्षित समाधान के दिन</string>
 </resources>

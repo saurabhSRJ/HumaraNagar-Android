@@ -14,6 +14,7 @@ import com.humara.nagar.ui.home.create_post.CreatePostViewModel
 import com.humara.nagar.ui.home.post_details.PostDetailsViewModel
 import com.humara.nagar.ui.report.ReportViewModel
 import com.humara.nagar.ui.report.complaint_status.ComplaintStatusViewModel
+import com.humara.nagar.ui.report.complaints.ComplaintManagementViewModel
 import com.humara.nagar.ui.report.complaints.ComplaintsViewModel
 import com.humara.nagar.ui.residents.ResidentsManagementViewModel
 import com.humara.nagar.ui.residents.ResidentsViewModel
@@ -45,6 +46,9 @@ class ViewModelFactory : ViewModelProvider.Factory {
                 }
                 isAssignableFrom(ComplaintsViewModel::class.java) -> {
                     ComplaintsViewModel(application)
+                }
+                isAssignableFrom(ComplaintManagementViewModel::class.java) -> {
+                    ComplaintManagementViewModel(application)
                 }
                 isAssignableFrom(ResidentsViewModel::class.java) -> {
                     ResidentsViewModel(application)
