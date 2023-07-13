@@ -42,14 +42,16 @@ android {
         vectorDrawables.useSupportLibrary = true
         resConfigs 'en', 'hi'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            crunchPngs true
+            debuggable false
+            minifyEnabled false
+            shrinkResources false
+            crunchPngs false
         }
         debug {
             minifyEnabled false
@@ -72,7 +74,7 @@ android {
         }
         prod {
             dimension "flavor"
-            resValue "string", "app_name", "@string/app_name"
+            resValue "string", "app_name", "@string/app_name_release"
             buildConfigField "String", "BASE_URL", "\"https://humara-nagar-391810.el.r.appspot.com\""
         }
     }

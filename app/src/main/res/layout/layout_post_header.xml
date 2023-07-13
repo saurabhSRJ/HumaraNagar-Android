@@ -29,14 +29,26 @@
         <TextView
             android:id="@+id/tvName"
             style="@style/OpenSansSemiBold14sp"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
+            android:maxLength="40"
             android:textColor="@color/grey_40404F"
-            app:layout_constraintEnd_toStartOf="@id/ivOptions"
             app:layout_constraintStart_toEndOf="@id/ivProfilePhoto"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="User Name" />
+
+        <ImageView
+            android:id="@+id/ivStar"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_privileged_star"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/tvName"
+            app:layout_constraintStart_toEndOf="@id/tvName"
+            app:layout_constraintTop_toTopOf="@id/tvName" />
 
         <TextView
             android:id="@+id/tvRoleAndWard"
@@ -46,7 +58,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/grey_696969"
-            app:layout_constraintEnd_toEndOf="@id/tvName"
+            app:layout_constraintEnd_toStartOf="@id/ivOptions"
             app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintTop_toBottomOf="@id/tvName"
             tools:text="Parshad Ward 11" />
@@ -57,7 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="9sp"
-            app:layout_constraintEnd_toEndOf="@id/tvName"
+            app:layout_constraintEnd_toStartOf="@id/ivOptions"
             app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintTop_toBottomOf="@id/tvRoleAndWard"
             tools:text="12 minutes ago" />

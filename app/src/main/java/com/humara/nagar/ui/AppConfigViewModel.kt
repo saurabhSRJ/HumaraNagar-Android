@@ -125,7 +125,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         val fetchTokenTask = async { fcmRepository.fetchFcmToken() }
         val storedToken = getUserPreference().fcmToken
         val isTokenUpdated = getUserPreference().fcmTokenUpdated
-        var newToken = ""
+        val newToken: String
         try {
             newToken = fetchTokenTask.await().result
         } catch (e: Exception) {

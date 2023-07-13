@@ -19,6 +19,7 @@ data class Post(
     @SerializedName("name") val name: String,
     @SerializedName("image") val profileImage: String? = null,
     @SerializedName("role") val role: String,
+    @SerializedName("role_id") val roleId: Int,
     @SerializedName("ward") val ward: String,
     @SerializedName("info") val info: PostInfo?
 ) {

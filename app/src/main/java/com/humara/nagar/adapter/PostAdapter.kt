@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import at.blogc.android.views.ExpandableTextView
 import com.google.android.exoplayer2.Player
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.databinding.*
 import com.humara.nagar.ui.home.HomeFragmentDirections
@@ -193,6 +194,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             tvName.text = post.name
             tvRoleAndWard.text = FeedUtils.getRoleAndWardText(context, post.role, post.ward)
             tvPostTime.text = DateTimeUtils.getRelativeDurationFromCurrentTime(context, post.createdAt)
+            ivStar.isVisible = Role.isAdmin(post.roleId)
             ivOptions.isVisible = post.isEditableByUser(context)
             ivOptions.setOnClickListener {
                 showPostOptionMenu(post, it)

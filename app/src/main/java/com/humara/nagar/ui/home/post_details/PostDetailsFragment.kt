@@ -29,6 +29,7 @@ import com.google.android.exoplayer2.Player
 import com.humara.nagar.KohiiProvider
 import com.humara.nagar.Logger
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.adapter.PollOptionsAdapter
 import com.humara.nagar.adapter.PollOptionsPreviewAdapter
 import com.humara.nagar.adapter.PostCommentsAdapter
@@ -345,6 +346,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             tvName.text = post.name
             tvRoleAndWard.text = FeedUtils.getRoleAndWardText(requireContext(), post.role, post.ward)
             tvPostTime.text = DateTimeUtils.getRelativeDurationFromCurrentTime(requireContext(), post.createdAt)
+            ivStar.isVisible = Role.isAdmin(post.roleId)
             ivOptions.isVisible = post.isEditableByUser(requireContext())
             ivOptions.setNonDuplicateClickListener {
                 showPostOptionMenu(post, it)
