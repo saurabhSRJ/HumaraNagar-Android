@@ -48,7 +48,7 @@ class SettingsFragment : BaseFragment() {
             }
             tvName.text = getUserPreference().userName
             btnViewProfile.setNonDuplicateClickListener {
-                navController.navigate(SettingsFragmentDirections.actionSettingsFragmentToUserProfileFragment(getScreenName()))
+                navController.navigate(SettingsFragmentDirections.actionSettingsFragmentToUserProfileNavigation(getScreenName()))
             }
             languageItem.apply {
                 tvTitle.text = getString(R.string.language)

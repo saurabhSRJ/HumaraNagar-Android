@@ -6,7 +6,7 @@
     <string name="storage_permission">मेमोरी</string>
     <string name="location_permission">जगह</string>
     <string name="title_home">होम</string>
-    <string name="report">रिपोर्ट</string>
+    <string name="grievances">शिकायतें</string>
     <string name="residents">निवासी</string>
     <string name="settings">सेटिंग्स</string>
     <string name="privacy_policy"><u>गोपनीयता नीति</u></string>
@@ -171,7 +171,7 @@
     <string name="n_days_left">%d दिन शेष</string>
     <string name="n_hours_left">%d घंटे शेष</string>
     <string name="completed">पूरा हुआ</string>
-    <string name="share_post_caption">हुमारा नगर पर %1$s द्वारा इस पोस्ट को देखें। %2$s</string>
+    <string name="share_post_caption">हमारा नगर पर %1$s द्वारा इस पोस्ट को देखें। %2$s</string>
     <string name="no_document_selected">कोई डॉक्यूमेंट नहीं चुना गया</string>
     <string name="document_file_size_error_message">अधिकतम %dMB की फ़ाइल होनी चाहिए</string>
     <string name="video_file_size_error_message">अधिकतम %dMB की वीडियो होनी चाहिए</string>
@@ -208,4 +208,10 @@
     <string name="finished">समाप्त</string>
     <string name="pending">रुका हुआ</string>
     <string name="expected_resolution_days">अपेक्षित समाधान के दिन</string>
+    <string name="app_update_downloading">अपडेट डाउनलोड हो रहा है…</string>
+    <string name="update_app">कृपया ऐप अपडेट करें</string>
+    <string name="skip">छोड़ें</string>
+    <string name="app_update_downloaded">अपडेट डाउनलोड हो गया है</string>
+    <string name="app_update_failed">ऐप अपडेट फेल हुआ</string>
+    <string name="install">इंस्टाल करें</string>
 </resources>

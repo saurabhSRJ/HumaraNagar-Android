@@ -8,7 +8,10 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.text.style.ImageSpan
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +22,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import com.bumptech.glide.Glide
@@ -27,6 +32,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.humara.nagar.NagarApp
 import com.humara.nagar.R
 import com.humara.nagar.constants.Constants
@@ -38,6 +45,21 @@ import java.util.*
 
 fun Context.showToast(message: String, shortToast: Boolean = true) {
     Toast.makeText(this, message, if (shortToast) Toast.LENGTH_SHORT else Toast.LENGTH_LONG).show()
+}
+
+fun View.showSnackBar(string: String, icon: Int? = null, iconColor: Int? = null, textColor: Int? = null, anchorView: View? = null) {
+    val sb = Snackbar.make(this, string, Snackbar.LENGTH_LONG).apply {
+            animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
+        }
+    val tv = sb.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+    textColor?.let {
+        tv.setTextColor(it)
+    }
+    icon?.let {
+        tv.setStartDrawable(icon, tintColor = iconColor)
+    }
+    anchorView?.let { sb.setAnchorView(it) }
+    sb.show()
 }
 
 fun View.setNonDuplicateClickListener(listener: View.OnClickListener?) {
@@ -184,4 +206,32 @@ fun Context.getStringByLocale(@StringRes stringRes: Int, locale: Locale = Locale
     val configuration = Configuration(resources.configuration)
     configuration.setLocale(locale)
     return createConfigurationContext(configuration).resources.getString(stringRes)
+}
+
+fun TextView.setStartDrawable(@DrawableRes drawableRes: Int, string: String? = null, tintColor: Int? = null) {
+    val lineHeight = lineHeight
+    val drawable = ContextCompat.getDrawable(context, drawableRes)
+    if (tintColor != null && drawable != null) {
+        DrawableCompat.setTint(drawable, tintColor)
+        drawable.mutate()
+    }
+    drawable?.setBounds(0, 0, lineHeight, lineHeight)
+    val builder = SpannableStringBuilder()
+    builder.append(" ", ImageSpan(drawable!!), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    builder.append("  ").append(string ?: text)
+    text = builder
+}
+
+fun TextView.setEndDrawable(@DrawableRes drawableRes: Int, string: String? = null, tintColor: Int? = null) {
+    val lineHeight = lineHeight
+    val drawable = ContextCompat.getDrawable(context, drawableRes)
+    if (tintColor != null && drawable != null) {
+        DrawableCompat.setTint(drawable, tintColor)
+        drawable.mutate()
+    }
+    drawable?.setBounds(0, 0, lineHeight, lineHeight)
+    val builder = SpannableStringBuilder()
+    builder.append(string ?: text).append("  ")
+    builder.append(" ", ImageSpan(drawable!!), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    text = builder
 }

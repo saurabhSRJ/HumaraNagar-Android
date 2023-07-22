@@ -35,6 +35,10 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     val complaintCategoriesLiveData: LiveData<List<CategoryDetails>> = _complaintCategoriesLiveData
     private val _logoutLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
     val logoutLiveData: LiveData<Boolean> = _logoutLiveData
+    private val _appForceUpdateLiveData: MutableLiveData<AppUpdateConfig> by lazy { MutableLiveData() }
+    val appForceUpdateLiveData: LiveData<AppUpdateConfig> = _appForceUpdateLiveData
+    private val _appOptionalUpdateLiveData: MutableLiveData<AppUpdateConfig> by lazy { MutableLiveData() }
+    val appOptionalUpdateLiveData: LiveData<AppUpdateConfig> = _appOptionalUpdateLiveData
 
     fun getAppConfigAndUserReferenceData() = viewModelScope.launch {
         val appConfigDeferred = async { processCoroutine({ repository.getAppConfig() }) }
@@ -42,17 +46,15 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
         val appConfigResult = appConfigDeferred.await()
         val userRefDataResult = userRefDataDeferred.await()
         userRefDataResult.onSuccess { refData ->
-            repository.insertCategories(refData.categories)
-            repository.insertRoles(refData.roles)
-            repository.insertWards(refData.wards)
-            repository.insertGenders(refData.genders)
-            repository.insertFeedFilters(refData.feedFilters)
+            saveUserReferenceData(refData)
             appConfigResult.onSuccess {
                 if (getUserPreference().role == null || getUserPreference().role?.id == it.roleId) {
-                    getUserPreference().role = RoleDetails(it.roleId, it.role)
-                    getUserPreference().profileImage = it.image
-                    getUserPreference().userName = it.name
-                    _appConfigAndUserRefDataSuccessLiveData.postValue(true)
+                    saveAppConfigResponse(it)
+                    when (it.appUpdateConfig?.updateType) {
+                        AppUpdateType.OPTIONAL_UPDATE.name -> _appOptionalUpdateLiveData.postValue(it.appUpdateConfig)
+                        AppUpdateType.FORCE_UPDATE.name -> _appForceUpdateLiveData.postValue(it.appUpdateConfig)
+                        else -> _appConfigAndUserRefDataSuccessLiveData.postValue(true)
+                    }
                 } else {
                     _userRoleChangedLiveData.postValue(true)
                 }
@@ -68,27 +70,35 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     fun getAppConfig() = viewModelScope.launch {
         val response = processCoroutine({ repository.getAppConfig() })
         response.onSuccess {
-            getUserPreference().role = RoleDetails(it.roleId, it.role)
-            getUserPreference().userName = it.name
-            getUserPreference().profileImage = it.image
+            saveAppConfigResponse(it)
             _appConfigSuccessLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)
         }
     }
 
+    private fun saveAppConfigResponse(config: AppConfigResponse) {
+        getUserPreference().role = RoleDetails(config.roleId, config.role)
+        getUserPreference().userName = config.name
+        getUserPreference().profileImage = config.image
+    }
+
     fun getUserReferenceData() = viewModelScope.launch {
         val response = processCoroutine({ repository.getUserReferenceDetails(UserReferenceDataRequest(getUserPreference().userId)) })
-        response.onSuccess { refData ->
-            repository.insertCategories(refData.categories)
-            repository.insertRoles(refData.roles)
-            repository.insertWards(refData.wards)
-            repository.insertGenders(refData.genders)
-            repository.insertFeedFilters(refData.feedFilters)
+        response.onSuccess {
+            saveUserReferenceData(it)
             _userRefDataSuccessLiveData.postValue(true)
         }.onError {
             errorLiveData.postValue(it)
         }
+    }
+
+    private suspend fun saveUserReferenceData(refData: UserReferenceDataResponse) {
+        repository.insertCategories(refData.categories)
+        repository.insertRoles(refData.roles)
+        repository.insertWards(refData.wards)
+        repository.insertGenders(refData.genders)
+        repository.insertFeedFilters(refData.feedFilters)
     }
 
     fun getRoles() = viewModelScope.launch {
@@ -112,6 +122,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
     }
 
     fun logout() = viewModelScope.launch {
+        repository.clearDatabase()
         val response = processCoroutine({ repository.logout(LogoutRequest(getUserPreference().userId, getUserPreference().refreshToken)) })
         //Logging out user in any case for now.
         response.onSuccess {

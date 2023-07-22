@@ -2,7 +2,7 @@
     <string name="app_name_release">Humara Nagar</string>
     <string name="app_name_qa" translatable="false">Nagar QA</string>
     <string name="title_home">Home</string>
-    <string name="report">Report</string>
+    <string name="grievances">Grievances</string>
     <string name="residents">Residents</string>
     <string name="settings">Settings</string>
     <string name="privacy_policy"><u>Privacy Policy</u></string>
@@ -193,6 +193,12 @@
     <string name="pending">Pending</string>
     <string name="count_with_bracket" translatable="false">(%d)</string>
     <string name="expected_resolution_days">Expected resolution days</string>
+    <string name="app_update_downloading">Downloading update…</string>
+    <string name="update_app">Please update app</string>
+    <string name="skip">Skip</string>
+    <string name="app_update_downloaded">Update downloaded</string>
+    <string name="app_update_failed">Update failed</string>
+    <string name="install">Install</string>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

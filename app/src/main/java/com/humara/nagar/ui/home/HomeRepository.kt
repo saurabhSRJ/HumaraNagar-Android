@@ -3,6 +3,7 @@ package com.humara.nagar.ui.home
 import android.app.Application
 import com.humara.nagar.database.AppDatabase
 import com.humara.nagar.network.BaseRepository
+import com.humara.nagar.ui.home.model.DeleteCommentRequest
 import com.humara.nagar.ui.home.model.EditPostRequest
 import com.humara.nagar.ui.home.model.PollVoteRequest
 import com.humara.nagar.ui.home.model.PostCommentRequest
@@ -47,6 +48,10 @@ class HomeRepository(application: Application) : BaseRepository(application) {
 
     suspend fun addComment(postId: Long, request: PostCommentRequest) = withContext(Dispatchers.IO) {
         apiService.addComment(postId, request)
+    }
+
+    suspend fun deleteComment(postId: Long, request: DeleteCommentRequest) = withContext(Dispatchers.IO) {
+        apiService.deleteComment(postId, request)
     }
 
     suspend fun getFeedFilters() = withContext(Dispatchers.IO) {

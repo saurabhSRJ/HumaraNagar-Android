@@ -19,12 +19,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humara.nagar.KohiiProvider
 import com.humara.nagar.Logger
 import com.humara.nagar.R
+import com.humara.nagar.Role
 import com.humara.nagar.adapter.FeedFiltersAdapter
 import com.humara.nagar.adapter.FeedItemClickListener
 import com.humara.nagar.adapter.PollOptionsPreviewAdapter
@@ -173,7 +176,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 ivProfilePhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
             }
             ivProfilePhoto.setNonDuplicateClickListener {
-                val action = HomeFragmentDirections.actionHomeFragmentToUserProfileFragment2(getScreenName())
+                val action = HomeFragmentDirections.actionHomeFragmentToUserProfileNavigation(getScreenName())
                 navController.navigate(action)
             }
             rvPost.apply {
@@ -203,6 +206,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             binding.paginationLoader.retry.setNonDuplicateClickListener {
                 homeViewModel.getPosts()
             }
+            fabCreatePost.isVisible = Role.isAdmin(getUserPreference().role?.id ?: 0)
             fabCreatePost.setNonDuplicateClickListener {
                 navController.navigate(HomeFragmentDirections.actionHomeFragmentToCreatePostFragment())
             }
@@ -305,6 +309,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 Glide.with(requireContext())
                     .load(GlideUtil.getUrlWithHeaders(post.profileImage, requireContext()))
                     .placeholder(R.drawable.ic_image_placeholder)
+                    .transform(CenterCrop(), RoundedCorners(12))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             addPostTypeDataBeforeSharing(post, postShareBinding)
@@ -328,7 +333,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             PostType.IMAGE.type -> addImagePostShareData(post, binding)
             PostType.POLL.type -> addPollPostShareData(post, binding)
             PostType.VIDEO.type -> addVideoPostShareData(post, binding)
-            PostType.DOCUMENT.type, PostType.TEXT.type -> sharePostOnWhatsapp(binding.root, post.name, post.postId)
+            PostType.DOCUMENT.type, PostType.TEXT.type -> sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
             else -> {}
         }
     }
@@ -340,20 +345,21 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
             Glide.with(requireContext())
                 .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
                 .placeholder(R.drawable.ic_image_placeholder)
+                .transform(CenterCrop(), RoundedCorners(12))
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                        sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                        sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
                         return false
                     }
                 })
                 .into(binding.ivPostImage)
         } ?: {
-            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+            sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
         }
     }
 
@@ -375,7 +381,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                     tvExpiryTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_585C60))
                 }
             }
-            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+            sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
         }
     }
 
@@ -387,25 +393,26 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 Glide.with(requireContext())
                     .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
                     .placeholder(R.drawable.ic_image_placeholder)
+                    .transform(CenterCrop(), RoundedCorners(12))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                            sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
                             return false
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                            sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
                             return false
                         }
                     })
                     .into(ivThumbnail)
             } ?: run {
-                sharePostOnWhatsapp(binding.root, post.name, post.postId)
+                sharePostOnWhatsapp(binding.root, post.name, post.postId, post.userId)
             }
         }
     }
 
-    private fun sharePostOnWhatsapp(postShareView: View, name: String, postId: Long) {
+    private fun sharePostOnWhatsapp(postShareView: View, name: String, postId: Long, authorId: Long) {
         postShareView.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -420,7 +427,7 @@ class HomeFragment : BaseFragment(), FeedItemClickListener {
                 IntentUtils.shareViaIntent(
                     requireActivity(),
                     shareProfileViaWhatsAppBitmap,
-                    getString(R.string.share_post_caption, name, "https://humara.nagar/post/${postId}/send")
+                    getString(R.string.share_post_caption, name, "https://humara.nagar/post/${postId}/${authorId}/send")
                 )
                 (binding.root as ViewGroup).removeView(postShareView)
                 hideProgress()

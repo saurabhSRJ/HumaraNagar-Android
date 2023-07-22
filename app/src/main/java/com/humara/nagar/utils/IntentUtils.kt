@@ -125,6 +125,15 @@ object IntentUtils {
         return mapIntent
     }
 
+    fun redirectToPlayStoreAppIntent(context: Context, appPackageName: String): Intent {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName"))
+        return if (hasIntent(context, intent)) {
+            intent
+        } else {
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName"))
+        }
+    }
+
     private fun grantWritePermission(context: Context, intent: Intent, uri: Uri) {
         val resInfoList = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         for (resolveInfo in resInfoList) {

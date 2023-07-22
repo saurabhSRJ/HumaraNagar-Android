@@ -46,9 +46,12 @@ class GenericAlertDialog : DialogFragment() {
             } ?: kotlin.run {
                 negativeButton.visibility = View.GONE
             }
-            negativeButton.setOnClickListener { dismiss() }
+            negativeButton.setOnClickListener {
+                dismiss()
+                negativeClickListener()
+            }
             positiveButton.setOnClickListener {
-                clickListener.invoke()
+                positiveClickListener()
                 dismiss()
             }
         }
@@ -61,11 +64,13 @@ class GenericAlertDialog : DialogFragment() {
         private const val IS_CANCELABLE = "IS_CANCELABLE"
         private const val POSITIVE_CTA_TEXT = "POSITIVE_CTA_TEXT"
         private const val NEGATIVE_CTA_TEXT = "NEGATIVE_CTA_TEXT"
-        private var clickListener: () -> Unit = {}
+        private var positiveClickListener: () -> Unit = {}
+        private var negativeClickListener: () -> Unit = {}
 
         fun show(fragmentManager: FragmentManager, title: String, message: String, isCancelable: Boolean, positiveButtonText: String, negativeButtonText: String? = null,
-            positiveButtonListener: () -> Unit = {}) {
-            this.clickListener = positiveButtonListener
+            positiveButtonListener: () -> Unit = {}, negativeButtonClickListener: () -> Unit= {}) {
+            this.positiveClickListener = positiveButtonListener
+            this.negativeClickListener = negativeButtonClickListener
             GenericAlertDialog().apply {
                 arguments = Bundle().apply {
                     putString(TITLE, title)

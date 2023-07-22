@@ -23,6 +23,8 @@ import at.blogc.android.views.ExpandableTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.exoplayer2.Player
@@ -64,10 +66,12 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             postDetailsViewModel.submitVote(it)
         }
     }
-    private val postCommentsAdapter: PostCommentsAdapter by lazy {
-        PostCommentsAdapter()
-    }
     private val args: PostDetailsFragmentArgs by navArgs()
+    private val postCommentsAdapter: PostCommentsAdapter by lazy {
+        PostCommentsAdapter(args.authorId) {
+            postDetailsViewModel.deleteComment(it)
+        }
+    }
     private lateinit var kohii: Kohii
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -131,6 +135,12 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
                 updatePostOnHomeScreen()
             }
             addCommentErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
+            }
+            deleteCommentSuccessLiveData.observe(viewLifecycleOwner) {
+                updatePostOnHomeScreen()
+            }
+            deleteCommentErrorLiveData.observe(viewLifecycleOwner) {
                 showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
             voteSuccessLiveData.observe(viewLifecycleOwner) { post ->
@@ -238,6 +248,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             if (response.comments.isEmpty()) {
                 tvNoComments.visibility = View.VISIBLE
                 tvNoComments.text = getString(R.string.no_comments_yet)
+                rvComments.visibility = View.GONE
             } else {
                 postLayout.postFooter.tvCommentCount.text = response.totalCount.toString()
                 tvNoComments.visibility = View.GONE
@@ -460,6 +471,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
                     Glide.with(requireContext())
                         .load(GlideUtil.getUrlWithHeaders(post.profileImage, requireContext()))
                         .placeholder(R.drawable.ic_image_placeholder)
+                        .transform(CenterCrop(), RoundedCorners(12))
                         .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                                 addPostTypeDataBeforeSharing(post, postShareBinding)
@@ -496,6 +508,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
             Glide.with(requireContext())
                 .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
                 .placeholder(R.drawable.ic_image_placeholder)
+                .transform(CenterCrop(), RoundedCorners(12))
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         sharePostOnWhatsapp(binding.root, post.name)
@@ -544,6 +557,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
                 Glide.with(requireContext())
                     .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
                     .placeholder(R.drawable.ic_image_placeholder)
+                    .transform(CenterCrop(), RoundedCorners(12))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             sharePostOnWhatsapp(binding.root, post.name)
@@ -577,7 +591,7 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
                 IntentUtils.shareViaIntent(
                     requireActivity(),
                     shareProfileViaWhatsAppBitmap,
-                    getString(R.string.share_post_caption, name, "https://humara.nagar/post/${args.postId}/send")
+                    getString(R.string.share_post_caption, name, "https://humara.nagar/post/${args.postId}/${args.authorId}/send")
                 )
                 (binding.root as ViewGroup).removeView(postShareView)
                 hideProgress()

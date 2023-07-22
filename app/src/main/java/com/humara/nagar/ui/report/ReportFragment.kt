@@ -115,12 +115,11 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
                 imagePreviewAdapter.setData(it)
                 binding.uploadImageRequired.isVisible = it.isEmpty()
             }
-            postComplaintStatusLiveData.observe(viewLifecycleOwner) { success ->
-                if (success) {
-                    showComplaintSuccessDialog()
-                } else {
-                    showErrorDialog(errorAction = {}, dismissAction = {})
-                }
+            postComplaintSuccessLiveData.observe(viewLifecycleOwner) {
+                showComplaintSuccessDialog()
+            }
+            postComplaintErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
         }
     }

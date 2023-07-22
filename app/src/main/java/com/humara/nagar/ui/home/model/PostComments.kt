@@ -14,5 +14,6 @@ data class CommentDetails(
     @SerializedName("image") val image: String?,
     @SerializedName("comment_id") val commentId: Long,
     @SerializedName("comment") val comment: String,
-    @SerializedName("created_at") val createdAt: String
+    @SerializedName("created_at") val createdAt: String,
+    @SerializedName("user_id") val userId: Long
 )

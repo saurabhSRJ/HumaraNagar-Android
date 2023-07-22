@@ -38,6 +38,10 @@ interface AnalyticsData {
             const val LOGOUT = "LOGOUT"
             const val NOTIFICATION_RECEIVED = "NOTIFICATION_RECEIVED"
             const val NOTIFICATION_DISMISSED = "NOTIFICATION_DISMISSED"
+            const val IN_APP_UPDATE_RESULT = "IN_APP_UPDATE_RESULT"
+            const val IN_APP_UPDATE_ACCEPTED = "IN_APP_UPDATE_ACCEPTED"
+            const val IN_APP_UPDATE_FAILED = "IN_APP_UPDATE_FAILED"
+            const val APP_UPDATE_NOT_AVAILABLE = "APP_UPDATE_NOT_AVAILABLE"
         }
     }
 
@@ -52,6 +56,7 @@ interface AnalyticsData {
             const val MOBILE_NUMBER = "MOBILE_NUMBER"
             const val NOTIFICATION_DATA = "NOTIFICATION_DATA"
             const val ROLE = "ROLE"
+            const val IN_APP_UPDATE_RESULT_CODE = "IN_APP_UPDATE_RESULT_CODE"
         }
     }
 

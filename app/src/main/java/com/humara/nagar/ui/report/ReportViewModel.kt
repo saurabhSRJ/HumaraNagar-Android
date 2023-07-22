@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.humara.nagar.base.BaseViewModel
+import com.humara.nagar.network.ApiError
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.report.model.PostComplaintRequest
@@ -38,8 +39,10 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
     private val commentData: LiveData<String> = savedStateHandle.getLiveData(COMMENT_KEY)
     val imagesData: LiveData<List<Uri>> = savedStateHandle.getLiveData(IMAGES_KEY, mutableListOf())
     val submitButtonStateData: LiveData<Boolean> = savedStateHandle.getLiveData(SUBMIT_BUTTON_KEY, false)
-    private val _postComplaintStatusLiveData: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val postComplaintStatusLiveData: SingleLiveEvent<Boolean> = _postComplaintStatusLiveData
+    private val _postComplaintSuccessLiveData: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val postComplaintSuccessLiveData: SingleLiveEvent<Boolean> = _postComplaintSuccessLiveData
+    private val _postComplaintErrorLiveData: SingleLiveEvent<ApiError> = SingleLiveEvent()
+    val postComplaintErrorLiveData: LiveData<ApiError> =_postComplaintErrorLiveData
 
     init {
         imagesData.value?.let { imageUris.addAll(it) }
@@ -52,9 +55,9 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
             ImageUtils.deleteTempFile(uri)
         }
         response.onSuccess {
-            _postComplaintStatusLiveData.postValue(true)
+            _postComplaintSuccessLiveData.postValue(true)
         }.onError {
-            _postComplaintStatusLiveData.postValue(false)
+            _postComplaintErrorLiveData.postValue(it)
         }
     }
 

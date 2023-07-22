@@ -31,12 +31,17 @@
             android:id="@+id/action_homeFragment_to_videoPlayerFragment"
             app:destination="@id/videoPlayerFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_userProfileFragment2"
-            app:destination="@id/userProfileFragment"
+            android:id="@+id/action_homeFragment_to_user_profile_navigation"
+            app:destination="@id/user_profile_navigation"
             app:enterAnim="@anim/slide_in_from_right"
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_left"
-            app:popExitAnim="@anim/slide_out_to_right"/>
+            app:popExitAnim="@anim/slide_out_to_right">
+            <argument
+                android:name="source"
+                android:defaultValue=""
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/fullImagePreviewFragment"
@@ -65,6 +70,9 @@
             android:name="post_id"
             app:argType="long" />
         <argument
+            android:name="author_id"
+            app:argType="long" />
+        <argument
             android:name="source"
             android:defaultValue=""
             app:argType="string" />
@@ -78,7 +86,7 @@
         <deepLink
             android:autoVerify="true"
             app:action="android.intent.action.MY_ACTION"
-            app:uri="https://humara.nagar/post/{post_id}/{source}" />
+            app:uri="https://humara.nagar/post/{post_id}/{author_id}/{source}" />
         <action
             android:id="@+id/action_postDetailsFragment_to_videoPlayerFragment"
             app:destination="@id/videoPlayerFragment" />
@@ -122,13 +130,5 @@
             android:defaultValue=""
             app:argType="string" />
     </fragment>
-    <fragment
-        android:id="@+id/userProfileFragment"
-        android:name="com.humara.nagar.ui.user_profile.UserProfileFragment"
-        android:label="UserProfileFragment" >
-        <argument
-            android:name="source"
-            android:defaultValue=""
-            app:argType="string" />
-    </fragment>
+    <include app:graph="@navigation/user_profile_navigation" />
 </navigation>

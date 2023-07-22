@@ -33,7 +33,7 @@ interface NetworkConstants {
             const val CHANGE_POST_LIKE = "/posts/like/{id}"
             const val POLL_VOTE = "/posts/poll/vote/{id}"
             const val POST_COMMENTS = "/posts/comments/{id}"
-            const val ADD_COMMENT = "/posts/comment/{id}"
+            const val CRUD_COMMENT = "/posts/comment/{id}"
             const val DOCUMENT_POST = "/posts/document"
             const val IMAGE_POST = "/posts/image"
             const val TEXT_POST = "/posts/text"

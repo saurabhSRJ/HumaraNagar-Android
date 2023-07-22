@@ -100,7 +100,8 @@ class ProfileCreationViewModel(application: Application, private val savedStateH
             dateOfBirth = DateTimeUtils.convertDateFormat(getDateOfBirth().value.toString(), "dd-MM-yyyy", "yyyy-MM-dd"),
             genderId = getGender()!!.id,
             wardId = getWard()!!.id,
-            mobileNumber = mobileNumber
+            mobileNumber = mobileNumber,
+            createdBy = getUserPreference().userName ?: ""
         )
     }
 

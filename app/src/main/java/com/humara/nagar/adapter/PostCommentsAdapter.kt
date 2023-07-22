@@ -2,14 +2,17 @@ package com.humara.nagar.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.humara.nagar.R
 import com.humara.nagar.databinding.PostCommentItemBinding
 import com.humara.nagar.ui.home.model.CommentDetails
 import com.humara.nagar.utils.DateTimeUtils
+import com.humara.nagar.utils.getUserSharedPreferences
 import com.humara.nagar.utils.loadUrl
+import com.humara.nagar.utils.setNonDuplicateClickListener
 
-class PostCommentsAdapter : RecyclerView.Adapter<PostCommentsAdapter.CommentsViewHolder>() {
+class PostCommentsAdapter(val authorId: Long, val listener: (Long) -> Unit) : RecyclerView.Adapter<PostCommentsAdapter.CommentsViewHolder>() {
     private val comments: ArrayList<CommentDetails> = arrayListOf()
 
     fun setData(data: List<CommentDetails>) {
@@ -39,9 +42,13 @@ class PostCommentsAdapter : RecyclerView.Adapter<PostCommentsAdapter.CommentsVie
                 item.image?.let { url ->
                     ivUserPhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
                 }
+                ivDelete.isVisible = item.userId == root.context.getUserSharedPreferences().userId || authorId == root.context.getUserSharedPreferences().userId
                 tvUserName.text = item.name
                 tvComment.text = item.comment
                 tvCommentTime.text = DateTimeUtils.getRelativeDurationFromCurrentTime(root.context, item.createdAt)
+                ivDelete.setNonDuplicateClickListener {
+                    listener(item.commentId)
+                }
             }
         }
     }
