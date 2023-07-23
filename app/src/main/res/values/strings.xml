@@ -205,6 +205,7 @@
     <string name="complaint_id_n">Complaint ID: %s</string>
     <string name="share_complaint_caption">A complaint has been raised by %1$s (%2$s) on Humara Nagar. \n%3$s</string>
     <string name="is_your_complaint_resolved">Is your complaint resolved?</string>
+    <string name="app_launch_location">Gharaunda</string>
     <plurals name="n_likes">
         <item quantity="one">%d like</item>
         <item quantity="other">%d likes</item>

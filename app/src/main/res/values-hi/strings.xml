@@ -228,4 +228,5 @@
     <string name="complaint_id_n">शिकायत आईडी: %s</string>
     <string name="share_complaint_caption">%1$s (%2$s) द्वारा एक शिकायत दर्ज की गई है हमारा नगर पर। \n%3$s</string>
     <string name="is_your_complaint_resolved">क्या आपकी शिकायत हल हो गई है?</string>
+    <string name="app_launch_location">घरौंडा</string>
 </resources>
