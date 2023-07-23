@@ -18,19 +18,16 @@ class ReportRepository(application: Application) : BaseRepository(application) {
     suspend fun postComplaint(request: PostComplaintRequest, imageUris: List<Uri>) = withContext(Dispatchers.IO) {
         val partMap = mutableMapOf<String, RequestBody>().apply {
             put(NetworkConstants.NetworkFormDataConstants.LOCATION, request.location.createPartFromString())
-            put(NetworkConstants.NetworkFormDataConstants.CATEGORY, request.category.createPartFromString())
-            put(NetworkConstants.NetworkFormDataConstants.LOCALITY, request.locality.createPartFromString())
+            put(NetworkConstants.NetworkFormDataConstants.CATEGORY_ID, request.category_id.toString().createPartFromString())
+            put(NetworkConstants.NetworkFormDataConstants.WARD_ID, request.ward_id.toString().createPartFromString())
             put(NetworkConstants.NetworkFormDataConstants.COMMENTS, request.comments.createPartFromString())
-            put(NetworkConstants.NetworkFormDataConstants.USER_ID, request.user_id.toString().createPartFromString())
             put(NetworkConstants.NetworkFormDataConstants.LATITUDE, request.location_latitude.toString().createPartFromString())
             put(NetworkConstants.NetworkFormDataConstants.LONGITUDE, request.location_longitude.toString().createPartFromString())
         }
         val imageParts = ArrayList<MultipartBody.Part>()
         for (filePath in imageUris) {
             val imagePart = NetworkUtils.createImageMultipart(filePath, NetworkConstants.NetworkFormDataConstants.IMAGE)
-            if (imagePart != null) {
-                imageParts.add(imagePart)
-            }
+            imageParts.add(imagePart)
         }
         apiService.postComplaint(partMap, imageParts)
     }

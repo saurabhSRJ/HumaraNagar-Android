@@ -27,10 +27,11 @@ plugins {
  */
 ext {
     compileSdkVersion = 33
-    minSDKVersion = 21
+    minSDKVersion = 23
     targetSDKVersion = 33
     sourceCompatibilityVersion = JavaVersion.VERSION_11
     targetCompatibilityVersion = JavaVersion.VERSION_11
     roomVersion = '2.5.1'
     lifecycleVersion = '2.6.1'
+    camerax_version = '1.2.3'
 }

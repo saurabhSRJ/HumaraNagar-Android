@@ -24,20 +24,13 @@ open class EncryptedSharedPreference(
      Stable version of security-crypto library supports for Android API >=23 only
      */
     private val sharedPrefs: SharedPreferences =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            EncryptedSharedPreferences.create(
-                preferencesName,
-                getMasterKey(),
-                context,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-        } else {
-            context.getSharedPreferences(
-                preferencesName,
-                Context.MODE_PRIVATE
-            )
-        }
+        EncryptedSharedPreferences.create(
+            preferencesName,
+            getMasterKey(),
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
 
     private fun getMasterKey(): String {
         return MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)

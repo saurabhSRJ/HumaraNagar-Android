@@ -14,14 +14,13 @@ class LogoutBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = BottomSheetLogoutBinding.inflate(inflater, container, false)
-        isCancelable = false
+        isCancelable = true
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.run {
-            ivClose.setOnClickListener { dismiss() }
             btnGoBack.setOnClickListener { dismiss() }
             btnLogout.setOnClickListener {
                 (activity as? BaseActivity)?.logout(AnalyticsData.ScreenName.LOGOUT_BOTTOM_SHEET)

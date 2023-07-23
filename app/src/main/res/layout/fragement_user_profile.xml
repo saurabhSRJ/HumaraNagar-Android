@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/svDetails"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="20dp"
+            android:scrollbars="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/btnSave"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="20dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="20dp" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_end="20dp" />
+
+                <ImageView
+                    android:id="@+id/ivUserPhoto"
+                    android:layout_width="74dp"
+                    android:layout_height="74dp"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/man_user_icon" />
+
+                <TextView
+                    android:id="@+id/btnChangeImage"
+                    style="@style/OpenSansSemiBold12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/change_image"
+                    android:textColor="@color/grey_696969"
+                    app:layout_constraintEnd_toEndOf="@id/ivUserPhoto"
+                    app:layout_constraintStart_toStartOf="@id/ivUserPhoto"
+                    app:layout_constraintTop_toBottomOf="@id/ivUserPhoto" />
+
+                <TextView
+                    android:id="@+id/tvAddedBy"
+                    style="@style/OpenSansRegular12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey_4F4F4F"
+                    app:layout_constraintBottom_toBottomOf="@id/btnChangeImage"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintTop_toTopOf="@id/btnChangeImage"
+                    tools:text="Added By: Saurabh" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clDetails"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    app:layout_constraintBottom_toBottomOf="@id/ivUserPhoto"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintStart_toEndOf="@id/ivUserPhoto"
+                    app:layout_constraintTop_toTopOf="@id/ivUserPhoto">
+
+                    <TextView
+                        android:id="@+id/tvUserName"
+                        style="@style/OpenSansSemiBold16sp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/grey_4F4F4F"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="User Name" />
+
+                    <TextView
+                        android:id="@+id/tvRoleAndWard"
+                        style="@style/OpenSansRegular14sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/grey_4F4F4F"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvUserName"
+                        tools:text="Resident, Ward #11" />
+
+                    <TextView
+                        android:id="@+id/tvMobileNumber"
+                        style="@style/OpenSansRegular12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="4dp"
+                        android:textColor="@color/grey_4F4F4F"
+                        app:drawableStartCompat="@drawable/ic_call"
+                        app:drawableTint="@color/grey_4F4F4F"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvRoleAndWard"
+                        tools:text="1234567890" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
+                    android:id="@+id/inputAboutMe"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:header="@string/about_me"
+                    app:hint="@string/tell_us_a_bit_about_yourself"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@id/btnChangeImage"
+                    app:maximumLength="200"
+                    app:minimumHeight="200"
+                    app:required_input="false" />
+
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
+                    android:id="@+id/inputDob"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:header="@string/date_of_birth"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@id/inputAboutMe"
+                    app:required_input="false" />
+
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
+                    android:id="@+id/inputGuardianName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:header="@string/father_or_spouse_name"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@id/inputDob"
+                    app:required_input="false" />
+
+                <com.humara.nagar.ui.custom_views.FormInputWithHeader
+                    android:id="@+id/inputEmail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:header="@string/email"
+                    app:hint="@string/email"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@id/inputGuardianName"
+                    app:required_input="false" />
+
+                <TextView
+                    android:id="@+id/tvJoinedDate"
+                    style="@style/OpenSansRegular12sp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@id/inputEmail"
+                    tools:text="Joined in: June 2023" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <Button
+            android:id="@+id/btnSave"
+            style="@style/primary_blue_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/save"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

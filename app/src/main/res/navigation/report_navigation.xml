@@ -73,6 +73,9 @@
         android:name="com.humara.nagar.ui.report.complaint_status.ComplaintStatusUpdateDialogFragment"
         tools:layout="@layout/fragment_complaint_status_update">
         <argument
+            android:name="state"
+            app:argType="string" />
+        <argument
             android:name="source"
             android:defaultValue=""
             app:argType="string" />

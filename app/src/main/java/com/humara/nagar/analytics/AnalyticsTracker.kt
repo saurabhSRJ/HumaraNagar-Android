@@ -7,8 +7,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.humara.nagar.Logger
-import com.humara.nagar.NagarApp
 import com.humara.nagar.shared_pref.UserPreference
+import com.humara.nagar.utils.getUserSharedPreferences
 import org.json.JSONObject
 
 class AnalyticsTracker private constructor() {
@@ -42,9 +42,10 @@ class AnalyticsTracker private constructor() {
         }
 
         fun onUserOnBoard(context: Context) {
-            val userPreference: UserPreference = (context as NagarApp).userSharedPreference
+            val userPreference: UserPreference = context.getUserSharedPreferences()
             userPreference.userProfile?.let { user ->
                 INSTANCE?.run {
+                    if (this::firebaseAnalytics.isInitialized.not()) return
                     firebaseAnalytics.setUserProperty(AnalyticsData.Parameters.USER_ID, user.userId.toString())
                     firebaseAnalytics.setUserProperty(AnalyticsData.Parameters.USER_NAME, user.name)
                     firebaseAnalytics.setUserProperty(AnalyticsData.Parameters.MOBILE_NUMBER, user.mobileNumber)

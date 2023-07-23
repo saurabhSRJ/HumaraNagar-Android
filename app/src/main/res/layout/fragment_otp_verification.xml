@@ -27,7 +27,7 @@
             android:layout_marginTop="70dp"
             android:gravity="center"
             android:text="@string/verify_mobile_number"
-            android:textColor="@color/dark_grey_333333"
+            android:textColor="@color/primary_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,7 +55,7 @@
             android:gravity="center"
             android:text="@string/enter_otp"
             android:textAllCaps="true"
-            android:textColor="@color/black"
+            android:textColor="@color/dark_grey_333333"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_otp_sent_to" />
@@ -70,7 +70,7 @@
             android:imeOptions="actionGo"
             android:inputType="number"
             android:textAppearance="@style/OpenSansRegular16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/dark_grey_333333"
             app:cursorWidth="2dp"
             app:hideLineWhenFilled="false"
             app:itemCount="@integer/otp_length"
@@ -79,7 +79,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_enter_otp"
-            app:lineWidth="2dp"
+            app:lineWidth="3dp"
             app:viewType="line" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/timer_count"
-            android:textColor="@color/blue_4285F4"
+            android:textColor="@color/primary_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_resend"
             app:layout_constraintTop_toTopOf="@id/tv_otp_error_message" />

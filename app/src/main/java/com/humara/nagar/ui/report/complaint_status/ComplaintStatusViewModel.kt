@@ -5,13 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.humara.nagar.Logger
 import com.humara.nagar.base.BaseViewModel
 import com.humara.nagar.network.ApiError
 import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.report.model.ComplaintStatus
 import com.humara.nagar.ui.report.model.StatusResponse
+import com.humara.nagar.ui.report.model.UpdateComplaintRequest
 import com.humara.nagar.utils.ComplaintsUtils
 import com.humara.nagar.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -19,8 +19,6 @@ import kotlinx.coroutines.launch
 class ComplaintStatusViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
     companion object {
         private const val RATING_KEY = "rating"
-        //Note: savedStateHandle can provide the navigation fragment arguments. Key should be same as mentioned in the navigation action
-        private const val COMPLAINT_ID = "complaint_id"
     }
 
     private val repository = ComplaintStatusRepository(application)
@@ -45,7 +43,7 @@ class ComplaintStatusViewModel(application: Application, private val savedStateH
     private val _finishComplaintErrorLiveData: MutableLiveData<ApiError> by lazy { SingleLiveEvent() }
     val finishComplaintErrorLiveData: LiveData<ApiError> = _finishComplaintErrorLiveData
 
-    private val complaintId: String = savedStateHandle[COMPLAINT_ID]!! //null safety is ensured by safe args
+    private val complaintId: String = ComplaintStatusFragmentArgs.fromSavedStateHandle(savedStateHandle).complaintId //null safety is ensured by safe args
     val ratingData: LiveData<Int> = savedStateHandle.getLiveData(RATING_KEY, 0)
     val rating: Int get() = ratingData.value ?: 0
     private var state: String = ""
@@ -54,7 +52,7 @@ class ComplaintStatusViewModel(application: Application, private val savedStateH
         getComplaintStatus(complaintId)
     }
 
-    private fun getComplaintStatus(id: String) = viewModelScope.launch {
+    fun getComplaintStatus(id: String) = viewModelScope.launch {
         val response = processCoroutine({ repository.getComplaintStatus(id) })
         response.onSuccess {
             _complaintStatusLiveData.postValue(it)
@@ -69,20 +67,20 @@ class ComplaintStatusViewModel(application: Application, private val savedStateH
         savedStateHandle[RATING_KEY] = rating
     }
 
-    fun onUserCommentReceived(comment: String, isUserAdmin: Boolean) {
+    fun onUserCommentReceived(updateRequest: UpdateComplaintRequest, isUserAdmin: Boolean) {
         if (isUserAdmin && state == ComplaintsUtils.ComplaintState.SENT.currentState) {
-            acknowledgeComplaint(comment)
+            acknowledgeComplaint(updateRequest)
         } else if (isUserAdmin && state == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState) {
-            finishComplaint(comment)
+            finishComplaint(updateRequest.comment)
         } else if (isUserAdmin.not() && (state == ComplaintsUtils.ComplaintState.SENT.currentState || state == ComplaintsUtils.ComplaintState.IN_PROGRESS.currentState)) {
-            withdrawComplaint(comment)
+            withdrawComplaint(updateRequest.comment)
         } else if (isUserAdmin.not() && rating > 0) {
-            rateComplaintService(comment)
+            rateComplaintService(updateRequest.comment)
         }
     }
 
-    private fun acknowledgeComplaint(comment: String) = viewModelScope.launch {
-        val response = processCoroutine({ repository.acknowledgeComplaint(complaintId, comment) })
+    private fun acknowledgeComplaint(updateRequest: UpdateComplaintRequest) = viewModelScope.launch {
+        val response = processCoroutine({ repository.acknowledgeComplaint(complaintId, updateRequest) })
         response.onSuccess {
             _acknowledgementSuccessLiveData.postValue(it)
         }.onError {

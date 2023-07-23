@@ -9,7 +9,6 @@ import com.humara.nagar.network.BaseRepository
 import com.humara.nagar.network.NetworkResponse
 import com.humara.nagar.network.retrofit.ApiService
 import com.humara.nagar.ui.report.model.StatusResponse
-import com.humara.nagar.utils.getUserSharedPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -30,6 +29,6 @@ class FcmTokenUploadRepository(application: Application) : BaseRepository(applic
     }
 
     suspend fun updateFcmTokenToServer(newToken: String): NetworkResponse<StatusResponse> {
-        return apiService.updateFcmTokenToServer(FcmTokenRequest(application.getUserSharedPreferences().userId, newToken))
+        return apiService.updateFcmTokenToServer(FcmTokenRequest(newToken))
     }
 }

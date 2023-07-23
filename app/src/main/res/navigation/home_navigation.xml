@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.humara.nagar.ui.home.HomeFragment"
+        android:label="HomeFragment">
+        <action
+            android:id="@+id/action_homeFragment_to_fullImagePreviewFragment"
+            app:destination="@id/fullImagePreviewFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_postDetailsFragment"
+            app:destination="@id/postDetailsFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/slide_in_from_bottom"
+            app:popExitAnim="@anim/slide_out_to_bottom" />
+        <action
+            android:id="@+id/action_homeFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_userProfileFragment2"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fullImagePreviewFragment"
+        android:name="com.humara.nagar.ui.common.FullImagePreviewFragment"
+        android:label="FullImagePreviewFragment">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="imagesList"
+            app:argType="string[]" />
+    </fragment>
+    <fragment
+        android:id="@+id/postDetailsFragment"
+        android:name="com.humara.nagar.ui.home.post_details.PostDetailsFragment"
+        android:label="PostDetailsFragment">
+        <action
+            android:id="@+id/action_postDetailsFragment_to_fullImagePreviewFragment"
+            app:destination="@id/fullImagePreviewFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <argument
+            android:name="post_id"
+            app:argType="long" />
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_postDetailsFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <deepLink
+            android:autoVerify="true"
+            app:action="android.intent.action.MY_ACTION"
+            app:uri="https://humara.nagar/post/{post_id}/{source}" />
+        <action
+            android:id="@+id/action_postDetailsFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.humara.nagar.ui.home.create_post.CreatePostFragment"
+        android:label="CreatePostFragment">
+        <action
+            android:id="@+id/action_createPostFragment_to_createPollFragment"
+            app:destination="@id/createPollFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+        <argument
+            android:name="is_edit"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="post_id"
+            android:defaultValue="0L"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_createPostFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPollFragment"
+        android:name="com.humara.nagar.ui.home.create_post.CreatePollFragment"
+        android:label="CreatePollFragment" />
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.humara.nagar.ui.common.VideoPlayerFragment"
+        android:label="VideoPlayerFragment">
+        <argument
+            android:name="video_uri"
+            app:argType="android.net.Uri" />
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.humara.nagar.ui.user_profile.UserProfileFragment"
+        android:label="UserProfileFragment" >
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+</navigation>

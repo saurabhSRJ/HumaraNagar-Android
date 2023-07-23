@@ -6,7 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_blue_EEF4FF"
+        android:background="@color/secondary_background"
         tools:context="com.humara.nagar.ui.settings.SettingsFragment">
 
         <include
@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/ivProfilePhoto"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="40dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_user_image_placeholder"
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:maxLines="1"
             android:textColor="@color/black_with_opacity_70"
             app:layout_constraintEnd_toEndOf="@id/ivProfilePhoto"
@@ -43,6 +43,20 @@
             app:layout_constraintTop_toBottomOf="@id/ivProfilePhoto"
             tools:text="User name goes here" />
 
+        <Button
+            android:id="@+id/btnViewProfile"
+            style="@style/TextButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:backgroundTint="@color/secondary_background"
+            android:text="@string/view_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvName" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -50,8 +64,8 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="40dp"
             android:background="@drawable/rect_background_grey_f1f1f1_bg_4dp"
-            android:backgroundTint="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/tvName">
+            android:backgroundTint="@color/primary_background"
+            app:layout_constraintTop_toBottomOf="@id/btnViewProfile">
 
             <include
                 android:id="@+id/languageItem"

@@ -6,29 +6,93 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_blue_EEF4FF"
+        android:background="@color/secondary_background"
         tools:context=".ui.report.complaints.ComplaintsFragment">
 
         <!--Toolbar-->
         <include
-            android:id="@+id/includedToolbar"
+            android:id="@+id/toolbar"
             layout="@layout/toolbar_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/complaintsRCV"
+        <include
+            android:id="@+id/pendingFilter"
+            layout="@layout/layout_filter_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toStartOf="@id/resolvedFilter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <include
+            android:id="@+id/resolvedFilter"
+            layout="@layout/layout_filter_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/pendingFilter"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toTopOf="@id/paginationLoader"
+            app:layout_constraintTop_toBottomOf="@id/pendingFilter">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/complaintsRCV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/includedToolbar"
+                tools:listitem="@layout/complaints_items_layout"
+                tools:visibility="visible" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            android:orientation="vertical"
+            android:layout_marginTop="20dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/includedToolbar"
-            tools:listitem="@layout/complaints_items_layout"
-            tools:visibility="visible" />
+            app:layout_constraintBottom_toTopOf="@id/paginationLoader"
+            app:layout_constraintTop_toBottomOf="@id/pendingFilter">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/complaint_placeholder_item" />
+
+                <include layout="@layout/complaint_placeholder_item" />
+
+                <include layout="@layout/complaint_placeholder_item" />
+
+                <include layout="@layout/complaint_placeholder_item" />
+
+                <include layout="@layout/complaint_placeholder_item" />
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <include
+            android:id="@+id/paginationLoader"
+            layout="@layout/layout_pagination_loader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_no_complaints"
@@ -51,11 +115,11 @@
 
             <TextView
                 android:id="@+id/tv_no_complaints"
-                style="@style/OpenSansSemiBold16sp"
+                style="@style/OpenSansSemiBold14sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginTop="4dp"
+                android:gravity="center"
                 android:text="@string/no_complaints_message"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

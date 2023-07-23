@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clContainer"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/feed_filter_inactive_bg">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/OpenSansSemiBold14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingVertical="8dp"
+            android:textColor="@color/grey_696969"
+            app:layout_constraintEnd_toStartOf="@id/tvCount"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Resident" />
+
+        <TextView
+            android:id="@+id/tvCount"
+            style="@style/OpenSansSemiBold14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:paddingVertical="8dp"
+            android:textColor="@color/grey_696969"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/tvTitle"
+            tools:text="(8)"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

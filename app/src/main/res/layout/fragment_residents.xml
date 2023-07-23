@@ -6,81 +6,174 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_blue_EEF4FF"
+        android:background="@color/secondary_background"
         tools:context="com.humara.nagar.ui.report.ReportFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_header"
+            android:id="@+id/clHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blue_4285F4"
+            android:background="@drawable/rect_primary_color_bottom_curved_bg"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="40dp"
+            android:paddingVertical="30dp"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/OpenSansBold20sp"
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintBottom_toBottomOf="@id/btnAddUser"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnAddUser"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/tvHeader"
+                style="@style/OpenSansSemiBold20sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
                 android:gravity="center"
                 android:text="@string/fellow_residents"
                 android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/btnAddUser"
+                app:layout_constraintEnd_toStartOf="@id/btnAddUser"
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintTop_toTopOf="@id/btnAddUser" />
+
+            <ImageButton
+                android:id="@+id/btnAddUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_add_user"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/input_search"
-            style="@style/OpenSansRegular14sp"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSearch"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/rect_white_fill_grey_outline_5dp"
-            android:drawableStart="@drawable/ic_person_search_24"
-            android:drawablePadding="10dp"
-            android:hint="@string/search"
-            android:textSize="18sp"
-            android:paddingVertical="12dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:singleLine="true"
-            android:textColor="@color/dark_grey_333333"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="12dp"
+            app:boxBackgroundColor="@color/primary_background"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxStrokeWidth="1dp"
+            app:hintEnabled="false"
+            app:layout_constraintEnd_toStartOf="@id/filterWard"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_header" />
+            app:layout_constraintTop_toBottomOf="@+id/clHeader"
+            app:layout_goneMarginEnd="16dp"
+            app:startIconDrawable="@drawable/ic_person_search">
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalScroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:layout_marginTop="5dp"
-            app:layout_constraintEnd_toEndOf="@+id/input_search"
-            app:layout_constraintStart_toStartOf="@+id/input_search"
-            app:layout_constraintTop_toBottomOf="@+id/input_search">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_filter"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearch"
+                style="@style/OpenSansRegular14sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10dp"
-                app:chipSpacingHorizontal="14dp"
-                app:singleLine="true"
-                app:singleSelection="true" />
+                android:background="@null"
+                android:hint="@string/search_by_name"
+                android:imeOptions="actionSearch"
+                android:inputType="textCapSentences"
+                android:maxLength="25"
+                android:maxLines="1"
+                android:paddingVertical="8dp"
+                android:textColor="@color/grey_696969" />
 
-        </HorizontalScrollView>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/residentRCV"
+        <include
+            android:id="@+id/filterWard"
+            layout="@layout/layout_ward_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tilSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tilSearch" />
+
+        <ImageButton
+            android:id="@+id/ivCancelSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            android:src="@drawable/ic_cross"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tilSearch"
+            app:layout_constraintEnd_toEndOf="@id/tilSearch"
+            app:layout_constraintTop_toTopOf="@id/tilSearch"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/pbSearch"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/ivCancelSearch"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@id/ivCancelSearch"
+            app:layout_constraintTop_toTopOf="@id/ivCancelSearch"
+            tools:visibility="visible" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScroll"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@id/paginationLoader"
+            app:layout_constraintTop_toBottomOf="@id/tilSearch">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvResidents"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                tools:listitem="@layout/resident_layout_item" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchResults"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/paginationLoader"
+            app:layout_constraintTop_toBottomOf="@id/tilSearch"
             tools:listitem="@layout/resident_layout_item" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/paginationLoader"
+            layout="@layout/layout_pagination_loader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -15,8 +15,8 @@ class ComplaintStatusRepository(application: Application) : BaseRepository(appli
         apiService.getComplaintStatus(id)
     }
 
-    suspend fun acknowledgeComplaint(id: String, comment: String) = withContext(Dispatchers.IO) {
-        apiService.acknowledgeComplaint(id, UpdateComplaintRequest(comment))
+    suspend fun acknowledgeComplaint(id: String, request: UpdateComplaintRequest) = withContext(Dispatchers.IO) {
+        apiService.acknowledgeComplaint(id, request)
     }
 
     suspend fun finishComplaint(id: String, comment: String) = withContext(Dispatchers.IO) {

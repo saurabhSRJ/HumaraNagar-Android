@@ -3,7 +3,7 @@ package com.humara.nagar.shared_pref
 import android.content.Context
 import com.humara.nagar.constants.Constants
 import com.humara.nagar.constants.SharedPreferenceKeys
-import com.humara.nagar.ui.signup.model.Role
+import com.humara.nagar.ui.signup.model.RoleDetails
 import com.humara.nagar.ui.signup.model.User
 
 /**
@@ -19,25 +19,25 @@ class UserPreference(context: Context) : EncryptedSharedPreference(context, Cons
         get() = getLong(SharedPreferenceKeys.UserPreferenceKeys.USER_ID, 0L)
         set(value) = putLong(SharedPreferenceKeys.UserPreferenceKeys.USER_ID, value)
 
-    inline var role: String?
-        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, null)
-        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
+    inline var userName: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.USER_NAME, "")
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.USER_NAME, value)
 
-    inline var isAdminUser: Boolean
-        get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.ADMIN_USER, false)
-        set(value) = putBoolean(SharedPreferenceKeys.UserPreferenceKeys.ADMIN_USER, value)
+    inline var role: RoleDetails?
+        get() = getObject(SharedPreferenceKeys.UserPreferenceKeys.ROLE, RoleDetails::class.java)
+        set(value) = putObject(SharedPreferenceKeys.UserPreferenceKeys.ROLE, value)
 
     inline var ward: String?
         get() = getString(SharedPreferenceKeys.UserPreferenceKeys.WARD, null)
         set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.WARD, value)
 
-    inline var wardId: Int
-        get() = getInt(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, 0)
-        set(value) = putInt(SharedPreferenceKeys.UserPreferenceKeys.WARD_ID, value)
-
     inline var userProfile: User?
         get() = getObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, User::class.java)
         set(value) = putObject(SharedPreferenceKeys.UserPreferenceKeys.USER_PROFILE, value)
+
+    inline var profileImage: String?
+        get() = getString(SharedPreferenceKeys.UserPreferenceKeys.PROFILE_IMAGE, null)
+        set(value) = putString(SharedPreferenceKeys.UserPreferenceKeys.PROFILE_IMAGE, value)
 
     inline var isUserLoggedIn: Boolean
         get() = getBoolean(SharedPreferenceKeys.UserPreferenceKeys.USER_LOGGED_IN, false)

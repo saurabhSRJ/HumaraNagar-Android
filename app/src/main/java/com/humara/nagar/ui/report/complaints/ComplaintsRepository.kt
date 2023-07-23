@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 class ComplaintsRepository(application: Application) : BaseRepository(application) {
     private val apiService = getRetrofit().create(ReportService::class.java)
 
-    suspend fun getAllComplaints() = withContext(Dispatchers.IO) {
-        apiService.getAllComplaints()
+    suspend fun getComplaints(page: Int, limit: Int, wardId: Int, filterId: Int) = withContext(Dispatchers.IO) {
+        apiService.getComplaints(page, limit, wardId, filterId)
     }
 }

@@ -4,22 +4,19 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
-import com.humara.nagar.permissions.PermissionFragment
-import com.humara.nagar.permissions.PermissionHandler
 
 object PermissionUtils {
     val storagePermissions = getStoragePermissions()
     val cameraPermissions = getCameraPermissions()
     val locationPermissions = getLocationPermission()
     val notificationPermissions = getNotificationPermissions()
+    val sharePostPermissions = getSharePostPermissions()
 
     @JvmName("getNotificationPermissions1")
     private fun getNotificationPermissions(): Array<String> {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        return if (DeviceHelper.isMinSdk33) {
             arrayOf(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             arrayOf()
@@ -41,7 +38,7 @@ object PermissionUtils {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (DeviceHelper.isMinSdk29) {
             permissions = arrayOf(Manifest.permission.CAMERA)
         }
         return permissions
@@ -49,11 +46,21 @@ object PermissionUtils {
 
     @JvmName("getStoragePermissions1")
     private fun getStoragePermissions(): Array<String> {
+        return if (DeviceHelper.isMinSdk33) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+        } else {
+            //TODO: this should be changed to READ_EXTERNAL_STORAGE permission only
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+    }
+
+    @JvmName("getSharePostPermissions1")
+    private fun getSharePostPermissions(): Array<String> {
         var permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (DeviceHelper.isMinSdk29) {
             permissions = emptyArray()
         }
         return permissions
@@ -70,12 +77,6 @@ object PermissionUtils {
 
     fun hasPermission(context: Context, permission: String): Boolean {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-    }
-
-    fun askPermissions(fragmentManager: FragmentManager, permissions: Array<String>, permissionHandler: PermissionHandler, isPermissionNecessary: Boolean = true) {
-        val askPermissionFragment = PermissionFragment()
-        fragmentManager.beginTransaction().add(askPermissionFragment, PermissionFragment.TAG).commitNow()
-        askPermissionFragment.requestPermissions(permissions, permissionHandler, isPermissionNecessary)
     }
 
     /**

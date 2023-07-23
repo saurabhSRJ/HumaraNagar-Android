@@ -55,7 +55,6 @@ class RetrofitService private constructor(val application: Application) {
             )
             .addCallAdapterFactory(NetworkResponseCallAdapterFactory.create())
             .client(getHttpClient())
-//            .baseUrl("https://run.mocky.io/v3/")
             .baseUrl(BuildConfig.BASE_URL)
             .build()
         return retrofitInstance
@@ -87,6 +86,33 @@ class RetrofitService private constructor(val application: Application) {
             .connectTimeout(120, TimeUnit.SECONDS)
         okHttpClient = okHttpClientBuilder.build()
         return okHttpClient as OkHttpClient
+    }
+
+    fun getRetrofitWithoutAuthInterceptor(baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
+            .client(getHttpClientWithoutAuthInterceptor())
+            .addCallAdapterFactory(NetworkResponseCallAdapterFactory.create())
+            .baseUrl(baseUrl)
+            .build()
+    }
+
+    private fun getHttpClientWithoutAuthInterceptor(): OkHttpClient {
+        val okHttpClientBuilder = OkHttpClient.Builder()
+            .readTimeout(30, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val original = chain.request()
+                val requestBuilder = original.newBuilder().method(original.method, original.body)
+                requestBuilder.addHeader(ACCEPT_LANGUAGE, appPreference.appLanguage)
+                requestBuilder.addHeader(APP_VERSION, BuildConfig.VERSION_CODE.toString())
+                requestBuilder.addHeader(ANDROID_VERSION, Build.VERSION.SDK_INT.toString())
+                val request = requestBuilder.build()
+                chain.proceed(request)
+            }
+            .addInterceptor(getLoggingInterceptor())
+        return okHttpClientBuilder.build()
     }
 
     private fun getLoggingInterceptor(): HttpLoggingInterceptor {

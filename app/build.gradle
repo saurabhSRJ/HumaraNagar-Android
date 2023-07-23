@@ -15,6 +15,14 @@ plugins {
  * The android block is where you configure all your Android-specific build options.
  */
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/saurabhjaiswal/HumaraNagar/upload-keystore.jks')
+            storePassword 'numinexus'
+            keyAlias 'humara-nagar'
+            keyPassword 'numinexus'
+        }
+    }
     def appId = 'com.humara.nagar'
     //The app's namespace. Used primarily to access app resources.
     namespace appId
@@ -31,24 +39,43 @@ android {
         versionCode 1
         versionName "1.0.0"
         archivesBaseName = "app-" + versionName + "-" + versionCode
-        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         vectorDrawables.useSupportLibrary = true
         resConfigs 'en', 'hi'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            crunchPngs true
-            //TODO: Add signing configs before release
+            debuggable false
+            minifyEnabled false
+            shrinkResources false
+            crunchPngs false
         }
         debug {
             minifyEnabled false
             shrinkResources false
             crunchPngs false
-            buildConfigField "String", "BASE_URL", "\"https://corded-cinema-385603.du.r.appspot.com\""
+            debuggable true
+        }
+    }
+
+    // Specifies one flavor dimension.
+    flavorDimensions "flavor"
+    productFlavors {
+        preprod {
+            // Assigns this product flavor to the "version" flavor dimension. If you are using only one dimension, this property is optional,
+            // and the plugin automatically assigns all the module's flavors to that dimension.
+            dimension "flavor"
+            applicationIdSuffix ".debug"
+            resValue "string", "app_name", "@string/app_name_qa"
+            buildConfigField "String", "BASE_URL", "\"https://humara-nagar-server-389413.el.r.appspot.com\""
+        }
+        prod {
+            dimension "flavor"
+            resValue "string", "app_name", "@string/app_name_release"
+            buildConfigField "String", "BASE_URL", "\"https://humara-nagar-391810.el.r.appspot.com\""
         }
     }
     compileOptions {
@@ -59,6 +86,11 @@ android {
     }
     kotlin {
         jvmToolchain(11)
+    }
+    kotlinOptions {
+        freeCompilerArgs += [
+                '-Xjvm-default=enable'
+        ]
     }
     buildFeatures {
         dataBinding true
@@ -101,11 +133,26 @@ dependencies {
     //Google play-services
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    //Expandable TextView
+    implementation 'at.blogc:expandabletextview:1.0.5'
+    //swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
+    //shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    def kohii_version = "1.4.0.2017001"
+    implementation "im.ene.kohii:kohii-core:${kohii_version}" // core library
+    implementation "im.ene.kohii:kohii-exoplayer:${kohii_version}" // default support for ExoPlayer
+    //Do NOT update this library as kohii library is dependent on it
+    implementation "com.google.android.exoplayer:exoplayer:2.17.1"
+    //image picker
+    implementation 'com.github.esafirm:android-image-picker:3.0.0'
+    // zoom image view
+    implementation 'com.github.MikeOrtiz:TouchImageView:3.3'
+    //ToolTip -> Balloon
+    implementation "com.github.skydoves:balloon:1.5.2"
     //test dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
-    //ToolTip -> Balloon
-    implementation "com.github.skydoves:balloon:1.5.2"
 }

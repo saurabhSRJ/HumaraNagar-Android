@@ -2,7 +2,7 @@ package com.humara.nagar.ui.signup.model
 
 /**
  * Data class representing saved user profile in shared preference after user has successfully logged-in or signed-up.
- * Note: userId, mobileNumber, ward and role of the user is directly available in user preference. No need to fetch user profile for these values.
+ * Note: userId, mobileNumber, ward, roleId and role of the user is directly available in user preference. No need to fetch user profile for these values.
  */
 data class User(
     val userId: Long,
@@ -10,5 +10,8 @@ data class User(
     val mobileNumber: String,
     val fatherOrSpouseName: String,
     val gender: String,
-    val locality: String
+    val image: String?,
+    val role: String,
+    val ward: String,
+    val dateOfBirth: String
 )

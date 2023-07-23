@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/home_navigation">
 
-    <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.humara.nagar.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+    <include app:graph="@navigation/home_navigation" />
 
     <include app:graph="@navigation/report_navigation" />
 
-    <fragment
-        android:id="@+id/navigation_residents"
-        android:name="com.humara.nagar.ui.residents.ResidentsFragment"
-        android:label="@string/residents"
-        tools:layout="@layout/fragment_residents" />
+    <include app:graph="@navigation/residents_navigation" />
 
     <include app:graph="@navigation/settings_navigation" />
 </navigation>

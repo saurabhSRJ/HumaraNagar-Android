@@ -18,9 +18,11 @@ import com.humara.nagar.base.ViewModelFactory
 import com.humara.nagar.constants.Constants
 import com.humara.nagar.databinding.FragmentOtpVerificationBinding
 import com.humara.nagar.ui.signup.OnBoardingViewModel
-import com.humara.nagar.utils.*
 import com.humara.nagar.utils.StringUtils.setStringWithColor
 import com.humara.nagar.utils.StringUtils.setStringWithColors
+import com.humara.nagar.utils.Utils
+import com.humara.nagar.utils.setNonDuplicateClickListener
+import com.humara.nagar.utils.showToast
 
 class OtpVerificationFragment : BaseFragment() {
     private val onBoardingViewModel by activityViewModels<OnBoardingViewModel> {
@@ -125,7 +127,7 @@ class OtpVerificationFragment : BaseFragment() {
             tvResend.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    if (resendEnabled) R.color.blue_4285F4 else R.color.grey_AEAEAE
+                    if (resendEnabled) R.color.primary_color else R.color.grey_AEAEAE
                 )
             )
         }
@@ -138,7 +140,7 @@ class OtpVerificationFragment : BaseFragment() {
 
     private fun hideKeyboardAndVerifyOtp() {
         hideKeyboard()
-        onBoardingViewModel.verifyOtp(binding.otpView.text.toString())
+        onBoardingViewModel.verifyOtpAndLogin(binding.otpView.text.toString())
     }
 
     override fun onDestroyView() {

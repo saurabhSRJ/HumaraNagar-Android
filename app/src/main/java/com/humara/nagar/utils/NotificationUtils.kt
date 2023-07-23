@@ -85,7 +85,7 @@ object NotificationUtils {
         }
         return NavDeepLinkBuilder(context)
             .setGraph(R.navigation.mobile_navigation)
-            .setDestination(R.id.navigation_home)
+            .setDestination(R.id.home_navigation)
             .setArguments(extras)
             .setComponentName(MainActivity::class.java)
             .createPendingIntent()
