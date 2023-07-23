@@ -67,6 +67,17 @@ class FormSpinnerWithHeader @JvmOverloads constructor(context: Context, attrs: A
         }
     }
 
+    fun setDefaultSelection(itemIndex: Int, listener: ((input: Any) -> Unit)) {
+        if (itemIndex == -1) return
+        binding.run {
+            val item = spinnerTV.adapter.getItem(itemIndex)
+            spinnerTV.setText(item.toString(), false)
+            tvError.visibility = View.GONE
+            tvRequiredAsterisk.visibility = View.GONE
+            listener(item)
+        }
+    }
+
     fun setUserInputListener(listener: ((input: Any) -> Unit)? = null) {
         binding.run {
             spinnerTV.setOnItemClickListener { parent, _, position, _ ->

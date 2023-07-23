@@ -46,6 +46,10 @@ class HomeRepository(application: Application) : BaseRepository(application) {
         apiService.getPostComments(postId, page, limit)
     }
 
+    suspend fun getPostLikes(postId: Long) = withContext(Dispatchers.IO) {
+        apiService.getPostLikes(postId)
+    }
+
     suspend fun addComment(postId: Long, request: PostCommentRequest) = withContext(Dispatchers.IO) {
         apiService.addComment(postId, request)
     }

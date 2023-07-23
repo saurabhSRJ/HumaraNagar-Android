@@ -29,7 +29,7 @@ class InAppUpdateViewModel(application: Application) : BaseViewModel(application
 
     companion object {
         private const val MIN_DAYS_FOR_UPDATE_DEFAULT = 1
-        private const val HIGH_PRIORITY_UPDATE = 4
+        private const val HIGH_PRIORITY_UPDATE = 5
     }
 
     fun checkUpdate(context: Context, activityResultLauncher: ActivityResultLauncher<IntentSenderRequest>) {

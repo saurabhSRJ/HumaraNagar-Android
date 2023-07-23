@@ -143,7 +143,7 @@ class AppConfigViewModel(application: Application) : BaseViewModel(application) 
             Logger.logException("AppConfig", e, Logger.LogLevel.ERROR, true)
             return@launch
         }
-        Logger.debugLog("fcm token: $newToken")
+        Logger.debugLog("new fcm token: $newToken, stored fcm token: $storedToken")
         if (isTokenUpdated && storedToken != newToken) {
             val response = processCoroutine({ fcmRepository.updateFcmTokenToServer(newToken) })
             response.onSuccess {

@@ -105,6 +105,14 @@
         <item quantity="one">%d वोट</item>
         <item quantity="other">%d वोट</item>
     </plurals>
+    <plurals name="n_likes">
+        <item quantity="one">%d लाइक</item>
+        <item quantity="other">%d लाइक</item>
+    </plurals>
+    <plurals name="n_comments">
+        <item quantity="one">%d कमेंट</item>
+        <item quantity="other">%d कमेंट</item>
+    </plurals>
     <string name="please_provide_requested_permission">कृपया अनुरोधित अनुमति प्रदान करें</string>
     <string name="location_detection_error_message">लोकेशन का स्वत: पता लगाने में त्रुटि। कृपया लोकेशन खुद से टाइप करें</string>
     <string name="comments_short_hint">हमें सब कुछ बताएं और हम अपनी पूरी कोशिश करेंगे इसे सही करने की</string>
@@ -171,7 +179,7 @@
     <string name="n_days_left">%d दिन शेष</string>
     <string name="n_hours_left">%d घंटे शेष</string>
     <string name="completed">पूरा हुआ</string>
-    <string name="share_post_caption">हमारा नगर पर %1$s द्वारा इस पोस्ट को देखें। %2$s</string>
+    <string name="share_post_caption">हमारा नगर पर %1$s द्वारा इस पोस्ट को देखें।\n%2$s</string>
     <string name="no_document_selected">कोई डॉक्यूमेंट नहीं चुना गया</string>
     <string name="document_file_size_error_message">अधिकतम %dMB की फ़ाइल होनी चाहिए</string>
     <string name="video_file_size_error_message">अधिकतम %dMB की वीडियो होनी चाहिए</string>
@@ -214,4 +222,10 @@
     <string name="app_update_downloaded">अपडेट डाउनलोड हो गया है</string>
     <string name="app_update_failed">ऐप अपडेट फेल हुआ</string>
     <string name="install">इंस्टाल करें</string>
+    <string name="liked_by">लाइक करने वाले</string>
+    <string name="no_likes_yet">अभी तक कोई लाइक नहीं</string>
+    <string name="share">शेयर करें</string>
+    <string name="complaint_id_n">शिकायत आईडी: %s</string>
+    <string name="share_complaint_caption">%1$s (%2$s) द्वारा एक शिकायत दर्ज की गई है हमारा नगर पर। \n%3$s</string>
+    <string name="is_your_complaint_resolved">क्या आपकी शिकायत हल हो गई है?</string>
 </resources>

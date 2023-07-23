@@ -1,10 +1,15 @@
 package com.humara.nagar.ui.report.complaint_status
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColorStateList
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -13,6 +18,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.humara.nagar.R
 import com.humara.nagar.Role
@@ -20,6 +33,7 @@ import com.humara.nagar.adapter.ComplaintStatusAdapter
 import com.humara.nagar.analytics.AnalyticsData
 import com.humara.nagar.base.BaseFragment
 import com.humara.nagar.base.ViewModelFactory
+import com.humara.nagar.databinding.ComplaintShareLayoutBinding
 import com.humara.nagar.databinding.FragmentComplaintStatusBinding
 import com.humara.nagar.ui.report.complaints.ComplaintManagementViewModel
 import com.humara.nagar.ui.report.model.ComplaintStatus
@@ -86,7 +100,7 @@ class ComplaintStatusFragment : BaseFragment() {
                 getComplaintStatus(args.complaintId)
             }
             acknowledgementErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog(errorAction = {}, dismissAction = {})
+                showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
             finishComplaintSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_resolved))
@@ -94,7 +108,7 @@ class ComplaintStatusFragment : BaseFragment() {
                 getComplaintStatus(args.complaintId)
             }
             finishComplaintErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog(errorAction = {}, dismissAction = {})
+                showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
             withdrawSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.complaint_successfully_withdrawn))
@@ -102,7 +116,7 @@ class ComplaintStatusFragment : BaseFragment() {
                 navController.navigateUp()
             }
             withdrawErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog(errorAction = {}, dismissAction = {})
+                showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
             }
             ratingSuccessLiveData.observe(viewLifecycleOwner) {
                 showSnackBar(getString(R.string.thank_you_for_the_rating))
@@ -110,7 +124,7 @@ class ComplaintStatusFragment : BaseFragment() {
                 setComplaintsListReload()
             }
             ratingErrorLiveData.observe(viewLifecycleOwner) {
-                showErrorDialog(errorAction = {}, dismissAction = {})
+                showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
                 binding.ratingBar.rating = 0F
             }
         }
@@ -161,11 +175,7 @@ class ComplaintStatusFragment : BaseFragment() {
             locationTV.setNonDuplicateClickListener {
                 if (response.latitude != null && response.longitude != null) {
                     val mapIntent = IntentUtils.getGoogleMapIntent(response.latitude.toDouble(), response.longitude.toDouble())
-                    if (IntentUtils.hasIntent(requireContext(), mapIntent)) {
-                        context?.startActivity(mapIntent)
-                    } else {
-                        context?.showToast(getString(R.string.map_location_not_available_message))
-                    }
+                    context?.startActivity(mapIntent)
                 } else {
                     context?.showToast(getString(R.string.map_location_not_available_message))
                 }
@@ -187,11 +197,19 @@ class ComplaintStatusFragment : BaseFragment() {
     }
 
     private fun initView() {
-        binding.apply {
+        binding.run {
             //Setting up the top app bar title
-            includedToolbar.toolbarTitle.text = resources.getString(R.string.complaint_status)
-            includedToolbar.leftIcon.setOnClickListener {
-                navController.navigateUp()
+            includedToolbar.apply {
+                toolbarTitle.text = resources.getString(R.string.complaint_status)
+                leftIcon.setOnClickListener {
+                    navController.navigateUp()
+                }
+                rightIcon.visibility = View.VISIBLE
+                rightIconIv.setImageResource(R.drawable.ic_share_complaint)
+                rightIconTv.text = getString(R.string.share)
+                rightIcon.setNonDuplicateClickListener {
+                    shareComplaint()
+                }
             }
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -262,6 +280,73 @@ class ComplaintStatusFragment : BaseFragment() {
             ratingBar.setIsIndicator(true)
             rateThisServiceTV.text = getString(R.string.you_rated_this_service)
         }
+    }
+
+    private fun shareComplaint() {
+        showProgress(true)
+        inflateShareComplaintLayout()
+    }
+
+    private fun inflateShareComplaintLayout() {
+        val complaintShareBinding = ComplaintShareLayoutBinding.inflate(layoutInflater, binding.root as ViewGroup, true)
+        complaintStatusViewModel.complaintStatusLiveData.value?.let { complaint ->
+            complaintShareBinding.run {
+                categoryTV.text = complaint.category
+                tvWard.setVisibilityAndText(getString(R.string.ward_s, complaint.ward))
+                tvResidentName.setVisibilityAndText(complaint.residentName)
+                tvComplaintId.text = getString(R.string.complaint_id_n, args.complaintId)
+                tvComment.text = complaint.comments
+                stateBtn.apply {
+                    text = ComplaintsUtils.ComplaintState.getName(complaint.currentState, context)
+                    val stateColor = ComplaintsUtils.ComplaintState.getStateColor(complaint.currentState)
+                    setTextColor(ContextCompat.getColor(context, stateColor))
+                    (this as? MaterialButton)?.setStrokeColorResource(stateColor)
+                }
+                complaint.images?.let { url ->
+                    Glide.with(requireContext())
+                        .load(GlideUtil.getUrlWithHeaders(url, requireContext()))
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .transform(CenterCrop(), RoundedCorners(12))
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                shareComplaintViaIntent(complaintShareBinding.root, complaint)
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                shareComplaintViaIntent(complaintShareBinding.root, complaint)
+                                return false
+                            }
+                        })
+                        .into(imageView)
+                } ?: run {
+                    shareComplaintViaIntent(complaintShareBinding.root, complaint)
+                }
+            }
+        }
+    }
+
+    private fun shareComplaintViaIntent(complaintShareView: View, complaintStatus: ComplaintStatus) {
+        complaintShareView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                complaintShareView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val shareComplaintViaWhatsAppBitmap = Bitmap.createBitmap(
+                    complaintShareView.measuredWidth,
+                    complaintShareView.measuredHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val c = Canvas(shareComplaintViaWhatsAppBitmap!!)
+                complaintShareView.draw(c)
+                IntentUtils.shareViaIntent(
+                    requireActivity(),
+                    shareComplaintViaWhatsAppBitmap,
+                    getString(R.string.share_complaint_caption, complaintStatus.residentName, complaintStatus.phoneNumber, "https://humara.nagar/grievance/${args.complaintId}/send")
+                )
+                (binding.root as ViewGroup).removeView(complaintShareView)
+                hideProgress()
+            }
+        })
     }
 
     override fun onDestroyView() {

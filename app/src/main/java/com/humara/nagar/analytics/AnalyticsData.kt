@@ -30,6 +30,7 @@ interface AnalyticsData {
             const val ADD_USER_MOBILE_VERIFICATION_FRAGMENT = "ADD_USER_MOBILE_VERIFICATION_FRAGMENT"
             const val ADD_USER_DETAILS_FRAGMENT = "ADD_USER_DETAILS_FRAGMENT"
             const val USER_PROFILE_FRAGMENT = "USER_PROFILE_FRAGMENT"
+            const val POST_LIKES_FRAGMENT = "POST_LIKES_FRAGMENT"
         }
     }
 

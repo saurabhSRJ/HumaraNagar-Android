@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+
+            <include
+                android:id="@+id/postHeader"
+                layout="@layout/layout_post_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <at.blogc.android.views.ExpandableTextView
+                android:id="@+id/postContent"
+                style="@style/OpenSansRegular14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:textColor="@color/grey_555555"
+                app:animation_duration="500"
+                app:layout_constraintTop_toBottomOf="@id/postHeader"
+                tools:text="Hello, I am looking for a new career opportunity and would appreciate your support. Thanks in advance for any contact recommendation, advice, or" />
+
+            <ImageView
+                android:id="@+id/ivPostImage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                android:adjustViewBounds="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/postContent" />
+
+            <TextView
+                android:id="@+id/tvDocumentPreview"
+                style="@style/OpenSansRegular14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/solid_grey_rect_poll_result"
+                android:drawablePadding="10dp"
+                android:foreground="?android:selectableItemBackground"
+                android:padding="10dp"
+                android:textColor="@color/grey_555555"
+                android:visibility="gone"
+                app:drawableStartCompat="@drawable/ic_document"
+                app:layout_constraintTop_toBottomOf="@id/postContent"
+                tools:text="fileName.pdf" />
+
+            <include
+                android:id="@+id/pollLayout"
+                layout="@layout/layout_poll_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/postContent" />
+
+            <FrameLayout
+                android:id="@+id/playerViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/postFooter"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintTop_toBottomOf="@id/postContent" />
+
+            <include
+                android:id="@+id/videoPreview"
+                layout="@layout/layout_video_preview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/playerViewContainer"
+                app:layout_constraintTop_toTopOf="@id/playerViewContainer" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/postBarrier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="ivPostImage, pollLayout, tvDocumentPreview, playerViewContainer" />
+
+            <include
+                android:id="@+id/postFooter"
+                layout="@layout/layout_post_details_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/postBarrier" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvComments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/postFooter"
+                tools:itemCount="2"
+                tools:listitem="@layout/post_comment_item"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvNoComments"
+                style="@style/OpenSansRegular14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:textColor="@color/grey_696969"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/rvComments"
+                tools:text="@string/no_comments_yet" />
+
+            <include
+                android:id="@+id/paginationLoader"
+                layout="@layout/layout_pagination_loader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tvNoComments" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

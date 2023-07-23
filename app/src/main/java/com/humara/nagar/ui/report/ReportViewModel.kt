@@ -88,7 +88,7 @@ class ReportViewModel(application: Application, private val savedStateHandle: Sa
 
     fun addImages(imageList: List<Uri>) {
         imageUris.addAll(imageList)
-        savedStateHandle[IMAGES_KEY] = imageList
+        savedStateHandle[IMAGES_KEY] = imageUris
         updateSubmitButtonState()
     }
 

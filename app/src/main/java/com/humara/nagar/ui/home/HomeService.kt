@@ -38,6 +38,9 @@ interface HomeService {
         @Query(NetworkConstants.NetworkQueryConstants.LIMIT) limit: Int
     ): NetworkResponse<PostComments>
 
+    @GET(NetworkConstants.NetworkAPIConstants.GET_POST_LIKES)
+    suspend fun getPostLikes(@Path(NetworkConstants.NetworkQueryConstants.ID) id: Long): NetworkResponse<PostLikesResponse>
+
     @POST(NetworkConstants.NetworkAPIConstants.CRUD_COMMENT)
     suspend fun addComment(@Path(NetworkConstants.NetworkQueryConstants.ID) id: Long, @Body request: PostCommentRequest): NetworkResponse<PostComments>
 

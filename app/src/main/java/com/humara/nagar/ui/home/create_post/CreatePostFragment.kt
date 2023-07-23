@@ -202,9 +202,10 @@ class CreatePostFragment : BaseFragment(), MediaSelectionListener {
 
     private fun showExitConfirmationDialog() {
         GenericAlertDialog.show(parentFragmentManager, getString(R.string.sure_you_want_to_exit), getString(R.string.user_exit_confirmation_message), isCancelable = true,
-            getString(R.string.exit), getString(R.string.stay)) {
-            navController.navigateUp()
-        }
+            negativeButtonText = getString(R.string.exit), positiveButtonText = getString(R.string.stay), negativeButtonClickListener = {
+                navController.navigateUp()
+            }
+        )
     }
 
     private fun onVideoSelection() {

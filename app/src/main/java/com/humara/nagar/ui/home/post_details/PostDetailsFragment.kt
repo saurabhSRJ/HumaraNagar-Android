@@ -113,8 +113,8 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
                 showPostComments(it)
             }
             loadMoreCommentsLiveData.observe(viewLifecycleOwner) {
-                binding.tvNoComments.visibility = View.GONE
-                binding.rvComments.visibility = View.VISIBLE
+                binding.postLayout.tvNoComments.visibility = View.GONE
+                binding.postLayout.rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.setData(it)
             }
             postCommentsErrorLiveData.observe(viewLifecycleOwner) {
@@ -157,9 +157,8 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
                 updateLikeButton(it)
             }
             totalLikesLiveData.observe(viewLifecycleOwner) { count ->
-                binding.postLayout.postFooter.tvLikeCount.apply {
-                    visibility = if (count > 0) View.VISIBLE else View.INVISIBLE
-                    text = count.toString()
+                binding.postLayout.postFooter.tvNoLikes.apply {
+                    text = if (count == 0) context.getString(R.string.no_likes_yet) else resources.getQuantityString(R.plurals.n_likes, count, count)
                 }
             }
             likePostErrorLiveData.observe(viewLifecycleOwner) {
@@ -201,6 +200,9 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
                 postFooter.ivComment.setOnClickListener {
                     etAddComment.requestFocus()
                     showKeyboard(etAddComment)
+                }
+                postFooter.tvNoLikes.setNonDuplicateClickListener {
+                    navController.navigate(PostDetailsFragmentDirections.actionPostDetailsFragmentToPostLikesFragment(args.postId, getScreenName()))
                 }
             }
             nsvPost.setOnScrollChangeListener { v: NestedScrollView, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
@@ -244,13 +246,13 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
     }
 
     private fun showPostComments(response: PostComments) {
-        binding.run {
+        binding.postLayout.run {
             if (response.comments.isEmpty()) {
                 tvNoComments.visibility = View.VISIBLE
                 tvNoComments.text = getString(R.string.no_comments_yet)
                 rvComments.visibility = View.GONE
             } else {
-                postLayout.postFooter.tvCommentCount.text = response.totalCount.toString()
+                postFooter.tvNoComments.text = resources.getQuantityString(R.plurals.n_comments, response.totalCount, response.totalCount)
                 tvNoComments.visibility = View.GONE
                 rvComments.visibility = View.VISIBLE
                 postCommentsAdapter.setData(response.comments)
@@ -334,18 +336,18 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
     }
 
     private fun showPaginationLoader() {
-        binding.paginationLoader.apply {
+        binding.postLayout.paginationLoader.apply {
             progress.visibility = View.VISIBLE
             retry.visibility = View.GONE
         }
     }
 
     private fun hidePaginationLoader() {
-        binding.paginationLoader.progress.visibility = View.GONE
+        binding.postLayout.paginationLoader.progress.visibility = View.GONE
     }
 
     private fun showPaginationLoadError() {
-        binding.run {
+        binding.postLayout.run {
             tvNoComments.visibility = View.VISIBLE
             tvNoComments.text = getString(R.string.error_loading_comments)
             paginationLoader.retry.visibility = View.VISIBLE
@@ -375,9 +377,9 @@ class PostDetailsFragment : BaseFragment(), Playback.ArtworkHintListener {
         }
     }
 
-    private fun handlePostFooterUI(postFooter: LayoutPostFooterBinding, post: Post) {
+    private fun handlePostFooterUI(postFooter: LayoutPostDetailsFooterBinding, post: Post) {
         postFooter.apply {
-            if (post.totalComments > 0) tvCommentCount.text = post.totalComments.toString()
+            if (post.totalComments > 0) tvNoComments.text = resources.getQuantityString(R.plurals.n_comments, post.totalComments, post.totalComments)
             ivLike.setNonDuplicateClickListener {
                 postDetailsViewModel.flipUserLike()
             }
