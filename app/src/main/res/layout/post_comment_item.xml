@@ -48,10 +48,22 @@
             android:layout_marginHorizontal="4dp"
             android:layout_marginTop="4dp"
             android:textColor="@color/grey_696969"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivDelete"
             app:layout_constraintStart_toEndOf="@id/ivUserPhoto"
             app:layout_constraintTop_toBottomOf="@id/tvUserName"
             tools:text="Hello, I am looking for a new career opportunity and would appreciate your support. Thanks in advance for any contact recommendation, advice, or ... sentry" />
+
+        <ImageView
+            android:id="@+id/ivDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tvComment"
+            app:layout_constraintTop_toTopOf="@id/tvComment"
+            tools:visibility="visible"/>
 
         <View
             android:layout_width="match_parent"

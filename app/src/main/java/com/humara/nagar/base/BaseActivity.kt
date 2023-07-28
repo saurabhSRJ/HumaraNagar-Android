@@ -172,9 +172,10 @@ abstract class BaseActivity : PermissionActivity() {
 
     open fun blockUnauthorizedAccess() {
         Logger.debugLog("Unauthorized access")
-        GenericAlertDialog.show(supportFragmentManager, getString(R.string.unauthorized_access), getString(R.string.session_expired_message), false, getString(R.string.logout)) {
-            logout(getScreenName())
-        }
+        GenericAlertDialog.show(supportFragmentManager, getString(R.string.unauthorized_access), getString(R.string.session_expired_message), false, getString(R.string.logout),
+            positiveButtonListener = {
+                logout(getScreenName())
+            })
     }
 
     fun logout(source: String) {

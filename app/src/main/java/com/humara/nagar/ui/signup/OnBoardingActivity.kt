@@ -78,6 +78,13 @@ class OnBoardingActivity : BaseActivity() {
             appConfigAndUserRefDataSuccessLiveData.observe(this@OnBoardingActivity) {
                 showHomeScreen()
             }
+            //TODO: Not blocking the first app use for app update popup as of now
+            appOptionalUpdateLiveData.observe(this@OnBoardingActivity) {
+                showHomeScreen()
+            }
+            appForceUpdateLiveData.observe(this@OnBoardingActivity) {
+                showHomeScreen()
+            }
             appConfigSuccessLiveData.observe(this@OnBoardingActivity) {
                 showUpdateProfileImageFragment()
             }

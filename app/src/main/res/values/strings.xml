@@ -2,7 +2,7 @@
     <string name="app_name_release">Humara Nagar</string>
     <string name="app_name_qa" translatable="false">Nagar QA</string>
     <string name="title_home">Home</string>
-    <string name="report">Report</string>
+    <string name="grievances">Grievances</string>
     <string name="residents">Residents</string>
     <string name="settings">Settings</string>
     <string name="privacy_policy"><u>Privacy Policy</u></string>
@@ -152,7 +152,7 @@
     <string name="n_days_left">%dd left</string>
     <string name="n_hours_left">%dh left</string>
     <string name="completed">Completed</string>
-    <string name="share_post_caption">Checkout this post by %1$s on Humara Nagar. %2$s</string>
+    <string name="share_post_caption">Checkout this post by %1$s on Humara Nagar.\n%2$s</string>
     <string name="no_document_selected">No document selected</string>
     <string name="document_file_size_error_message">Maximum file size should be %dMB</string>
     <string name="video_file_size_error_message">Maximum video size should be %dMB</string>
@@ -193,6 +193,27 @@
     <string name="pending">Pending</string>
     <string name="count_with_bracket" translatable="false">(%d)</string>
     <string name="expected_resolution_days">Expected resolution days</string>
+    <string name="app_update_downloading">Downloading update…</string>
+    <string name="update_app">Please update app</string>
+    <string name="skip">Skip</string>
+    <string name="app_update_downloaded">Update downloaded</string>
+    <string name="app_update_failed">Update failed</string>
+    <string name="install">Install</string>
+    <string name="liked_by">Liked by</string>
+    <string name="no_likes_yet">No likes yet</string>
+    <string name="share">Share</string>
+    <string name="complaint_id_n">Complaint ID: %s</string>
+    <string name="share_complaint_caption">A complaint has been raised by %1$s (%2$s) on Humara Nagar. \n%3$s</string>
+    <string name="is_your_complaint_resolved">Is your complaint resolved?</string>
+    <string name="app_launch_location">Gharaunda</string>
+    <plurals name="n_likes">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+    <plurals name="n_comments">
+        <item quantity="one">%d comment</item>
+        <item quantity="other">%d comments</item>
+    </plurals>
     <plurals name="n_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

@@ -62,4 +62,8 @@ class AppConfigRepository(context: Application) : BaseRepository(context) {
     suspend fun getComplaintCategories(): List<CategoryDetails> = withContext(Dispatchers.IO) {
         database.referenceDataDao().getAllCategories()
     }
+
+    suspend fun clearDatabase() = withContext(Dispatchers.IO) {
+        database.clearAllTables()
+    }
 }

@@ -11,10 +11,7 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onException
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.home.HomeRepository
-import com.humara.nagar.ui.home.model.CommentDetails
-import com.humara.nagar.ui.home.model.Post
-import com.humara.nagar.ui.home.model.PostCommentRequest
-import com.humara.nagar.ui.home.model.PostComments
+import com.humara.nagar.ui.home.model.*
 import com.humara.nagar.utils.SingleLiveEvent
 import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
@@ -52,12 +49,16 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
     private val _addCommentErrorLiveData: MutableLiveData<ApiError> by lazy { MutableLiveData() }
     val addCommentErrorLiveData: LiveData<ApiError> = _addCommentErrorLiveData
     private val _deletePostLiveData: SingleLiveEvent<Long> by lazy { SingleLiveEvent() }
+    private val _deleteCommentSuccessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
+    val deleteCommentSuccessLiveData: LiveData<Boolean> = _deleteCommentSuccessLiveData
+    private val _deleteCommentErrorLiveData: MutableLiveData<ApiError> by lazy { MutableLiveData() }
+    val deleteCommentErrorLiveData: LiveData<ApiError> = _deleteCommentErrorLiveData
     val deletePostLiveData: LiveData<Long> = _deletePostLiveData
     val isLikedLiveData: LiveData<Boolean> = savedStateHandle.getLiveData<Boolean>(IS_LIKED, false)
     val totalLikesLiveData: LiveData<Int> = savedStateHandle.getLiveData<Int>(TOTAL_LIKES, 0)
 
     private var currentPage: Int = 1
-    private val limit = 5
+    private val limit = 10
     var canLoadMoreData = true
 
     init {
@@ -113,6 +114,16 @@ class PostDetailsViewModel(application: Application, private val savedStateHandl
             processInitialResponse(it)
         }.onError {
             _addCommentErrorLiveData.postValue(it)
+        }
+    }
+
+    fun deleteComment(commentId: Long) = viewModelScope.launch {
+        val response = processCoroutine({ repository.deleteComment(postId, DeleteCommentRequest(commentId)) })
+        response.onSuccess {
+            _deleteCommentSuccessLiveData.postValue(true)
+            processInitialResponse(it)
+        }.onError {
+            _deleteCommentErrorLiveData.postValue(it)
         }
     }
 

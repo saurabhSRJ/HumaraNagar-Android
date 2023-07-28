@@ -59,7 +59,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                \<androidx.constraintlayout.widget.Group
+                <androidx.constraintlayout.widget.Group
                     android:id="@+id/groupHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
 
                 <TextView
                     android:id="@+id/textView"
-                    style="@style/OpenSansSemiBold18sp"
+                    style="@style/OpenSansSemiBold16sp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -85,7 +85,7 @@
                     style="@style/OpenSansRegular14sp"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/rect_white_fill_grey_outline_5dp"
                     android:gravity="top|start"
                     android:inputType="textCapSentences|textMultiLine"

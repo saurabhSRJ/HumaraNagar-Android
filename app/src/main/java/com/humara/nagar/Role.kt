@@ -36,6 +36,13 @@ enum class Role(val roleId: Int) {
             }
         }
 
+        fun isResident(roleId: Int): Boolean {
+            return when(roleId) {
+                Naagrik.roleId -> true
+                else -> false
+            }
+        }
+
         fun shouldShowResidentsFromAllWards(roleId: Int): Boolean {
             return when(roleId) {
                 HumaraNagarTeam.roleId, Secretary.roleId -> true

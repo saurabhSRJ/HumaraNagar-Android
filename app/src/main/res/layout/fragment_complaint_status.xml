@@ -19,7 +19,7 @@
         <View
             android:id="@+id/divider1"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:background="@color/black_with_opacity_20"
             app:layout_constraintTop_toBottomOf="@id/includedToolbar" />
 
@@ -236,7 +236,7 @@
             android:layout_height="wrap_content"
             android:background="@color/primary_background"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="20dp"
+            android:paddingVertical="16dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <Button

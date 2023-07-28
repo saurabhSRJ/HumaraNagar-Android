@@ -184,9 +184,10 @@ class AddUserDetailsFragment : BaseFragment() {
 
     private fun showExitConfirmationDialog() {
         GenericAlertDialog.show(parentFragmentManager, getString(R.string.sure_you_want_to_exit), getString(R.string.user_exit_confirmation_message), isCancelable = true,
-            getString(R.string.exit), getString(R.string.stay)) {
-            handleBack()
-        }
+            negativeButtonText = getString(R.string.exit), positiveButtonText = getString(R.string.stay), negativeButtonClickListener = {
+                handleBack()
+            }
+        )
     }
 
     override fun getScreenName() = AnalyticsData.ScreenName.ADD_USER_DETAILS_FRAGMENT

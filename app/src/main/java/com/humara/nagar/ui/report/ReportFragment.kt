@@ -97,7 +97,7 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
     private fun initViewModelObservers() {
         appConfigViewModel.run {
             wardDetailsLiveData.observe(viewLifecycleOwner) {
-                binding.inputWard.setOptions(it.toTypedArray())
+                setupWardOptions(it)
             }
             complaintCategoriesLiveData.observe(viewLifecycleOwner) {
                 binding.inputCategory.setOptions(it.toTypedArray())
@@ -115,11 +115,23 @@ class ReportFragment : BaseFragment(), MediaSelectionListener {
                 imagePreviewAdapter.setData(it)
                 binding.uploadImageRequired.isVisible = it.isEmpty()
             }
-            postComplaintStatusLiveData.observe(viewLifecycleOwner) { success ->
-                if (success) {
-                    showComplaintSuccessDialog()
-                } else {
-                    showErrorDialog(errorAction = {}, dismissAction = {})
+            postComplaintSuccessLiveData.observe(viewLifecycleOwner) {
+                showComplaintSuccessDialog()
+            }
+            postComplaintErrorLiveData.observe(viewLifecycleOwner) {
+                showErrorDialog(subtitle = it.message, errorAction = {}, dismissAction = {})
+            }
+        }
+    }
+
+    private fun setupWardOptions(wards: List<WardDetails>) {
+        val userWard = getUserPreference().ward
+        val userWardIndex = wards.indexOfFirst { it.name == userWard }
+        binding.inputWard.run {
+            setOptions(wards.toTypedArray())
+            setDefaultSelection(userWardIndex) {
+                if (it is WardDetails) {
+                    reportViewModel.setWard(it)
                 }
             }
         }

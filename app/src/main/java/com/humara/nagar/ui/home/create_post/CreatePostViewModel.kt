@@ -11,7 +11,6 @@ import com.humara.nagar.network.onError
 import com.humara.nagar.network.onSuccess
 import com.humara.nagar.ui.home.create_post.model.PollRequest
 import com.humara.nagar.utils.ImageUtils
-import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
 
 class CreatePostViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : BaseViewModel(application) {
@@ -31,7 +30,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     val documentUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(DOCUMENT_URI)
     val imageUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(IMAGE_URI)
     val videoUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(VIDEO_URI)
-    val thumbnailUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(THUMBNAIL_URI)
+    private val thumbnailUriLiveData: LiveData<Uri> = savedStateHandle.getLiveData(THUMBNAIL_URI)
     val pollRequestLiveData: LiveData<PollRequest> = savedStateHandle.getLiveData(POLL_REQUEST)
     val attachmentAvailableLivedata: LiveData<Boolean> = savedStateHandle.getLiveData(ATTACHMENT_AVAILABLE)
     private val _postCreationSuccessLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData() }
@@ -62,7 +61,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     }
 
     private fun createImagePost() = viewModelScope.launch {
-        val response = processCoroutine({ repository.createImagePost(StringUtils.replaceWhitespaces(captionLiveData.value ?: ""), imageUriLiveData.value!!) })
+        val response = processCoroutine({ repository.createImagePost(captionLiveData.value ?: "", imageUriLiveData.value!!) })
         ImageUtils.deleteTempFile(imageUriLiveData.value)
         response.onSuccess {
             _postCreationSuccessLiveData.postValue(true)
@@ -72,7 +71,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
     }
 
     private fun createDocumentPost() = viewModelScope.launch {
-        val response = processCoroutine({ repository.createDocumentPost(StringUtils.replaceWhitespaces(captionLiveData.value ?: ""), documentUriLiveData.value!!) })
+        val response = processCoroutine({ repository.createDocumentPost(captionLiveData.value ?: "", documentUriLiveData.value!!) })
         response.onSuccess {
             _postCreationSuccessLiveData.postValue(true)
         }.onError {
@@ -82,7 +81,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
 
     private fun createVideoPost() = viewModelScope.launch {
         val response = processCoroutine({
-            repository.createVideoPost(StringUtils.replaceWhitespaces(captionLiveData.value ?: ""), videoUriLiveData.value!!, thumbnailUriLiveData.value)
+            repository.createVideoPost(captionLiveData.value ?: "", videoUriLiveData.value!!, thumbnailUriLiveData.value)
         })
         ImageUtils.deleteTempFile(thumbnailUriLiveData.value)
         response.onSuccess {
@@ -94,7 +93,7 @@ class CreatePostViewModel(application: Application, private val savedStateHandle
 
     private fun createPollPost() = viewModelScope.launch {
         val pollRequest = pollRequestLiveData.value!!.apply {
-            caption = StringUtils.replaceWhitespaces(captionLiveData.value ?: "")
+            caption = captionLiveData.value ?: ""
         }
         val response = processCoroutine({ repository.createPollPost(pollRequest) })
         response.onSuccess {

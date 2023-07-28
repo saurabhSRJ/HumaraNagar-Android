@@ -18,6 +18,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.humara.nagar.R
 import com.humara.nagar.constants.IntentKeyConstants
 import com.humara.nagar.constants.NotificationConstants
+import com.humara.nagar.fcm.NotificationDeeplinkUtils
 import com.humara.nagar.fcm.NotificationDismissReceiver
 import com.humara.nagar.ui.MainActivity
 import java.util.*
@@ -49,7 +50,7 @@ object NotificationUtils {
     private fun getNotificationBuilder(title: String, message: String, channelId: String, extras: Bundle, notificationId: Int, context: Context): NotificationCompat.Builder {
         val notificationCompatBuilder: NotificationCompat.Builder =
             NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_add_button)
+                .setSmallIcon(R.drawable.app_icon)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
@@ -80,13 +81,12 @@ object NotificationUtils {
     }
 
     private fun getNotificationPendingIntent(context: Context, notificationId: Int, extras: Bundle): PendingIntent {
-        extras.apply {
-            putString(IntentKeyConstants.SOURCE, "Notification-$notificationId")
-        }
+        val target = extras.getString(NotificationConstants.TARGET_SCREEN)
+        extras.putString(IntentKeyConstants.SOURCE, "Notification-$notificationId")
         return NavDeepLinkBuilder(context)
             .setGraph(R.navigation.mobile_navigation)
-            .setDestination(R.id.home_navigation)
-            .setArguments(extras)
+            .setDestination(NotificationDeeplinkUtils.getDeeplinkDestination(target))
+            .setArguments(NotificationDeeplinkUtils.getDeeplinkArgument(extras, target))
             .setComponentName(MainActivity::class.java)
             .createPendingIntent()
     }

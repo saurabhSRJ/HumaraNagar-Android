@@ -54,6 +54,11 @@ class ComplaintStatusUpdateDialogFragment : DialogFragment() {
         binding.run {
             groupHeader.isVisible = Role.isLocalAdmin(requireContext().getUserSharedPreferences().role?.id ?: 0) &&
                     args.state == ComplaintsUtils.ComplaintState.SENT.currentState
+            textView.text = if (Role.isResident(requireContext().getUserSharedPreferences().role?.id ?: 0) && args.state == ComplaintsUtils.ComplaintState.RESOLVED.currentState) {
+                getString(R.string.is_your_complaint_resolved)
+            } else {
+                getString(R.string.provide_more_details)
+            }
             resolutionDaysSpinner.apply {
                 setAdapter(adapter)
                 setOnItemClickListener { _, _, position, _ ->

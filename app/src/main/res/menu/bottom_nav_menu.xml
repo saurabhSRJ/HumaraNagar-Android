@@ -9,7 +9,7 @@
     <item
         android:id="@+id/navigation_report"
         android:icon="@drawable/nav_report_selector"
-        android:title="@string/report" />
+        android:title="@string/grievances" />
 
     <item
         android:id="@+id/residents_navigation"

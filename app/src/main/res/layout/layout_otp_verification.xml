@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/otp_expired_message"
+            android:text="@string/didn_t_receive_otp"
             android:textColor="@color/grey_828282"
             app:layout_constraintEnd_toStartOf="@id/tv_resend"
             app:layout_constraintHorizontal_chainStyle="packed"

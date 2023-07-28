@@ -82,7 +82,6 @@ class UserProfileFragment : BaseFragment() {
         binding.run {
             svDetails.visibility = View.VISIBLE
             btnSave.visibility = View.VISIBLE
-            ivUserPhoto.loadUrl(getUserPreference().profileImage, R.drawable.ic_user_image_placeholder)
             tvUserName.text = profile.name
             tvRoleAndWard.text = FeedUtils.getRoleAndWardText(requireContext(), profile.role, profile.ward)
             tvMobileNumber.text = profile.phoneNumber
@@ -108,6 +107,13 @@ class UserProfileFragment : BaseFragment() {
             toolbar.apply {
                 toolbarTitle.text = getString(R.string.profile)
                 leftIcon.setOnClickListener { navController.navigateUp() }
+            }
+            getUserPreference().profileImage?.let { url ->
+                ivUserPhoto.loadUrl(url, R.drawable.ic_user_image_placeholder)
+                ivUserPhoto.setNonDuplicateClickListener {
+                    val action = UserProfileFragmentDirections.actionUserProfileFragmentToFullImagePreviewFragment(arrayOf(url), getScreenName())
+                    navController.navigate(action)
+                }
             }
             btnChangeImage.setNonDuplicateClickListener {
                 navController.navigate(UserProfileFragmentDirections.actionUserProfileFragmentToUpdateProfileImageFragment(isEdit = true, getScreenName()))

@@ -9,5 +9,6 @@ data class AddUserDetailsRequest(
     @SerializedName("gender_id") val genderId: Int,
     @SerializedName("ward_id") val wardId: Int,
     @SerializedName("role_id") val roleId: Int,
-    @SerializedName("phone_number") val mobileNumber: String
+    @SerializedName("phone_number") val mobileNumber: String,
+    @SerializedName("created_by") val createdBy: String
 )

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvNoLikes"
+            style="@style/OpenSansSemiBold12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="100 likes" />
+
+        <TextView
+            android:id="@+id/tvNoComments"
+            style="@style/OpenSansSemiBold12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="12 comments" />
+
+        <View
+            android:id="@+id/dividerTop"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintTop_toBottomOf="@id/tvNoLikes" />
+
+        <ImageButton
+            android:id="@+id/ivLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerTop"
+            app:srcCompat="@drawable/ic_like_unselected" />
+
+        <ImageButton
+            android:id="@+id/ivComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            app:layout_constraintStart_toEndOf="@id/ivLike"
+            app:layout_constraintTop_toBottomOf="@id/dividerTop"
+            app:srcCompat="@drawable/ic_comment" />
+
+        <ImageButton
+            android:id="@+id/ivShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerTop"
+            app:srcCompat="@drawable/ic_share" />
+
+        <View
+            android:id="@+id/dividerBottom"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_E4E4E4"
+            app:layout_constraintTop_toBottomOf="@id/ivLike" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

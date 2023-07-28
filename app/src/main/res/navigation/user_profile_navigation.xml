@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/user_profile_navigation"
+    app:startDestination="@id/userProfileFragment">
+
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.humara.nagar.ui.user_profile.UserProfileFragment"
+        android:label="UserProfileFragment">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_updateProfileImageFragment"
+            app:destination="@id/updateProfileImageFragment" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_fullImagePreviewFragment"
+            app:destination="@id/fullImagePreviewFragment" />
+    </fragment>
+    <argument
+        android:name="source"
+        android:defaultValue=""
+        app:argType="string" />
+    <fragment
+        android:id="@+id/updateProfileImageFragment"
+        android:name="com.humara.nagar.ui.common.UpdateProfileImageFragment"
+        android:label="UpdateProfileImageFragment">
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="is_edit"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullImagePreviewFragment"
+        android:name="com.humara.nagar.ui.common.FullImagePreviewFragment"
+        android:label="FullImagePreviewFragment">
+        <argument
+            android:name="imagesList"
+            app:argType="string[]" />
+        <argument
+            android:name="source"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+</navigation>

@@ -55,6 +55,10 @@
         <action
             android:id="@+id/action_complaintStatusFragment_to_complaintStatusUpdateDialogFragment"
             app:destination="@id/complaintStatusUpdateDialogFragment" />
+        <deepLink
+            android:autoVerify="true"
+            app:action="android.intent.action.MY_ACTION"
+            app:uri="https://humara.nagar/grievance/{complaint_id}/{source}" />
     </fragment>
     <fragment
         android:id="@+id/imagePreviewFragment"

@@ -212,7 +212,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
             setVisibilityAndText(post.caption)
             setOnClickListener {
                 if (isExpanded) {
-                    it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(post.postId, source))
+                    it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(post.postId, post.userId, source))
                 } else {
                     expand()
                 }
@@ -239,7 +239,7 @@ class PostAdapter(private val kohii: Kohii, val context: Context, val listener: 
                     listener.onSharePostClick(post)
                 }
                 ivComment.setNonDuplicateClickListener {
-                    it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(post.postId, source))
+                    it.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPostDetailsFragment(post.postId, post.userId, source))
                 }
             }
         }

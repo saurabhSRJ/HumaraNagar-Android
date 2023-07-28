@@ -14,7 +14,6 @@ import com.humara.nagar.ui.home.model.FeedResponse
 import com.humara.nagar.ui.home.model.Post
 import com.humara.nagar.ui.signup.model.FeedFilter
 import com.humara.nagar.utils.SingleLiveEvent
-import com.humara.nagar.utils.StringUtils
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : BaseViewModel(application) {
@@ -55,7 +54,8 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     var canLoadMoreData = true
 
     init {
-        getFeedFilters()
+//        getFeedFilters()
+        getPosts()
     }
 
     private fun getFeedFilters() = viewModelScope.launch {
@@ -72,7 +72,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getPosts() = viewModelScope.launch {
-        val response = processCoroutine({ repository.getPosts(currentPage, limit, _selectedFilterLiveData.value ?: 1) }, progressLiveData = if (currentPage == 1) _initialPostProgressLiveData else
+        val response = processCoroutine({ repository.getPosts(currentPage, limit, 1) }, progressLiveData = if (currentPage == 1) _initialPostProgressLiveData else
             _loadMorePostProgressLiveData)
         response.onSuccess {
             if (currentPage == 1) processInitialResponse(it)
@@ -122,7 +122,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun editPost(id: Long, caption: String) = viewModelScope.launch {
-        val response = processCoroutine({ repository.editPost(id, EditPostRequest(StringUtils.replaceWhitespaces(caption))) })
+        val response = processCoroutine({ repository.editPost(id, EditPostRequest(caption)) })
         response.onSuccess {
             _editPostSuccessLiveData.postValue(true)
         }.onError {
